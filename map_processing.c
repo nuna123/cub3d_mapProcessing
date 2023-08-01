@@ -54,16 +54,22 @@ static int	isvalid_midline(char *line)
 static int	isvalid_map(char **map)
 {
 	int	i;
+	int	player_found;
 
 	i = 0;
+	player_found = 0;
 	if (isvalid_firstline(map[i]) == ERR)
 		return (ERR);
 	while (map[++i])
 	{
 		if (isvalid_midline(map[i]) == ERR)
 			return (ERR);
+		if (ft_strchr(map[i], 'N')
+			|| ft_strchr(map[i], 'S')
+			|| ft_strchr(map[i], 'E') || ft_strchr(map[i], 'W'))
+			player_found++;
 	}
-	if (isvalid_firstline(map[i - 1]) == ERR)
+	if (isvalid_firstline(map[i - 1]) == ERR || player_found != 1)
 		return (ERR);
 	return (OK);
 }

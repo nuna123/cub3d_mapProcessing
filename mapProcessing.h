@@ -44,6 +44,7 @@ void		map_info_free(t_mapInfo *map_info);
 int			error(t_mapInfo *map_info, char *error_msg);
 t_rgb		*rgb_init(void);
 t_mapInfo	*map_info_init(void);
+int			check_map_info(t_mapInfo *map_info);
 
 //VALUE PROCESSING
 void		textureline_fill(t_mapInfo	*map_info, char **mapline_split);

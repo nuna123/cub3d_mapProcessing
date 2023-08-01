@@ -78,3 +78,22 @@ t_mapInfo	*map_info_init(void)
 		map_info->texture_paths[i] = NULL;
 	return (map_info);
 }
+
+int	check_map_info(t_mapInfo *map_info)
+{
+	int	i;
+	int	fd;
+
+	i = -1;
+	while (++i < 4)
+	{
+		if (!map_info->ceiling_rgb || !map_info->floor_rgb
+			|| !map_info->texture_paths[i])
+			return ( error (map_info, "Values missing in map!\n"), ERR);
+		fd = open (map_info->texture_paths[i], O_RDONLY);
+		if (fd < 0)
+			return ( error (map_info, "Texture file not found!\n"), ERR);
+		close (fd);
+	}
+	return (OK);
+}

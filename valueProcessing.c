@@ -119,5 +119,5 @@ int	map_info_fill(t_mapInfo	*map_info, int map_fd)
 		}
 		map_line = (free(map_line), get_next_line(map_fd));
 	}
-	return (OK);
+	return (check_map_info(map_info));
 }

@@ -71,7 +71,6 @@ static int	isvalid_map(char **map)
 int	process_map(char *map_line, t_mapInfo *map_info, int map_fd)
 {
 	char	**map;
-	int		i;
 
 	map = ft_calloc(sizeof(char *), 1);
 	map[0] = NULL;
@@ -84,14 +83,6 @@ int	process_map(char *map_line, t_mapInfo *map_info, int map_fd)
 	{
 		ft_arrfree((void **) map);
 		return (error (map_info, "Invalid Map!\n"), ERR);
-	}
-	i = -1;
-	while (++i < 4)
-	{
-		if (!map_info->ceiling_rgb || !map_info->floor_rgb
-			|| !map_info->texture_paths[i])
-			return (ft_arrfree((void **) map),
-				error (map_info, "Values missing in map!\n"), ERR);
 	}
 	map_info->map = map;
 	return (OK);

@@ -12,7 +12,7 @@ void	mapInfo_free(mapInfo_t *mapInfo)
 		free(mapInfo->ceiling_rgb);
 	if (mapInfo->floor_rgb)
 		free(mapInfo->floor_rgb);
-	
+
 
 	if(mapInfo->texture_paths)
 	{
@@ -24,6 +24,7 @@ void	mapInfo_free(mapInfo_t *mapInfo)
 			free(mapInfo->texture_paths[WE]);
 		if (mapInfo->texture_paths[EA])
 			free(mapInfo->texture_paths[EA]);
+		free (mapInfo->texture_paths);
 	}
 /* 	if (mapInfo->EA_texture_path)
 		free(mapInfo->EA_texture_path);
@@ -92,15 +93,15 @@ void	textureline_fill(mapInfo_t	*mapInfo, char **mapline_split)
 	int		i;
 
 	compass_str = ft_strdup("NO|SO|WE|EA");
-	compass_arr = ft_split(compass_str, "|");
+	compass_arr = ft_split(compass_str,'|');
 	i = -1;
 
-	while (++i < ft_arrlen((void **) compass_arr))
+	while (++i < 4)
 	{
-		if (ft_strncmp(compass_arr[i], mapline_split[0], 3))
+		if (ft_strncmp(compass_arr[i], mapline_split[0], 3) == 0)
 		{
 			if (!mapInfo->texture_paths[i])
-				mapInfo->texture_paths[i] = ft_strdup(mapline_split[1]);
+				mapInfo->texture_paths[i] = ft_strtrim(mapline_split[1], "\n");
 			else
 			{
 				free (compass_str);
@@ -116,6 +117,7 @@ void	textureline_fill(mapInfo_t	*mapInfo, char **mapline_split)
 
 void	rgb_fill(mapInfo_t	*mapInfo, char **mapline_split)
 {
+	printf("RAGB FILL\n");
 	rgb_t	*rgb;
 	char	**rgb_arr;
 
@@ -131,7 +133,7 @@ void	rgb_fill(mapInfo_t	*mapInfo, char **mapline_split)
 		rgb = mapInfo->floor_rgb;
 
 	rgb_arr = ft_split(mapline_split[1], ',');
-	
+
 	if (ft_arrlen((void **)rgb_arr) != 3)
 	{
 		ft_arrfree((void **) mapline_split);
@@ -152,8 +154,9 @@ void	rgb_fill(mapInfo_t	*mapInfo, char **mapline_split)
 		free (rgb);
 		error (mapInfo, "Invalid F/C line!");
 	}
+	ft_arrfree((void **) rgb_arr);
 }
-/* 
+/*
 void	rgb_fill(mapInfo_t	*mapInfo, char **mapline_split)
 {
 	rgb_t	*rgb;
@@ -163,10 +166,10 @@ void	rgb_fill(mapInfo_t	*mapInfo, char **mapline_split)
 	|| (mapline_split[0][0] == 'C' && mapInfo->ceiling_rgb))
 		error ((ft_arrfree((void **) mapline_split), mapInfo),
 			"Duplicate F/C lines!");
-	
+
 	rgb = rgb_init();
 	rgb_arr = ft_split(mapline_split[1], ',');
-	
+
 	if (ft_arrlen((void **)rgb_arr) != 3)
 	{
 		ft_arrfree((void **) mapline_split);
@@ -196,17 +199,18 @@ void	rgb_fill(mapInfo_t	*mapInfo, char **mapline_split)
  */
 void get_info(mapInfo_t	*mapInfo, char *map_line)
 {
+	printf("GETINFO\n");
 	char	**mapline_split;
-	
-	mapline_split = ft_split(map_line, " ");
+
+	mapline_split = ft_split(map_line, ' ');
 	if (!mapline_split)
 		error (mapInfo, "Error with spitting mapline!");
 	if (ft_arrlen((void **) mapline_split) != 2)
 		error ((ft_arrfree((void **) mapline_split), mapInfo),
 			"Invalid mapline!");
-	
+
 	if (ft_strlen(mapline_split[0]) == 2
-		&&	!ft_strchr(mapline_split[0], "|")
+		&&	!ft_strchr(mapline_split[0], '|')
 		&&	ft_strnstr("NO|SO|WE|EA", mapline_split[0], 11))
 		textureline_fill(mapInfo, mapline_split);
 	else if (ft_strlen(mapline_split[0]) == 1
@@ -215,7 +219,7 @@ void get_info(mapInfo_t	*mapInfo, char *map_line)
 	else
 		error ((ft_arrfree((void **) mapline_split), mapInfo),
 		"Invalid mapline!");
-	
+
 	ft_arrfree((void **) mapline_split);
 }
 
@@ -229,16 +233,15 @@ int	mapInfo_fill(mapInfo_t	*mapInfo, int map_fd)
 	{
 		if (ft_strncmp(map_line, "\n", 2))
 		{
-			if (!mapInfo->NO_texture_path ||
-				!mapInfo->SO_texture_path ||
-				!mapInfo->WE_texture_path ||
-				!mapInfo->EA_texture_path ||)
-
+			if (!mapInfo->texture_paths[0] || !mapInfo->texture_paths[1]
+				|| !mapInfo->texture_paths[2] || !mapInfo->texture_paths[3]
+				|| !mapInfo->ceiling_rgb|| !mapInfo->floor_rgb)
+				get_info(mapInfo, map_line);
 		}
 		free(map_line);
 		map_line = get_next_line(map_fd);
 	}
-	
+	return 0;
 }
 
 
@@ -251,13 +254,13 @@ int main (int argc, char **argv)
 
 	if (argc > 1)
 		map_path = argv[1];
-	
+
 
 	//Check map extension
 	if (ft_strncmp(&(map_path[ft_strlen(map_path) - ft_strlen(".cub")])
 			, ".cub", ft_strlen(".cub")) != 0)
 		error(NULL, "Map is not of type .cub!");
-	
+
 	//check that file exists
 	map_fd = open(map_path, O_RDONLY);
 	if (map_fd == -1)
@@ -267,9 +270,13 @@ int main (int argc, char **argv)
 	mapInfo = mapInfo_init();
 	if (!mapInfo)
 		error((close(map_fd), NULL), "Map initialization failed!");
-	
+	mapInfo_fill(mapInfo, map_fd);
+	printf ("MAP: \n");
+	printf ("rgb: ceiling(%i,%i,%i) floor(%i,%i,%i)\n", mapInfo->ceiling_rgb->red, mapInfo->ceiling_rgb->green, mapInfo->ceiling_rgb->blue , mapInfo->floor_rgb->red, mapInfo->floor_rgb->green, mapInfo->floor_rgb->blue );
 
+	printf("textures: \n\t NO: %s \n\tSO: %s  \n\tWE: %s  \n\tEA: %s\n", mapInfo->texture_paths[0], mapInfo->texture_paths[1], mapInfo->texture_paths[2], mapInfo->texture_paths[3]);
 
+	mapInfo_free(mapInfo);
 
 
 	close (map_fd);

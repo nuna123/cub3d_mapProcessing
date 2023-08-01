@@ -89,10 +89,10 @@ int	check_map_info(t_mapInfo *map_info)
 	{
 		if (!map_info->ceiling_rgb || !map_info->floor_rgb
 			|| !map_info->texture_paths[i])
-			return (error (map_info, "Values missing in map!\n"), ERR);
+			return (error (map_info, "Values missing in map!"), ERR);
 		fd = open (map_info->texture_paths[i], O_RDONLY);
 		if (fd < 0)
-			return (error (map_info, "Texture file not found!\n"), ERR);
+			return (error (map_info, "Texture file not found!"), ERR);
 		close (fd);
 	}
 	return (OK);

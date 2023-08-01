@@ -10,7 +10,6 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-
 #include "mapProcessing.h"
 
 void	map_info_free(t_mapInfo *map_info)

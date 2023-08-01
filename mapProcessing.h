@@ -47,7 +47,7 @@ t_mapInfo	*map_info_init(void);
 int			check_map_info(t_mapInfo *map_info);
 
 //VALUE PROCESSING
-void		textureline_fill(t_mapInfo	*map_info, char **mapline_split);
+int			textureline_fill(t_mapInfo	*map_info, char **mapline_split);
 int			rgb_fill(t_mapInfo	*map_info, char **mapline_split);
 int			get_info(t_mapInfo	*map_info, char *map_line);
 int			map_info_fill(t_mapInfo	*map_info, int map_fd);

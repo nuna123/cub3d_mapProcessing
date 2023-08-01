@@ -12,7 +12,7 @@
 
 #include "mapProcessing.h"
 
-void	textureline_fill(t_mapInfo	*map_info, char **mapline_split)
+int	textureline_fill(t_mapInfo	*map_info, char **mapline_split)
 {
 	char	*compass_str;
 	char	**compass_arr;
@@ -32,12 +32,13 @@ void	textureline_fill(t_mapInfo	*map_info, char **mapline_split)
 				free (compass_str);
 				ft_arrfree((void **) compass_arr);
 				ft_arrfree((void **) mapline_split);
-				error(map_info, "multiple map texture entries!");
+				return (error(map_info, "multiple map texture entries!"));
 			}
 		}
 	}
 	free (compass_str);
 	ft_arrfree((void **) compass_arr);
+	return (OK);
 }
 
 int	rgb_fill(t_mapInfo	*map_info, char **mapline_split)
@@ -82,7 +83,10 @@ int	get_info(t_mapInfo	*map_info, char *map_line)
 	if (ft_strlen(mapline_split[0]) == 2
 		&& !ft_strchr(mapline_split[0], '|')
 		&& ft_strnstr("NO|SO|WE|EA", mapline_split[0], 11))
-		textureline_fill(map_info, mapline_split);
+	{
+		if (textureline_fill(map_info, mapline_split) == ERR)
+			return (ERR);
+	}
 	else if (ft_strlen(mapline_split[0]) == 1
 		&& (mapline_split[0][0] == 'F' || mapline_split[0][0] == 'C'))
 	{

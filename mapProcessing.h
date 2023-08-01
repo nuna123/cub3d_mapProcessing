@@ -16,10 +16,11 @@
 # define OK 0
 # define ERR 1
 
-# define NO 0
-# define SO 1
-# define WE	2
-# define EA	3
+# define ALLOWED_MAPCHARS "NSEW10 "
+#include "Libft/libft.h"
+
+#include <stdio.h>
+#include <fcntl.h>
 
 typedef struct s_rgb
 {
@@ -34,6 +35,26 @@ typedef struct s_mapInfo
 	t_rgb	*floor_rgb;
 
 	char	**texture_paths;
+
+	char	**map;
 }	t_mapInfo;
 
+
+
+//STRUCT MANAGEMENT
+void		map_info_free(t_mapInfo *map_info);
+int			error(t_mapInfo *map_info, char *error_msg);
+t_rgb		*rgb_init(void);
+t_mapInfo	*map_info_init(void);
+
+
+//VALUE PROCESSING
+void	textureline_fill(t_mapInfo	*map_info, char **mapline_split);
+int		rgb_fill(t_mapInfo	*map_info, char **mapline_split);
+int		get_info(t_mapInfo	*map_info, char *map_line);
+int		map_info_fill(t_mapInfo	*map_info, int map_fd);
+
+//MAP PROCESSING
+int	is_map_line(char *map_line);
+int	process_map(char *map_line, t_mapInfo *map_info, int map_fd);
 #endif

@@ -11,69 +11,6 @@
 /* ************************************************************************** */
 
 #include "mapProcessing.h"
-#include "Libft/libft.h"
-
-#include <stdio.h>
-#include <fcntl.h>
-
-void	map_info_free(t_mapInfo *map_info)
-{
-	int	i;
-
-	if (!map_info)
-		return ;
-	if (map_info->ceiling_rgb)
-		free(map_info->ceiling_rgb);
-	if (map_info->floor_rgb)
-		free(map_info->floor_rgb);
-	if (map_info->texture_paths)
-	{
-		i = -1;
-		while (++i < 4)
-			if (map_info->texture_paths[i])
-				free(map_info->texture_paths[i]);
-		free (map_info->texture_paths);
-	}
-	free (map_info);
-}
-
-int	error(t_mapInfo *map_info, char *error_msg)
-{
-	map_info_free(map_info);
-	printf ("Error\n");
-	printf("%s\n", error_msg);
-	return (ERR);
-}
-
-t_rgb	*rgb_init(void)
-{
-	t_rgb	*rgb;
-
-	rgb = malloc (sizeof(t_rgb));
-	if (!rgb)
-		return (NULL);
-	rgb->red = -1;
-	rgb->green = -1;
-	rgb->blue = -1;
-	return (rgb);
-}
-
-t_mapInfo	*map_info_init(void)
-{
-	t_mapInfo	*map_info;
-	int			i;
-
-	map_info = malloc (sizeof (t_mapInfo));
-	if (!map_info)
-		error (NULL, "Memory Allocation Failed!");
-	map_info->ceiling_rgb = NULL;
-	map_info->floor_rgb = NULL;
-	map_info->texture_paths = malloc (sizeof (char *) * 5);
-	i = -1;
-	while (++i < 5)
-		map_info->texture_paths[i] = NULL;
-	return (map_info);
-}
 
 void	textureline_fill(t_mapInfo	*map_info, char **mapline_split)
 {
@@ -141,7 +78,7 @@ int	get_info(t_mapInfo	*map_info, char *map_line)
 		return (error (map_info, "Error with splitting mapline!"));
 	if (ft_arrlen((void **) mapline_split) != 2)
 		return (error ((ft_arrfree((void **) mapline_split), map_info),
-				"Invalid mapline!1"));
+				"Invalid mapline!"));
 	if (ft_strlen(mapline_split[0]) == 2
 		&& !ft_strchr(mapline_split[0], '|')
 		&& ft_strnstr("NO|SO|WE|EA", mapline_split[0], 11))
@@ -154,7 +91,7 @@ int	get_info(t_mapInfo	*map_info, char *map_line)
 	}
 	else
 		return (error ((ft_arrfree((void **) mapline_split), map_info),
-				"Invalid mapline!2"));
+				"Invalid mapline!"));
 	return (ft_arrfree((void **) mapline_split), OK);
 }
 
@@ -167,57 +104,20 @@ int	map_info_fill(t_mapInfo	*map_info, int map_fd)
 	{
 		if (ft_strncmp(map_line, "\n", 2))
 		{
-			if (!map_info->texture_paths[0] || !map_info->texture_paths[1]
-				||!map_info->texture_paths[2] || !map_info->texture_paths[3]
-				|| !map_info->ceiling_rgb || !map_info->floor_rgb)
+			if (is_map_line(map_line) == OK)
 			{
-				if (get_info(map_info, map_line) == ERR)
-				{
-					while (map_line)
-						map_line = (free(map_line), get_next_line(map_fd));
-					return (free (map_line), ERR);
-				}
+				if (process_map(map_line, map_info, map_fd) == ERR)
+					return (ERR);
+				map_line = ft_strdup(":)");
+			}
+			else if (get_info(map_info, map_line) == ERR)
+			{
+				while (map_line)
+					map_line = (free(map_line), get_next_line(map_fd));
+				return (free (map_line), ERR);
 			}
 		}
 		map_line = (free(map_line), get_next_line(map_fd));
 	}
 	return (OK);
-}
-
-int	main (int argc, char **argv)
-{
-	char		*map_path = "./map.cub";
-	int			map_fd;
-	t_mapInfo	*map_info;
-
-	if (argc > 1)
-		map_path = argv[1];
-
-
-	//Check map extension
-	if (ft_strncmp(&(map_path[ft_strlen(map_path) - ft_strlen(".cub")])
-			, ".cub", ft_strlen(".cub")) != 0)
-		return (error(NULL, "Map is not of type .cub!"));
-
-	//check that file exists
-	map_fd = open(map_path, O_RDONLY);
-	if (map_fd == -1)
-		return (error(NULL, "Map path is invalid!"));
-
-	//init map_info, fill
-	map_info = map_info_init();
-	if (!map_info)
-		return (printf("Map initialization failed!\n"), ERR);
-
-	if (map_info_fill(map_info, map_fd) == ERR)
-		return (close (map_fd), printf("Map initialization failed!\n"), ERR);
-
-
-	printf ("MAP: \n");
-	printf ("rgb: ceiling(%i,%i,%i) floor(%i,%i,%i)\n", map_info->ceiling_rgb->red, map_info->ceiling_rgb->green, map_info->ceiling_rgb->blue , map_info->floor_rgb->red, map_info->floor_rgb->green, map_info->floor_rgb->blue );
-	printf("textures: \n\t NO: %s \n\tSO: %s  \n\tWE: %s  \n\tEA: %s\n", map_info->texture_paths[0], map_info->texture_paths[1], map_info->texture_paths[2], map_info->texture_paths[3]);
-	map_info_free(map_info);
-
-	close (map_fd);
-	return 0;
 }

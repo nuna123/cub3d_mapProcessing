@@ -12,6 +12,7 @@
 
 #include "mapProcessing.h"
 
+//Functions to fill the actual map layout and check its validity
 int	is_map_line(char *map_line)
 {
 	while (*map_line && *map_line != '\n')
@@ -74,7 +75,7 @@ static int	isvalid_map(char **map)
 	return (OK);
 }
 
-int	process_map(char *map_line, t_mapInfo *map_info, int map_fd)
+int	process_map_arr(char *map_line, t_mapInfo *map_info, int map_fd)
 {
 	char	**map;
 

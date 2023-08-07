@@ -54,5 +54,5 @@ int			map_info_fill(t_mapInfo	*map_info, int map_fd);
 
 //MAP PROCESSING
 int			is_map_line(char *map_line);
-int			process_map(char *map_line, t_mapInfo *map_info, int map_fd);
+int			process_map_arr(char *map_line, t_mapInfo *map_info, int map_fd);
 #endif

@@ -12,6 +12,9 @@
 
 #include "mapProcessing.h"
 
+/*
+	frees the t_mapInfo struct
+*/
 void	map_info_free(t_mapInfo *map_info)
 {
 	int	i;
@@ -40,6 +43,10 @@ void	map_info_free(t_mapInfo *map_info)
 	free (map_info);
 }
 
+/*
+	frees MapInfo struct, prints a given [Error_msg]
+	as well as "Error\n" as defined in the instructions
+*/
 int	error(t_mapInfo *map_info, char *error_msg)
 {
 	map_info_free(map_info);
@@ -48,6 +55,9 @@ int	error(t_mapInfo *map_info, char *error_msg)
 	return (ERR);
 }
 
+/*
+	inits the t_rgb struct to all -1
+*/
 t_rgb	*rgb_init(void)
 {
 	t_rgb	*rgb;
@@ -61,6 +71,9 @@ t_rgb	*rgb_init(void)
 	return (rgb);
 }
 
+/*
+	inits the t_mapInfo struct to all nulls
+*/
 t_mapInfo	*map_info_init(void)
 {
 	t_mapInfo	*map_info;
@@ -79,6 +92,12 @@ t_mapInfo	*map_info_init(void)
 	return (map_info);
 }
 
+/*
+	Final check of t_mapInfo
+	checks that all texture paths are present and valid.
+	checks that both ceiling rgb and floor rgb are full
+
+*/
 int	check_map_info(t_mapInfo *map_info)
 {
 	int	i;

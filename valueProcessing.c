@@ -12,6 +12,7 @@
 
 #include "mapProcessing.h"
 
+/* gets called when a line defining a texture file path is found in the file. */
 int	textureline_fill(t_mapInfo	*map_info, char **mapline_split)
 {
 	char	*compass_str;
@@ -41,6 +42,10 @@ int	textureline_fill(t_mapInfo	*map_info, char **mapline_split)
 	return (OK);
 }
 
+/*
+	gets called when a line defining a rgb for
+	floor/ceiling is found in the file.
+*/
 int	rgb_fill(t_mapInfo	*map_info, char **mapline_split)
 {
 	t_rgb	*rgb;
@@ -70,6 +75,7 @@ int	rgb_fill(t_mapInfo	*map_info, char **mapline_split)
 	return (ft_arrfree((void **) rgb_arr), OK);
 }
 
+/*calls rgb_fill() or textureline_fill()*/
 int	get_info(t_mapInfo	*map_info, char *map_line)
 {
 	char	**mapline_split;
@@ -99,6 +105,7 @@ int	get_info(t_mapInfo	*map_info, char *map_line)
 	return (ft_arrfree((void **) mapline_split), OK);
 }
 
+/* processes the map array or the info fields in the map_nfo struct */
 int	map_info_fill(t_mapInfo	*map_info, int map_fd)
 {
 	char	*map_line;
@@ -110,7 +117,7 @@ int	map_info_fill(t_mapInfo	*map_info, int map_fd)
 		{
 			if (is_map_line(map_line) == OK)
 			{
-				if (process_map(map_line, map_info, map_fd) == ERR)
+				if (process_map_arr(map_line, map_info, map_fd) == ERR)
 					return (ERR);
 				map_line = ft_strdup(":)");
 			}

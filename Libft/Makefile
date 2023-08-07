@@ -24,7 +24,7 @@ SRCS =	ft_arrappend.c ft_arrfree.c ft_lstadd_front.c ft_putchar_fd.c ft_strmapi.
 		ft_isdigit.c ft_memcmp.c ft_strjoin.c \
 		ft_isprint.c ft_memcpy.c ft_strlcat.c \
 		ft_itoa.c ft_memmove.c ft_strlcpy.c \
-		ft_lstadd_back.c ft_memset.c ft_strlen.c \
+		ft_lstadd_back.c ft_memset.c ft_strlen.c ft_arrappend_void.c\
 
 FT_PRINTF_FOL = ft_printf/
 FT_PRINTF = ${addprefix ${FT_PRINTF_FOL}, libftprintf.a}

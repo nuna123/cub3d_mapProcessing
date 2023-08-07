@@ -90,5 +90,6 @@ size_t			ft_arrlen(void **s);
 void			ft_arrcpy(char **dest, char **src);
 char			**ft_arrappend(char **arr, char *to_append);
 void			ft_arrfree(void **arr);
+void			**ft_arrappend_void(void **arr, void *to_append);
 
 #endif

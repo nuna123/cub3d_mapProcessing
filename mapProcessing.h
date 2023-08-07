@@ -51,6 +51,7 @@ int			textureline_fill(t_mapInfo	*map_info, char **mapline_split);
 int			rgb_fill(t_mapInfo	*map_info, char **mapline_split);
 int			get_info(t_mapInfo	*map_info, char *map_line);
 int			map_info_fill(t_mapInfo	*map_info, int map_fd);
+int			get_map(char *map_path, t_mapInfo	*map_info); //THE ACTUAL MAIN FUNCTION
 
 //MAP PROCESSING
 int			is_map_line(char *map_line);

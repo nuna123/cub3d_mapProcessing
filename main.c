@@ -12,57 +12,70 @@
 
 #include "game.h"
 
-static void ft_hook(void* param)
+void	free_gameInfo(t_gameInfo *gi)
 {
-	const mlx_t* mlx = param;
-
-	printf("WIDTH: %d | HEIGHT: %d\n", mlx->width, mlx->height);
+	map_info_free(gi->map_info);
+	free(gi);
 }
 
-void	closeme(void	*map_info)
+
+
+
+
+void	closeme(void	*game_info)
 {
-	t_mapInfo	*mi;
-	mi = map_info;
-	map_info_free(mi);
+	t_gameInfo	*gi;
+	mlx_t		*mlx;
+
+	gi = game_info;
+	mlx = gi->mlx;
+	free_gameInfo(gi);
+	mlx_close_window(mlx);
+
+	exit(0);
 }
-void	closeme_key(mlx_key_data_t keydata, void	*map_info)
+void	closeme_key(mlx_key_data_t keydata, void	*game_info)
 {
-	t_mapInfo	*mi;
-	mi = map_info;
 	if(keydata.key == MLX_KEY_ESCAPE)
 	{
-		map_info_free(mi);
-		mlx_terminate(mlx);
-		exit(1);
+		closeme(game_info);
 	}
 
 }
 
+t_gameInfo	*init_gameInfo(char *argv[])
+{
+	t_gameInfo	*game_info;
+
+	game_info = ft_calloc(1, sizeof(t_gameInfo));
+	if (!game_info)
+		return (NULL);
+	game_info->map_info = get_map(argv[1]);
+	if (!game_info->map_info)
+		return (free(game_info), NULL);
+	game_info->mlx = mlx_init(game_info->map_info->map_width * 32,game_info->map_info->map_height * 32, "42Balls", true);
+	if (!game_info->mlx)
+		return(map_info_free(game_info->map_info), free(game_info), NULL);
+
+	return (game_info);
+}
+
 int main(int argc, char *argv[])
 {
-	char		*map_path;
-	t_mapInfo	*map_info;
-	mlx_t		*mlx;
 
-	if (argc > 1)
-		map_path = argv[1];
-	else
+	t_gameInfo	*game_info;
+
+	if (argc <= 1)
 		return (printf("Error!\nNo map path specified.\n"), 1);
-	map_info = get_map(map_path);
-	if (!map_info)
-		return (1);
-	mlx = mlx_init(map_info->map_width * 32, map_info->map_height * 32, "42Balls", true);
-	if (!mlx)
+
+	game_info = init_gameInfo(argv);
+	if (!game_info)
 		exit(-1);
 
-	// map_info_free(map_info);
+	mlx_close_hook(game_info->mlx, closeme, game_info);
+	mlx_key_hook(game_info->mlx, closeme_key, game_info);
 
-	mlx_close_hook(mlx, closeme, map_info );
-	mlx_key_hook(mlx, closeme_key, map_info);
-
-	mlx_loop(mlx);
-	mlx_terminate(mlx);
+	mlx_loop(game_info->mlx);
+	mlx_terminate(game_info->mlx);
 	return (EXIT_SUCCESS);
-
-	return (0);
 }

@@ -21,4 +21,11 @@
 #include "./MLX42/include/MLX42/MLX42.h"
 
 
+
+typedef struct s_gameInfo
+{
+	mlx_t	*mlx;
+	t_mapInfo	*map_info;
+} t_gameInfo;
+
 #endif

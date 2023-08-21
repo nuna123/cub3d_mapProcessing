@@ -51,8 +51,6 @@ char	*ft_strtrim(char const *s1, char const *set)
 	if (!s1)
 		return (NULL);
 	reduced_strlen = spec_strlen((char *)s1, (char *)set);
-	if (!reduced_strlen)
-		return (NULL);
 	substr = ft_calloc(reduced_strlen + 1, sizeof(char));
 	if (!substr)
 		return (NULL);

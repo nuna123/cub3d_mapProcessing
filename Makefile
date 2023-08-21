@@ -1,39 +1,30 @@
+NAME		=	new_game
+SRC			=	*.c
 
-NAME = map_processing.a
+LIBS_FOL	=	map_processing/ Libft/ MLX42/
+LIBS		=	${LIBS_FOL:/=/*.a}
 
-SRCS = map_processing.c	struct_management.c	valueProcessing.c
 
-OBJ_FOL = ./objs/
-OBJS = ${addprefix ${OBJ_FOL}, ${SRCS:.c=.o}}
+CC			=	cc -ldl -lglfw -pthread -lm -fsanitize=address -g
 
-CC_FLGS = -Wall -Wextra -Werror
-CC = cc ${CC_FLGS}
 
-####################################################################
-####################################################################
-NRM_COLOR = \033[0;39m
+all: ${NAME}
 
-GREEN = \033[0;92m
-YELLOW = \033[0;93m
-####################################################################
-####################################################################
+MLX42/%.a:
+	cmake MLX42 -B MLX42
+	make -C MLX42
 
-all:${NAME}
+Libft/%.a :
+	make -C Libft
 
-${OBJ_FOL}%.o : %.c
-	@ mkdir -p ${OBJ_FOL}
-	@ ${CC} -c $^ -o $@
+map_processing/%.a :
+	make -C map_processing
 
-${NAME}: ${OBJS}
-	ar -crs ${NAME} ${OBJS}
-	@ echo "${GREEN}${NAME} created!${NRM_COLOR}"
+${NAME}: ${SRC} ${LIBS}
+	${CC} ${SRC} ${LIBS} -o ${NAME}
+
 
 clean:
-	rm -rf ${OBJ_FOL}
-
-fclean: clean
 	rm -rf ${NAME}
 
-re: fclean all
-
-.PHONY: re fclean clean all
+re: clean all

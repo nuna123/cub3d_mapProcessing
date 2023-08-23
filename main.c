@@ -85,13 +85,47 @@ void	player_rotate(t_gameInfo *gi, int orientation)
 
 void	change_x_y(int x, int y, t_gameInfo *gi)
 {
-	int player_x = ((gi->player->x + x) / gi->image_size) + 1;
-	int player_y = ((gi->player->y + y) / gi->image_size) + 1;
+int player_x = ((gi->player->x + x) / gi->image_size);
+	int player_y = ((gi->player->y + y) / gi->image_size);
 
-	// printf("INIT x: %i, y: %i\n", gi->player->x, player_);
+	if (x < 0) //if x coors will change //moving to right of character, right of the box needs to be checked
+		player_x += 1;
+	if (y < 0)
+		player_y += 1;
+
+
+
 	printf("x: %i, y: %i\n", player_x, player_y);
 
-	if (gi->map_info->map[player_y][player_x] != '0')
+	if (gi->map_info->map[player_y][player_x + 1] != '0')
+	{
+		printf("BUMP WALL\n");
+/* 		mlx_image_to_window(gi->mlx, gi->bckg_image, gi->player->x, gi->player->y);
+		gi->player->x += gi->image_size - (player_x - gi->player->x);
+		gi->player->y += gi->image_size - (player_y - gi->player->y);
+		mlx_image_to_window(gi->mlx, gi->player_image, gi->player->x, gi->player->y); */
+	}
+	else
+	{
+		mlx_image_to_window(gi->mlx, gi->bckg_image, gi->player->x, gi->player->y);
+		gi->player->x += x;
+		gi->player->y += y;
+		mlx_image_to_window(gi->mlx, gi->player_image, gi->player->x, gi->player->y);
+	}
+}
+/*
+void	change_x_y(int x, int y, t_gameInfo *gi)
+{
+	int player_x = ((gi->player->x + x) / gi->image_size);
+	int player_y = ((gi->player->y + y) / gi->image_size);
+
+	printf("x: %i, y: %i\n", player_x, player_y);
+
+	if (player_x < (int) ft_strlen(gi->map_info->map[player_y])
+		&&( gi->map_info->map[player_y][player_x + 1] != '0'
+		|| gi->map_info->map[player_y][player_x] != '0'
+		|| gi->map_info->map[player_y + 1][player_x + 1] != '0'
+		|| gi->map_info->map[player_y + 1][player_x] != '0'))
 		printf("BUMP WALL\n");
 	else
 	{
@@ -101,10 +135,10 @@ void	change_x_y(int x, int y, t_gameInfo *gi)
 		mlx_image_to_window(gi->mlx, gi->player_image, gi->player->x, gi->player->y);
 	}
 }
+ */
 
 
-
-void	player_move(t_gameInfo *gi, int direction)
+void	player_move(t_gameInfo *gi, int direction) // 1 = UP; 0 = DOWN
 {
 	if (direction == 0)
 		direction = -10;
@@ -112,14 +146,14 @@ void	player_move(t_gameInfo *gi, int direction)
 		direction = 10;
 
 
-	if (gi->player->orientation >= 270 + 45  || gi->player->orientation <= 90 - 45)
+	if (gi->player->orientation > 270 || gi->player->orientation < 90) // In the north section
 		change_x_y(0, direction * -1, gi);
-	else if(gi->player->orientation >= 90 + 45 && gi->player->orientation <= 270 - 45)
+	else if(gi->player->orientation > 90 && gi->player->orientation < 270) // In the South section
 		change_x_y(0, direction, gi);
 
-	if (gi->player->orientation >= 180 + 45  && gi->player->orientation <= 360 - 45)
+	if (gi->player->orientation > 180  && gi->player->orientation < 360) // In the West Section
 		change_x_y(direction * -1, 0, gi);
-	else if(gi->player->orientation >= 0 + 45 && gi->player->orientation <= 180 - 45)
+	else if(gi->player->orientation > 0 && gi->player->orientation < 180) // In the East Section
 		change_x_y(direction, 0, gi);
 }
 
@@ -221,7 +255,6 @@ t_gameInfo	*init_gameInfo(char *argv[])
 
 int main(int argc, char *argv[])
 {
-
 	t_gameInfo	*game_info;
 
 	if (argc <= 1)

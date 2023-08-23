@@ -3,7 +3,7 @@
 
 # Relative path conversion top directories.
 set(CMAKE_RELATIVE_PATH_TOP_SOURCE "/nfs/homes/nroth/Documents/NewGame/MLX42")
-set(CMAKE_RELATIVE_PATH_TOP_BINARY "/nfs/homes/nroth/Documents/NewGame/MLX42")
+set(CMAKE_RELATIVE_PATH_TOP_BINARY "/nfs/homes/nroth/Documents/cub3d_mapProcessing/MLX42")
 
 # Force unix paths in dependencies.
 set(CMAKE_FORCE_UNIX_PATHS 1)

@@ -32,6 +32,8 @@ static int	isvalid_firstline(char *line)
 	{
 		if (*line != '1' && *line != ' ')
 			return (ERR);
+		if (*line == ' ')
+			*line = '1';
 		line++;
 	}
 	return (OK);
@@ -39,6 +41,8 @@ static int	isvalid_firstline(char *line)
 
 static int	isvalid_midline(char *line)
 {
+	while (line && *line == ' ')
+		*(line++) = '1';
 	if (!line || *line != '1')
 		return (ERR);
 	while (*line)
@@ -92,7 +96,7 @@ int	process_map_arr(char *map_line, t_mapInfo *map_info, int map_fd)
 	if (isvalid_map(map) == ERR)
 	{
 		ft_arrfree((void **) map);
-		return (error (map_info, "Invalid Map!\n"), ERR);
+		return (error (NULL, "Invalid Map!\n"), ERR);
 	}
 	map_info->map = map;
 	return (OK);

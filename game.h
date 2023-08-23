@@ -22,10 +22,30 @@
 
 
 
+typedef struct s_player
+{
+	int	x; // top left corner's x position
+	int	y; // top left corner's y position
+
+	int	orientation; // where is it facing
+
+
+} t_player;
+
 typedef struct s_gameInfo
 {
 	mlx_t	*mlx;
 	t_mapInfo	*map_info;
+
+	mlx_image_t	*bckg_image;
+	mlx_image_t	*wall_image;
+	mlx_image_t	*player_image;
+
+	t_player	*player;
+
+	int	image_size;
+
+
 } t_gameInfo;
 
 #endif

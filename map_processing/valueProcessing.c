@@ -146,10 +146,8 @@ t_mapInfo	*get_map(char *map_path)
 	if (map_fd == -1)
 		return (error(NULL, "Map path is invalid!"), NULL);
 	map_info = map_info_init();
-	if (!map_info)
-		return (error(map_info, "Map initialization failed!"), NULL);
-	if (map_info_fill(map_info, map_fd) == ERR)
-		return (error(map_info, "Map initialization failed!"), NULL);
+	if (!map_info || map_info_fill(map_info, map_fd) == ERR)
+		return (printf("Map initialization failed!\n"), NULL);
 
 	return (close (map_fd), map_info);
 }

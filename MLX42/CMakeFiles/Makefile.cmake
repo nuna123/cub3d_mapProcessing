@@ -7,11 +7,11 @@ set(CMAKE_DEPENDS_GENERATOR "Unix Makefiles")
 # The top level Makefile was generated from the following files:
 set(CMAKE_MAKEFILE_DEPENDS
   "CMakeCache.txt"
+  "/nfs/homes/nroth/Documents/NewGame/MLX42/CMakeLists.txt"
+  "/nfs/homes/nroth/Documents/NewGame/MLX42/cmake/Findglfw3.cmake"
   "CMakeFiles/3.22.1/CMakeCCompiler.cmake"
   "CMakeFiles/3.22.1/CMakeCXXCompiler.cmake"
   "CMakeFiles/3.22.1/CMakeSystem.cmake"
-  "CMakeLists.txt"
-  "cmake/Findglfw3.cmake"
   "/usr/share/cmake-3.22/Modules/CMakeCInformation.cmake"
   "/usr/share/cmake-3.22/Modules/CMakeCXXInformation.cmake"
   "/usr/share/cmake-3.22/Modules/CMakeCommonLanguageInclude.cmake"

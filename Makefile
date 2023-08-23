@@ -26,5 +26,6 @@ ${NAME}: ${SRC} ${LIBS}
 
 clean:
 	rm -rf ${NAME}
+	rm -rf ${LIBS}
 
 re: clean all

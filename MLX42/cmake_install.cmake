@@ -55,7 +55,7 @@ if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib" TYPE STATIC_LIBRARY FILES "/nfs/homes/nroth/Documents/NewGame/MLX42/libmlx42.a")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib" TYPE STATIC_LIBRARY FILES "/nfs/homes/nroth/Documents/cub3d_mapProcessing/MLX42/libmlx42.a")
 endif()
 
 if(CMAKE_INSTALL_COMPONENT)
@@ -66,5 +66,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "/nfs/homes/nroth/Documents/NewGame/MLX42/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "/nfs/homes/nroth/Documents/cub3d_mapProcessing/MLX42/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")

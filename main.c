@@ -82,7 +82,7 @@ void	player_rotate(t_gameInfo *gi, int orientation)
 
 	printf("PLAYER DIRECTION {%i}\n", gi->player->orientation);
 }
-
+/*
 void	change_x_y(int x, int y, t_gameInfo *gi)
 {
 int player_x = ((gi->player->x + x) / gi->image_size);
@@ -100,10 +100,10 @@ int player_x = ((gi->player->x + x) / gi->image_size);
 	if (gi->map_info->map[player_y][player_x + 1] != '0')
 	{
 		printf("BUMP WALL\n");
-/* 		mlx_image_to_window(gi->mlx, gi->bckg_image, gi->player->x, gi->player->y);
-		gi->player->x += gi->image_size - (player_x - gi->player->x);
-		gi->player->y += gi->image_size - (player_y - gi->player->y);
-		mlx_image_to_window(gi->mlx, gi->player_image, gi->player->x, gi->player->y); */
+// 		mlx_image_to_window(gi->mlx, gi->bckg_image, gi->player->x, gi->player->y);/
+//		gi->player->x += gi->image_size - (player_x - gi->player->x);
+//		gi->player->y += gi->image_size - (player_y - gi->player->y);
+//		mlx_image_to_window(gi->mlx, gi->player_image, gi->player->x, gi->player->y);
 	}
 	else
 	{
@@ -113,8 +113,62 @@ int player_x = ((gi->player->x + x) / gi->image_size);
 		mlx_image_to_window(gi->mlx, gi->player_image, gi->player->x, gi->player->y);
 	}
 }
-/*
-void	change_x_y(int x, int y, t_gameInfo *gi)
+ */
+
+
+int	change_x_y(int x, int y, t_gameInfo *gi)
+{
+	if ( !x && !y)
+		return ERR;
+	int player_x = ((gi->player->x + x) / gi->image_size);
+	int player_y = ((gi->player->y + y) / gi->image_size);
+
+	printf("x: %i, y: %i, img_size: %i\n", player_x, player_y, gi->image_size);
+
+		if (player_x < (int) ft_strlen(gi->map_info->map[player_y])
+		&&( gi->map_info->map[player_y][player_x + 1] != '0'
+		|| gi->map_info->map[player_y][player_x] != '0'
+		|| gi->map_info->map[player_y + 1][player_x + 1] != '0'
+		|| gi->map_info->map[player_y + 1][player_x] != '0'))
+		{
+			if (gi->map_info->map[player_y][player_x] != '0')
+				printf("BUMP WALL - top left\n");
+			if (gi->map_info->map[player_y + 1][player_x] != '0')
+				printf("BUMP WALL - bottom left\n");
+			if (gi->map_info->map[player_y][player_x + 1] != '0')
+				printf("BUMP WALL - top right\n");
+			if (gi->map_info->map[player_y + 1][player_x + 1] != '0')
+				printf("BUMP WALL - bottom right\n");
+			printf (" xy %i, %i\n", x, y);
+
+			player_x = 0;
+			player_y = 0;
+			if (x < 0)
+				player_x = x + 1;
+			if (x > 0)
+				player_x = x + 1;
+			if (y < 0)
+				player_y = y + 1;
+			if (y > 0)
+				player_y = y + 1;
+
+			change_x_y(player_x, player_y, gi);
+			return ERR;
+
+		}
+		else
+		{
+			mlx_image_to_window(gi->mlx, gi->bckg_image, gi->player->x, gi->player->y);
+			gi->player->x += x;
+			gi->player->y += y;
+			mlx_image_to_window(gi->mlx, gi->player_image, gi->player->x, gi->player->y);
+			return OK;
+		}
+
+		return ERR;
+}
+
+/* void	change_x_y(int x, int y, t_gameInfo *gi)
 {
 	int player_x = ((gi->player->x + x) / gi->image_size);
 	int player_y = ((gi->player->y + y) / gi->image_size);
@@ -134,8 +188,8 @@ void	change_x_y(int x, int y, t_gameInfo *gi)
 		gi->player->y += y;
 		mlx_image_to_window(gi->mlx, gi->player_image, gi->player->x, gi->player->y);
 	}
-}
- */
+} */
+
 
 
 void	player_move(t_gameInfo *gi, int direction) // 1 = UP; 0 = DOWN

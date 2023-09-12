@@ -121,57 +121,22 @@ int	change_x_y(int x, int y, t_gameInfo *gi)
 	if ( !x && !y )
 		return ERR;
 
-	int player_x1 = (gi->player->x + x);
-	int player_y1 = (gi->player->y + y);
-/* 	int player_x2 = player_x1 + gi->image_size;
-	int player_y2 = player_y1 + gi->image_size; */
+	int player_x = ((gi->player->x + x) / gi->image_size);
+	int player_y = ((gi->player->y + y) / gi->image_size);;
 
-	while (x && y)
+	int counter = -3;
+	while (++counter < 3)
 	{
-		x -= x;
-		y -= y;
+		if (gi->map_info->map[player_y + (i > 0)][player_x + (i && !(i%2))] != '0')
+			return (printf("WALL\n"), ERR);
 	}
 
+	mlx_image_to_window(gi->mlx, gi->bckg_image, gi->player->x, gi->player->y);
+	gi->player->x += x;
+	gi->player->y += y;
+	mlx_image_to_window(gi->mlx, gi->player_image, gi->player->x, gi->player->y);
+	return OK;
 
-
-
-
-	printf("x: %i, y: %i, img_size: %i\n", player_x1, player_y1, gi->image_size);
-
-		if (player_x1 < (int) ft_strlen(gi->map_info->map[player_y1])
-		&&( gi->map_info->map[player_y1][player_x2] != '0'
-		|| gi->map_info->map[player_y1][player_x1] != '0'
-		|| gi->map_info->map[player_y2][player_x2] != '0'
-		|| gi->map_info->map[player_y2][player_x1] != '0'))
-		{
-			if (gi->map_info->map[player_y1][player_x1] != '0')
-				printf("BUMP WALL - top left\n");
-			if (gi->map_info->map[player_y2][player_x1] != '0')
-				printf("BUMP WALL - bottom left\n");
-			if (gi->map_info->map[player_y1][player_x2] != '0')
-				printf("BUMP WALL - top right\n");
-			if (gi->map_info->map[player_y2][player_x2] != '0')
-				printf("BUMP WALL - bottom right\n");
-			printf (" xy %i, %i\n", x, y);
-
-			player_x1 = x + ((x <= 0) - 1) + (x < 0);
-			player_y1 = y + ((y <= 0) - 1) + (y < 0);
-
-
-			change_x_y(player_x1,player_y1, gi);
-			return ERR;
-
-		}
-		else
-		{
-			mlx_image_to_window(gi->mlx, gi->bckg_image, gi->player->x, gi->player->y);
-			gi->player->x += x;
-			gi->player->y += y;
-			mlx_image_to_window(gi->mlx, gi->player_image, gi->player->x, gi->player->y);
-			return OK;
-		}
-
-		return ERR;
 }
 /*
 int	change_x_y(int x, int y, t_gameInfo *gi)
@@ -218,9 +183,6 @@ int	change_x_y(int x, int y, t_gameInfo *gi)
 
 		return ERR;
 } */
-
-
-
 
 
 void	player_move(t_gameInfo *gi, int direction) // 1 = UP; 0 = DOWN

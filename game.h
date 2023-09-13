@@ -44,6 +44,7 @@ typedef struct s_gameInfo
 	t_player	*player;
 
 	int	image_size;
+	int	player_size;
 
 
 } t_gameInfo;

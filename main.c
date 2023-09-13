@@ -15,6 +15,8 @@
 #define WIDTH 1500
 #define HEIGHT 840
 
+#define PLAYER_SIZE 32
+
 void	print_screen (t_gameInfo *game_info)
 {
 	for (int x = 0; x < game_info->map_info->map_height; x++)
@@ -25,7 +27,7 @@ void	print_screen (t_gameInfo *game_info)
 			if (line[i] == '1')
 				mlx_image_to_window(game_info->mlx, game_info->wall_image, i * game_info->image_size, x * game_info->image_size);
 			else if (line[i] == 'P')
-				line[i] = '0';
+				line[i--] = '0';
 			else
 				mlx_image_to_window(game_info->mlx, game_info->bckg_image, i * game_info->image_size, x * game_info->image_size);
 		}
@@ -43,14 +45,12 @@ int	get_image_size (t_mapInfo *mi)
 	return (mi->map_width); */
 }
 
-mlx_image_t	*make_color_image(t_gameInfo *gi, uint32_t color)
+mlx_image_t	*make_color_image(t_gameInfo *gi, int size, uint32_t color)
 {
 	mlx_image_t	*new_image;
-	int			size;
 	int			counter;
 	int			counter2;
 
-	size = get_image_size(gi->map_info);
 	new_image = mlx_new_image(gi->mlx, size, size);
 	counter = -1;
 	while (++counter < size)
@@ -117,10 +117,16 @@ int player_x = ((gi->player->x + x) / gi->image_size);
 
 void update_player ( t_gameInfo *gi, int x, int y)
 {
-	mlx_image_to_window(gi->mlx, gi->bckg_image, gi->player->x, gi->player->y);
+	static mlx_image_t *temp;
+
+	if (!temp)
+		temp = make_color_image(gi, gi->player_size, 0x000000FF);
+	mlx_image_to_window(gi->mlx, temp, gi->player->x, gi->player->y);
+
 	gi->player->x += x;
 	gi->player->y += y;
 	mlx_image_to_window(gi->mlx, gi->player_image, gi->player->x, gi->player->y);
+	// mlx_delete_image (gi->mlx, temp);
 }
 
 
@@ -129,18 +135,23 @@ int	change_x_y(int x, int y, t_gameInfo *gi)
 	if ( !x && !y )
 		return ERR;
 
-	int player_x = ((gi->player->x + x) / gi->image_size);
-	int player_y = ((gi->player->y + y) / gi->image_size);;
+	int player_x;
+	int player_y;
 
 	int i = -3;
 	while (++i < 3)
 	{
-		if (gi->map_info->map[player_y + (i > 0)][player_x + (i && !(i%2))] != '0')
+		player_x = ((gi->player->x + x) + ((i > 0) * gi->player_size));
+		player_y = ((gi->player->y + y) + ((i && !(i%2)) * gi->player_size));
+		if (player_x % gi->image_size != 0 || player_y % gi->image_size != 0)
 		{
-			player_x = x + ((x <= 0) - 1) + (x < 0);
-			player_y = y + ((y <= 0) - 1) + (y < 0);
-			change_x_y(player_x,player_y, gi);
-			return (ERR);
+			if (gi->map_info->map[player_y / gi->image_size][player_x/ gi->image_size] != '0')
+			{
+				player_x = x + ((x <= 0) - 1) + (x < 0);
+				player_y = y + ((y <= 0) - 1) + (y < 0);
+				change_x_y(player_x,player_y, gi);
+				return (ERR);
+			}
 		}
 	}
 	update_player (gi, x, y);
@@ -243,7 +254,7 @@ void	key_hooker(mlx_key_data_t keydata, void	*game_info)
 	}
 }
 
-t_player	*get_player(t_mapInfo *mapInfo)
+t_player	*get_player(t_gameInfo *gi)
 {
 	int			x;
 	int			y;
@@ -251,26 +262,26 @@ t_player	*get_player(t_mapInfo *mapInfo)
 
 	player = ft_calloc(1, sizeof(t_player));
 	if (!player)
-		return NULL;
+		return (NULL);
 	y = -1;
-	while (++y < mapInfo->map_height)
+	while (++y < gi->map_info->map_height)
 	{
 		x = -1;
-		while (mapInfo->map[y][++x])
+		while (gi->map_info->map[y][++x])
 		{
-			if (ft_strchr("NSWE", mapInfo->map[y][x]))
+			if (ft_strchr("NSWE", gi->map_info->map[y][x]))
 			{
-				player->x = x * get_image_size(mapInfo);
-				player->y = y * get_image_size(mapInfo);
-				if (mapInfo->map[y][x] == 'N')
+				player->x = (x * gi->image_size);
+				player->y = (y * gi->image_size);
+				if (gi->map_info->map[y][x] == 'N')
 					player->orientation = 0;
-				else if (mapInfo->map[y][x] == 'S')
+				else if (gi->map_info->map[y][x] == 'S')
 					player->orientation = 180;
-				else if (mapInfo->map[y][x] == 'E')
+				else if (gi->map_info->map[y][x] == 'E')
 					player->orientation = 90;
-				else if (mapInfo->map[y][x] == 'W')
+				else if (gi->map_info->map[y][x] == 'W')
 					player->orientation = 270;
-				mapInfo->map[y][x] = 'P';
+				gi->map_info->map[y][x] = 'P';
 				return (player);
 			}
 		}
@@ -293,17 +304,18 @@ t_gameInfo	*init_gameInfo(char *argv[])
 	if (!game_info->mlx)
 		return(map_info_free(game_info->map_info), free(game_info), NULL);
 
-	game_info->player = get_player(game_info->map_info);
+
+
+	game_info->image_size = get_image_size(game_info->map_info);
+	game_info->player_size = game_info->image_size * .5;
+
+	game_info->player = get_player(game_info);
 	if (!game_info->player)
 		return(map_info_free(game_info->map_info), free(game_info), NULL);
 
-
-	game_info->bckg_image = make_color_image(game_info, 0x000000FF);
-	game_info->wall_image = make_color_image(game_info, 0xFFFFFFFF);
-	game_info->player_image = make_color_image(game_info, 0xFF0000FF);
-
-	game_info->image_size = get_image_size(game_info->map_info);
-
+	game_info->bckg_image = make_color_image(game_info,game_info->image_size, 0x000000FF);
+	game_info->wall_image = make_color_image(game_info, game_info->image_size, 0xFFFFFFFF);
+	game_info->player_image = make_color_image(game_info, game_info->player_size, 0xFF0000FF);
 
 	return (game_info);
 }
@@ -320,14 +332,14 @@ int main(int argc, char *argv[])
 		exit(-1);
 
 	int size = get_image_size(game_info->map_info);
-	printf ("Map width: %i\nMap height: %i\nimage size: %i\n",
-		game_info->map_info->map_width,
-		game_info->map_info->map_height,
-		game_info->image_size);
-	printf ("\nplayer x: %i\nplayer y: %i\norientation: %i\n",
-		game_info->player->x,
-		game_info->player->y,
-		game_info->player->orientation);
+	// printf ("Map width: %i\nMap height: %i\nimage size: %i\n",
+	// 	game_info->map_info->map_width,
+	// 	game_info->map_info->map_height,
+	// 	game_info->image_size);
+	// printf ("\nplayer x: %i\nplayer y: %i\norientation: %i\n",
+	// 	game_info->player->x,
+	// 	game_info->player->y,
+	// 	game_info->player->orientation);
 
 
 	print_screen(game_info);

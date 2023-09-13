@@ -115,6 +115,14 @@ int player_x = ((gi->player->x + x) / gi->image_size);
 }
  */
 
+void update_player ( t_gameInfo *gi, int x, int y)
+{
+	mlx_image_to_window(gi->mlx, gi->bckg_image, gi->player->x, gi->player->y);
+	gi->player->x += x;
+	gi->player->y += y;
+	mlx_image_to_window(gi->mlx, gi->player_image, gi->player->x, gi->player->y);
+}
+
 
 int	change_x_y(int x, int y, t_gameInfo *gi)
 {
@@ -124,19 +132,19 @@ int	change_x_y(int x, int y, t_gameInfo *gi)
 	int player_x = ((gi->player->x + x) / gi->image_size);
 	int player_y = ((gi->player->y + y) / gi->image_size);;
 
-	int counter = -3;
-	while (++counter < 3)
+	int i = -3;
+	while (++i < 3)
 	{
 		if (gi->map_info->map[player_y + (i > 0)][player_x + (i && !(i%2))] != '0')
-			return (printf("WALL\n"), ERR);
+		{
+			player_x = x + ((x <= 0) - 1) + (x < 0);
+			player_y = y + ((y <= 0) - 1) + (y < 0);
+			change_x_y(player_x,player_y, gi);
+			return (ERR);
+		}
 	}
-
-	mlx_image_to_window(gi->mlx, gi->bckg_image, gi->player->x, gi->player->y);
-	gi->player->x += x;
-	gi->player->y += y;
-	mlx_image_to_window(gi->mlx, gi->player_image, gi->player->x, gi->player->y);
+	update_player (gi, x, y);
 	return OK;
-
 }
 /*
 int	change_x_y(int x, int y, t_gameInfo *gi)

@@ -15,7 +15,8 @@
 #define WIDTH 1500
 #define HEIGHT 840
 
-#define PLAYER_SIZE 32
+#define PLAYER_PATH "./textures/droog.xpm42"
+
 
 void	print_screen (t_gameInfo *game_info)
 {
@@ -119,6 +120,7 @@ void update_player ( t_gameInfo *gi, int x, int y)
 {
 	static mlx_image_t *temp;
 
+
 	if (!temp)
 		temp = make_color_image(gi, gi->player_size, 0x000000FF);
 	mlx_image_to_window(gi->mlx, temp, gi->player->x, gi->player->y);
@@ -128,7 +130,6 @@ void update_player ( t_gameInfo *gi, int x, int y)
 	mlx_image_to_window(gi->mlx, gi->player_image, gi->player->x, gi->player->y);
 	// mlx_delete_image (gi->mlx, temp);
 }
-
 
 int	change_x_y(int x, int y, t_gameInfo *gi)
 {
@@ -157,52 +158,6 @@ int	change_x_y(int x, int y, t_gameInfo *gi)
 	update_player (gi, x, y);
 	return OK;
 }
-/*
-int	change_x_y(int x, int y, t_gameInfo *gi)
-{
-	if ( !x && !y)
-		return ERR;
-	int player_x = ((gi->player->x + x) / gi->image_size);
-	int player_y = ((gi->player->y + y) / gi->image_size);
-
-	printf("x: %i, y: %i, img_size: %i\n", player_x, player_y, gi->image_size);
-
-		if (player_x < (int) ft_strlen(gi->map_info->map[player_y])
-		&&( gi->map_info->map[player_y][player_x + 1] != '0'
-		|| gi->map_info->map[player_y][player_x] != '0'
-		|| gi->map_info->map[player_y + 1][player_x + 1] != '0'
-		|| gi->map_info->map[player_y + 1][player_x] != '0'))
-		{
-			if (gi->map_info->map[player_y][player_x] != '0')
-				printf("BUMP WALL - top left\n");
-			if (gi->map_info->map[player_y + 1][player_x] != '0')
-				printf("BUMP WALL - bottom left\n");
-			if (gi->map_info->map[player_y][player_x + 1] != '0')
-				printf("BUMP WALL - top right\n");
-			if (gi->map_info->map[player_y + 1][player_x + 1] != '0')
-				printf("BUMP WALL - bottom right\n");
-			printf (" xy %i, %i\n", x, y);
-
-			player_x = x + ((x <= 0) - 1) + (x < 0);
-			player_y = y + ((y <= 0) - 1) + (y < 0);
-
-
-			change_x_y(player_x,player_y, gi);
-			return ERR;
-
-		}
-		else
-		{
-			mlx_image_to_window(gi->mlx, gi->bckg_image, gi->player->x, gi->player->y);
-			gi->player->x += x;
-			gi->player->y += y;
-			mlx_image_to_window(gi->mlx, gi->player_image, gi->player->x, gi->player->y);
-			return OK;
-		}
-
-		return ERR;
-} */
-
 
 void	player_move(t_gameInfo *gi, int direction) // 1 = UP; 0 = DOWN
 {
@@ -315,6 +270,8 @@ t_gameInfo	*init_gameInfo(char *argv[])
 
 	game_info->bckg_image = make_color_image(game_info,game_info->image_size, 0x000000FF);
 	game_info->wall_image = make_color_image(game_info, game_info->image_size, 0xFFFFFFFF);
+
+
 	game_info->player_image = make_color_image(game_info, game_info->player_size, 0xFF0000FF);
 
 	return (game_info);

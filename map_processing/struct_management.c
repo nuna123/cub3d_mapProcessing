@@ -21,7 +21,6 @@ void	map_info_free(t_mapInfo *map_info)
 
 	if (map_info == NULL)
 		return ;
-
 	if (map_info->ceiling_rgb)
 		free(map_info->ceiling_rgb);
 	if (map_info->floor_rgb)
@@ -30,20 +29,17 @@ void	map_info_free(t_mapInfo *map_info)
 	{
 		i = -1;
 		while (++i < 4)
+		{
 			if (map_info->texture_paths[i])
-			{
-				free(map_info->texture_paths[i]);
-				map_info->texture_paths[i] = NULL;
-			}
-
+				map_info->texture_paths[i] = (free(map_info->texture_paths[i]),
+						NULL);
+		}
 		free (map_info->texture_paths);
 	}
 	if (map_info->map)
 	{
-		i = -1;
-		while (map_info->map[++i])
-			free(map_info->map[i]);
-		free (map_info->map);
+		printf("HERE\n");
+		ft_arrfree((void **) map_info->map);
 	}
 	free (map_info);
 }

@@ -16,8 +16,7 @@
 #define HEIGHT 840
 
 #define PLAYER_PATH "./textures/droog.xpm42"
-
-
+/*
 void	print_screen (t_gameInfo *game_info)
 {
 	for (int x = 0; x < game_info->map_info->map_height; x++)
@@ -26,24 +25,24 @@ void	print_screen (t_gameInfo *game_info)
 		for (int i = 0; line[i]; i++)
 		{
 			if (line[i] == '1')
-				mlx_image_to_window(game_info->mlx, game_info->wall_image, i * game_info->image_size, x * game_info->image_size);
+				mlx_image_to_window(game_info->mlx, game_info->wall_image,
+					i * game_info->image_size, x * game_info->image_size);
 			else if (line[i] == 'P')
 				line[i--] = '0';
 			else
-				mlx_image_to_window(game_info->mlx, game_info->bckg_image, i * game_info->image_size, x * game_info->image_size);
+				mlx_image_to_window(game_info->mlx, game_info->bckg_image,
+					i * game_info->image_size, x * game_info->image_size);
 		}
 	}
-	mlx_image_to_window(game_info->mlx, game_info->player_image, game_info->player->x, game_info->player->y);
+	mlx_image_to_window(game_info->mlx, game_info->player_image,
+		game_info->player->x, game_info->player->y);
 }
-
-int	get_image_size (t_mapInfo *mi)
+ */
+int	get_image_size(t_mapInfo *mi)
 {
- 	if (WIDTH / mi->map_width < HEIGHT / mi->map_height)
+	if (WIDTH / mi->map_width < HEIGHT / mi->map_height)
 		return (WIDTH / mi->map_width);
 	return (HEIGHT / mi->map_height);
-/* 	if (mi->map_height < mi->map_width)
-		return (mi->map_height);
-	return (mi->map_width); */
 }
 
 mlx_image_t	*make_color_image(t_gameInfo *gi, int size, uint32_t color)
@@ -63,7 +62,7 @@ mlx_image_t	*make_color_image(t_gameInfo *gi, int size, uint32_t color)
 	return (new_image);
 }
 
-void	free_gameInfo(t_gameInfo *gi)
+void	free_game_info(t_gameInfo *gi)
 {
 	free(gi->player);
 	map_info_free(gi->map_info);
@@ -80,101 +79,67 @@ void	player_rotate(t_gameInfo *gi, int orientation)
 		gi->player->orientation = (360 + gi->player->orientation + 45) % 360;
 	else
 		gi->player->orientation = (360 + gi->player->orientation - 45) % 360;
-
 	printf("PLAYER DIRECTION {%i}\n", gi->player->orientation);
 }
-/*
-void	change_x_y(int x, int y, t_gameInfo *gi)
+
+void	update_player(t_gameInfo *gi, int x, int y)
 {
-int player_x = ((gi->player->x + x) / gi->image_size);
-	int player_y = ((gi->player->y + y) / gi->image_size);
-
-	if (x < 0) //if x coors will change //moving to right of character, right of the box needs to be checked
-		player_x += 1;
-	if (y < 0)
-		player_y += 1;
-
-
-
-	printf("x: %i, y: %i\n", player_x, player_y);
-
-	if (gi->map_info->map[player_y][player_x + 1] != '0')
-	{
-		printf("BUMP WALL\n");
-// 		mlx_image_to_window(gi->mlx, gi->bckg_image, gi->player->x, gi->player->y);/
-//		gi->player->x += gi->image_size - (player_x - gi->player->x);
-//		gi->player->y += gi->image_size - (player_y - gi->player->y);
-//		mlx_image_to_window(gi->mlx, gi->player_image, gi->player->x, gi->player->y);
-	}
-	else
-	{
-		mlx_image_to_window(gi->mlx, gi->bckg_image, gi->player->x, gi->player->y);
-		gi->player->x += x;
-		gi->player->y += y;
-		mlx_image_to_window(gi->mlx, gi->player_image, gi->player->x, gi->player->y);
-	}
-}
- */
-
-void update_player ( t_gameInfo *gi, int x, int y)
-{
-	static mlx_image_t *temp;
-
+	static mlx_image_t	*temp;
 
 	if (!temp)
 		temp = make_color_image(gi, gi->player_size, 0x000000FF);
 	mlx_image_to_window(gi->mlx, temp, gi->player->x, gi->player->y);
-
 	gi->player->x += x;
 	gi->player->y += y;
-	mlx_image_to_window(gi->mlx, gi->player_image, gi->player->x, gi->player->y);
-	// mlx_delete_image (gi->mlx, temp);
+	mlx_image_to_window(gi->mlx, gi->player_image,
+		gi->player->x, gi->player->y);
 }
+	// mlx_delete_image (gi->mlx, temp);
 
 int	change_x_y(int x, int y, t_gameInfo *gi)
 {
-	if ( !x && !y )
-		return ERR;
+	int	player_x;
+	int	player_y;
+	int	i;
 
-	int player_x;
-	int player_y;
-
-	int i = -3;
+	if (!x && !y)
+		return (ERR);
+	i = -3;
 	while (++i < 3)
 	{
 		player_x = ((gi->player->x + x) + ((i > 0) * gi->player_size));
-		player_y = ((gi->player->y + y) + ((i && !(i%2)) * gi->player_size));
+		player_y = ((gi->player->y + y) + ((i && !(i % 2)) * gi->player_size));
 		if (player_x % gi->image_size != 0 || player_y % gi->image_size != 0)
 		{
-			if (gi->map_info->map[player_y / gi->image_size][player_x/ gi->image_size] != '0')
+			if (gi->map_info->map[player_y / gi->image_size]
+				[player_x / gi->image_size] != '0')
 			{
 				player_x = x + ((x <= 0) - 1) + (x < 0);
 				player_y = y + ((y <= 0) - 1) + (y < 0);
-				change_x_y(player_x,player_y, gi);
+				change_x_y(player_x, player_y, gi);
 				return (ERR);
 			}
 		}
 	}
 	update_player (gi, x, y);
-	return OK;
+	return (OK);
 }
 
-void	player_move(t_gameInfo *gi, int direction) // 1 = UP; 0 = DOWN
+// 1 = UP; 0 = DOWN
+// if statements define the N, S, WE and EA areas in order
+void	player_move(t_gameInfo *gi, int direction)
 {
 	if (direction == 0)
 		direction = -10;
 	else
 		direction = 10;
-
-
-	if (gi->player->orientation > 270 || gi->player->orientation < 90) // In the north section
+	if (gi->player->orientation > 270 || gi->player->orientation < 90)
 		change_x_y(0, direction * -1, gi);
-	else if(gi->player->orientation > 90 && gi->player->orientation < 270) // In the South section
+	else if (gi->player->orientation > 90 && gi->player->orientation < 270)
 		change_x_y(0, direction, gi);
-
-	if (gi->player->orientation > 180  && gi->player->orientation < 360) // In the West Section
+	if (gi->player->orientation > 180 && gi->player->orientation < 360)
 		change_x_y(direction * -1, 0, gi);
-	else if(gi->player->orientation > 0 && gi->player->orientation < 180) // In the East Section
+	else if (gi->player->orientation > 0 && gi->player->orientation < 180)
 		change_x_y(direction, 0, gi);
 }
 
@@ -185,20 +150,18 @@ void	closeme(void	*game_info)
 
 	gi = game_info;
 	mlx = gi->mlx;
-	free_gameInfo(gi);
+	free_game_info(gi);
 	mlx_close_window(mlx);
-
 	exit(0);
 }
+
+//	MLX_KEY_RIGHT			= 262
+// 	MLX_KEY_LEFT			= 263
+// 	MLX_KEY_DOWN			= 264
+// 	MLX_KEY_UP				= 265
 void	key_hooker(mlx_key_data_t keydata, void	*game_info)
 {
-
-	//	MLX_KEY_RIGHT			= 262
-	// 	MLX_KEY_LEFT			= 263
-	// 	MLX_KEY_DOWN			= 264
-	// 	MLX_KEY_UP				= 265
-
-	if(keydata.key == MLX_KEY_ESCAPE)
+	if (keydata.key == MLX_KEY_ESCAPE)
 		closeme(game_info);
 	else if (keydata.action)
 	{
@@ -208,6 +171,10 @@ void	key_hooker(mlx_key_data_t keydata, void	*game_info)
 			player_move((t_gameInfo *) game_info, keydata.key - MLX_KEY_DOWN);
 	}
 }
+
+
+
+
 
 t_player	*get_player(t_gameInfo *gi)
 {
@@ -236,8 +203,7 @@ t_player	*get_player(t_gameInfo *gi)
 					player->orientation = 90;
 				else if (gi->map_info->map[y][x] == 'W')
 					player->orientation = 270;
-				gi->map_info->map[y][x] = 'P';
-				return (player);
+				return (gi->map_info->map[y][x] = '0', player);
 			}
 		}
 	}

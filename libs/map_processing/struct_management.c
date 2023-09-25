@@ -37,10 +37,7 @@ void	map_info_free(t_mapInfo *map_info)
 		free (map_info->texture_paths);
 	}
 	if (map_info->map)
-	{
-		printf("HERE\n");
 		ft_arrfree((void **) map_info->map);
-	}
 	free (map_info);
 }
 

@@ -17,7 +17,7 @@
 # define ERR 1
 
 # define ALLOWED_MAPCHARS "NSEW10 "
-# include "../Libft/libft.h"
+# include "libft.h"
 
 # include <stdio.h>
 # include <fcntl.h>

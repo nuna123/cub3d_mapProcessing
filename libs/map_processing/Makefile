@@ -6,7 +6,7 @@ SRCS = map_processing.c	struct_management.c	valueProcessing.c
 OBJ_FOL = ./objs/
 OBJS = ${addprefix ${OBJ_FOL}, ${SRCS:.c=.o}}
 
-CC_FLGS = -Wall -Wextra -Werror
+CC_FLGS = -Wall -Wextra -Werror -fsanitize=address -g
 CC = cc ${CC_FLGS}
 
 ####################################################################

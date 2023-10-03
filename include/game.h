@@ -44,8 +44,8 @@ typedef struct s_gameInfo
 	mlx_image_t	*bckg_image;
 	mlx_image_t	*wall_image;
 	mlx_image_t	*player_image;
-	
-	mlx_image_t	*screen_image;
+
+	// mlx_image_t	*screen_image;
 
 	t_player	*player;
 

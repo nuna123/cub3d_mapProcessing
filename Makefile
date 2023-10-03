@@ -17,7 +17,7 @@ MLX_LIB	= ${addprefix ${MLX_BUILD_PATH}, libmlx42.a}
 LIBS_FOL	=	${MAP_PROC_PATH} ${LIBFT_PATH}
 LIBS		=	${LIBS_FOL:/=/*.a} ${MLX_LIB}
 
-CC			=	cc -ldl -lglfw -pthread -lm -fsanitize=address -g
+CC			=	cc -ldl -lglfw -pthread -lm -fsanitize=address -g -Wall -Werror -Wextra
 
 ###################################################################
 GREEN='\033[32m'

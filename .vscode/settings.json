@@ -2,6 +2,7 @@
 	"cmake.configureOnOpen": false,
 	"files.associations": {
 		"game.h": "c",
-		"mlx42.h": "c"
+		"mlx42.h": "c",
+		"mapprocessing.h": "c"
 	}
 }

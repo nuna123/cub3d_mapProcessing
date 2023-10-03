@@ -21,6 +21,7 @@
 
 # include <stdio.h>
 # include <fcntl.h>
+# include <stdint.h>
 
 typedef struct s_rgb
 {
@@ -31,23 +32,23 @@ typedef struct s_rgb
 
 typedef struct s_mapInfo
 {
-	int		map_width;
-	int		map_height;
+	int			map_width;
+	int			map_height;
 
-	t_rgb	*ceiling_rgb;
-	t_rgb	*floor_rgb;
+	uint32_t	ceiling_color;
+	uint32_t	floor_color;
 
-	char	**texture_paths;
+	char		**texture_paths;
 
-	char	**map;
+	char		**map;
 }	t_mapInfo;
 
 //STRUCT MANAGEMENT
 void		map_info_free(t_mapInfo *map_info);
 int			error(t_mapInfo *map_info, char *error_msg);
-t_rgb		*rgb_init(void);
 t_mapInfo	*map_info_init(void);
 int			check_map_info(t_mapInfo *map_info);
+uint32_t	rgb_to_hex(char **rgb_arr);
 
 //VALUE PROCESSING
 int			textureline_fill(t_mapInfo	*map_info, char **mapline_split);

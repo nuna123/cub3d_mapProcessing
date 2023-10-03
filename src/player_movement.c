@@ -18,8 +18,8 @@ char	coors_in_map(t_gameInfo *gi, int x, int y)
 	if (x < 0 || y < 0 || x > WIDTH || y > WIDTH)
 		return (0);
 	return (gi->map_info->map
-			[y / gi->image_size]
-			[x / gi->image_size]);
+		[y / gi->image_size]
+		[x / gi->image_size]);
 }
 
 static void	update_player(t_gameInfo *gi, int x, int y)
@@ -56,7 +56,6 @@ static int	change_x_y(int x, int y, t_gameInfo *gi)
 	update_player (gi, x, y);
 	return (OK);
 }
-
 
 void	player_rotate(t_gameInfo *gi, int orientation)
 {

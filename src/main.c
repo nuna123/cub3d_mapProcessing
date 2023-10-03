@@ -14,13 +14,15 @@
 
 # define PI 3.14159265
 
-double deg_to_rad(int deg)
+float deg_to_rad(int deg)
 {
 	return (deg * (PI / 180));
 }
 
 ///TODO
 	// change display function to create a image and display it each time
+	// deg to radians
+	// rgb to hex
 
 
 //ASSUMING ROTATION IS 270 -> 90. facing upwards
@@ -29,7 +31,7 @@ void init_dot(t_gameInfo *gi)
 	int	x_coor;
 	int	y_coor;
 
-	double a, b, c;
+	float a, b, c;
 
 	// first loop to offset to bloc size (gi->image_size)
 	x_coor = gi->player->x;
@@ -57,7 +59,7 @@ void init_dot(t_gameInfo *gi)
 
 	if (!test)
 		return ;
-	
+
 } */
 
 
@@ -82,19 +84,24 @@ void	print_screen(t_gameInfo *game_info)
 	}
 	mlx_image_to_window(game_info->mlx, game_info->player_image,
 		game_info->player->x, game_info->player->y);
-	
-	init_dot(game_info);
+
+	// init_dot(game_info);
 }
+
 
 int	main(int argc, char *argv[])
 {
 	t_gameInfo	*game_info;
+
+
+
 
 	if (argc <= 1)
 		return (printf("Error!\nNo map path specified.\n"), 1);
 	game_info = init_game_info(argv);
 	if (!game_info)
 		exit(-1);
+
 
 	// create_screen_image(game_info);
 

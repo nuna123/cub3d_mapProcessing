@@ -21,10 +21,6 @@ void	map_info_free(t_mapInfo *map_info)
 
 	if (map_info == NULL)
 		return ;
-	if (map_info->ceiling_rgb)
-		free(map_info->ceiling_rgb);
-	if (map_info->floor_rgb)
-		free(map_info->floor_rgb);
 	if (map_info->texture_paths)
 	{
 		i = -1;
@@ -53,20 +49,24 @@ int	error(t_mapInfo *map_info, char *error_msg)
 	return (ERR);
 }
 
-/*
-	inits the t_rgb struct to all -1
-*/
-t_rgb	*rgb_init(void)
+uint32_t	rgb_to_hex(char **rgb_arr)
 {
-	t_rgb	*rgb;
+	uint32_t	hex;
+	int			counter;
 
-	rgb = malloc (sizeof(t_rgb));
-	if (!rgb)
-		return (NULL);
-	rgb->red = -1;
-	rgb->green = -1;
-	rgb->blue = -1;
-	return (rgb);
+	counter = -1;
+	while (rgb_arr[++counter])
+	{
+		if (ft_atoi(rgb_arr[counter]) < 0
+			|| ft_atoi(rgb_arr[counter]) > 255)
+			return (0);
+	}
+	hex = 0;
+	hex += ft_atoi(rgb_arr[0]) << 24;
+	hex += ft_atoi(rgb_arr[1]) << 16;
+	hex += ft_atoi(rgb_arr[2]) << 8;
+	hex += 255;
+	return (hex);
 }
 
 /*
@@ -83,8 +83,8 @@ t_mapInfo	*map_info_init(void)
 	map_info->map_height = 0;
 	map_info->map_width = 0;
 	map_info->map = NULL;
-	map_info->ceiling_rgb = NULL;
-	map_info->floor_rgb = NULL;
+	map_info->ceiling_color = 0;
+	map_info->floor_color = 0;
 	map_info->texture_paths = malloc (sizeof (char *) * 5);
 	i = -1;
 	while (++i < 5)
@@ -106,7 +106,7 @@ int	check_map_info(t_mapInfo *map_info)
 	i = -1;
 	while (++i < 4)
 	{
-		if (!map_info->ceiling_rgb || !map_info->floor_rgb
+		if (!map_info->map || !map_info->ceiling_color || !map_info->floor_color
 			|| !map_info->texture_paths[i])
 			return (error (map_info, "Values missing in map!"), ERR);
 		fd = open (map_info->texture_paths[i], O_RDONLY);

@@ -24,27 +24,14 @@ static mlx_image_t	*make_color_image(t_gameInfo *gi, int size, uint32_t color)
 	mlx_image_t	*new_image;
 	int			counter;
 	int			counter2;
-	int c = 0;
 
 	new_image = mlx_new_image(gi->mlx, size, size);
 	counter = -1;
-
-	printf("%i - %i -%i\n",new_image->width, new_image->height, new_image->width * new_image->height );
-
 	while (++counter < size)
 	{
 		counter2 = -1;
 		while (++counter2 < size)
-		{
 			mlx_put_pixel(new_image, counter2, counter, color);
-
-			while (++c > (new_image->width * new_image->height * (sizeof(int32_t) / sizeof(int8_t))));
-				printf(" - %i\n", c);
-			/* printf("%i\t", new_image->pixels[counter * new_image->width + counter2]);
-
-			if ((counter * new_image->width + counter2 + 1) % 4 == 0)
-				printf(" - %i\n", c++); */
-		}
 	}
 	return (new_image);
 }
@@ -78,16 +65,11 @@ t_gameInfo	*init_game_info(char *argv[])
 	game_info->player = get_player(game_info);
 	if (!game_info->player)
 		return (map_info_free(game_info->map_info), free(game_info), NULL);
-/* 	game_info->bckg_image = make_color_image(game_info, game_info->image_size,
+	game_info->bckg_image = make_color_image(game_info, game_info->image_size,
 			0x000000FF);
 	game_info->wall_image = make_color_image(game_info, game_info->image_size,
-			0xFFFFFFFF); */
+			0xFFFFFFFF);
 	game_info->player_image = make_color_image(game_info,
 			game_info->player_size, 0xFF0000FF);
-
-	mlx_delete_image(game_info->mlx, game_info->player_image);
-
-
-	return (map_info_free(game_info->map_info), free(game_info), NULL);
-	// return (game_info);
+	return (game_info);
 }

@@ -48,29 +48,25 @@ int	textureline_fill(t_mapInfo	*map_info, char **mapline_split)
 */
 int	rgb_fill(t_mapInfo	*map_info, char **mapline_split)
 {
-	t_rgb	*rgb;
-	char	**rgb_arr;
+	uint32_t	color;
+	char		**rgb_arr;
 
-	rgb = rgb_init();
 	rgb_arr = ft_split(mapline_split[1], ',');
 	if (ft_arrlen((void **)rgb_arr) != 3)
 		return (ft_arrfree((void **) mapline_split),
 			ft_arrfree((void **) rgb_arr),
 			error (map_info, "Invalid F/C line!"));
-	rgb->red = ft_atoi(rgb_arr[0]);
-	rgb->green = ft_atoi(rgb_arr[1]);
-	rgb->blue = ft_atoi(rgb_arr[2]);
-	if (rgb->red < 0 || rgb->red > 255 || rgb->green < 0
-		|| rgb->green > 255 || rgb->blue < 0 || rgb->blue > 255)
-		return (ft_arrfree((void **) mapline_split), free (rgb),
+	color = rgb_to_hex(rgb_arr);
+	if (!color)
+		return (ft_arrfree((void **) mapline_split),
 			ft_arrfree((void **) rgb_arr),
 			error (map_info, "Invalid F/C line!"));
-	if ((mapline_split[0][0] == 'F' && !map_info->floor_rgb))
-		map_info->floor_rgb = rgb;
-	else if (mapline_split[0][0] == 'C' && !map_info->ceiling_rgb)
-		map_info->ceiling_rgb = rgb;
+	if ((mapline_split[0][0] == 'F' && !map_info->floor_color))
+		map_info->floor_color = color;
+	else if (mapline_split[0][0] == 'C' && !map_info->ceiling_color)
+		map_info->ceiling_color = color;
 	else
-		return (free(rgb), error ((ft_arrfree((void **) mapline_split),
+		return (error ((ft_arrfree((void **) mapline_split),
 					map_info), "Duplicate F/C lines!"));
 	return (ft_arrfree((void **) rgb_arr), OK);
 }

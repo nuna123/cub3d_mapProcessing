@@ -12,6 +12,16 @@
 
 #include "game.h"
 
+// returns the map char at position (x, y)
+char	coors_in_map(t_gameInfo *gi, int x, int y)
+{
+	if (x < 0 || y < 0 || x > WIDTH || y > WIDTH)
+		return (0);
+	return (gi->map_info->map
+			[y / gi->image_size]
+			[x / gi->image_size]);
+}
+
 static void	update_player(t_gameInfo *gi, int x, int y)
 {
 	gi->player->x += x;
@@ -34,8 +44,7 @@ static int	change_x_y(int x, int y, t_gameInfo *gi)
 		player_y = ((gi->player->y + y) + ((i && !(i % 2)) * gi->player_size));
 		if (player_x % gi->image_size != 0 || player_y % gi->image_size != 0)
 		{
-			if (gi->map_info->map[player_y / gi->image_size]
-				[player_x / gi->image_size] != '0')
+			if (coors_in_map(gi, player_x, player_y) != '0')
 			{
 				player_x = x + ((x <= 0) - 1) + (x < 0);
 				player_y = y + ((y <= 0) - 1) + (y < 0);
@@ -47,6 +56,7 @@ static int	change_x_y(int x, int y, t_gameInfo *gi)
 	update_player (gi, x, y);
 	return (OK);
 }
+
 
 void	player_rotate(t_gameInfo *gi, int orientation)
 {

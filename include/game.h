@@ -14,6 +14,7 @@
 #define GAME_H
 
 #include <stdio.h>
+#include <math.h>
 
 
 #include "libft.h"
@@ -43,6 +44,8 @@ typedef struct s_gameInfo
 	mlx_image_t	*bckg_image;
 	mlx_image_t	*wall_image;
 	mlx_image_t	*player_image;
+	
+	mlx_image_t	*screen_image;
 
 	t_player	*player;
 
@@ -67,6 +70,7 @@ t_player	*get_player(t_gameInfo *gi);
 //PLAYER_MOVEMENT
 	// static void	update_player(t_gameInfo *gi, int x, int y);
 	// static int	change_x_y(int x, int y, t_gameInfo *gi);
+char	coors_in_map(t_gameInfo *gi, int x, int y);
 void		player_rotate(t_gameInfo *gi, int orientation);
 void		player_move(t_gameInfo *gi, int direction);
 

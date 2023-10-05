@@ -47,25 +47,84 @@ void init_dot(t_gameInfo *gi)
 
 }
 
+uint32_t get(uint8_t * texture_pixels)
+{
+	uint32_t res  = 0;
+	res += texture_pixels[0] << 24;
+	res += texture_pixels[1] << 16;
+	res += texture_pixels[2] << 8;
+	res += texture_pixels[3];
+
+	return res;
+}
+
+void print_texture(mlx_image_t *img, mlx_texture_t *texture, int coor_x, int coor_y)
+{
+
+	int pixel;
+	for (uint32_t y = 0; y < texture->height; y++)
+	{
+		for (uint32_t x = 0; x < texture->width; x++)
+		{
+			pixel = y * texture->height + x;
+			pixel *=4;
+/* 			printf("height: %i width: %i ; %i\n", texture->height,texture->width, pixel);
+			printf("IMGheight: %i width: %i ; %i\n",img->height,img->width, pixel);
+ */
+			mlx_put_pixel(img, coor_x + x , coor_y + y, get(&texture->pixels[pixel]));
+			// mlx_put_pixel(gi->screen_image, coor_x + x , coor_y + y, texture->pixels[pixel]);
+		}
+	}
+}
 
 
 
-/* void	create_screen_image(t_gameInfo	*gi)
+mlx_image_t	*create_screen_image(t_gameInfo	*gi)
 {
 	mlx_image_t	*test;
 
-	test = mlx_new_image(gi->mlx, 2, 2);
-	memset(img->pixels, 255, img->width * img->height * sizeof(int32_t));
+	test = mlx_new_image(gi->mlx, WIDTH, HEIGHT);
+	ft_memset(test->pixels, 255, test->width * test->height * sizeof(int32_t));
+
+
+
+	print_texture(test, gi->player_texture, 0, 0);
+/* 	for(int y = 0; gi->map_info->map[y]; y++)
+	{
+		for(int x= 0; gi->map_info->map[y][x]; x++)
+		{
+			if (gi->map_info->map[y][x] == '1')
+				print_texture(test, gi->wall_texture, x, y);
+			else if (gi->map_info->map[y][x] == '0')
+				print_texture(test, gi->bckg_texture, x, y);
+		}
+
+	} */
+
+
+
 
 	if (!test)
-		return ;
+		return NULL;
+	return test;
 
-} */
+}
 
 
 void	print_screen(t_gameInfo *game_info)
 {
-	mlx_image_to_window(game_info->mlx, game_info->screen_image,
+	mlx_image_t *img;
+	img = create_screen_image(game_info);
+	if (!img)
+	{
+		printf("ERR printscreen\n");
+		return;
+
+	}
+	mlx_delete_image(game_info->mlx, game_info->screen_image);
+	game_info->screen_image = img;
+printf("here\n");
+	mlx_image_to_window(game_info->mlx, img,
 		0, 0);
 }
 

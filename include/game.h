@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   game.h                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nroth <marvin@42.fr>                       +#+  +:+       +#+        */
+/*   By: ymorozov <ymorozov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/21 17:11:15 by nroth             #+#    #+#             */
-/*   Updated: 2023/08/21 17:11:16 by nroth            ###   ########.fr       */
+/*   Updated: 2023/10/05 16:08:39 by ymorozov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,8 +22,8 @@
 #include "MLX42.h"
 
 
-#define WIDTH 1500
-#define HEIGHT 840
+#define WIDTH 1600
+#define HEIGHT 864
 #define TEXTURE_SIZE 32
 
 

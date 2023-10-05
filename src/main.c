@@ -63,9 +63,13 @@ void init_dot(t_gameInfo *gi)
 } */
 
 
-
-
 void	print_screen(t_gameInfo *game_info)
+{
+	mlx_image_to_window(game_info->mlx, game_info->screen_image,
+		0, 0);
+}
+
+/* void	print_screen(t_gameInfo *game_info)
 {
 	for (int x = 0; x < game_info->map_info->map_height; x++)
 	{
@@ -85,9 +89,8 @@ void	print_screen(t_gameInfo *game_info)
 	mlx_image_to_window(game_info->mlx, game_info->player_image,
 		game_info->player->x, game_info->player->y);
 
-	// init_dot(game_info);
 }
-
+ */
 
 int	main(int argc, char *argv[])
 {

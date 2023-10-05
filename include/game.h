@@ -24,6 +24,10 @@
 
 #define WIDTH 1500
 #define HEIGHT 840
+#define TEXTURE_SIZE 32
+
+
+
 #define PLAYER_PATH "../textures/droog.xpm42"
 
 typedef struct s_player
@@ -41,11 +45,11 @@ typedef struct s_gameInfo
 	mlx_t	*mlx;
 	t_mapInfo	*map_info;
 
-	mlx_image_t	*bckg_image;
-	mlx_image_t	*wall_image;
-	mlx_image_t	*player_image;
+	mlx_texture_t	*bckg_texture;
+	mlx_texture_t	*wall_texture;
+	mlx_texture_t	*player_texture;
 
-	// mlx_image_t	*screen_image;
+	mlx_image_t	*screen_image;
 
 	t_player	*player;
 

@@ -16,29 +16,14 @@ static void error(void)
 	puts(mlx_strerror(mlx_errno));
 	exit(EXIT_FAILURE);
 }
-static int	get_image_size(t_mapInfo *mi)
+
+/* static int	get_image_size(t_mapInfo *mi)
 {
 	if (WIDTH / mi->map_width < HEIGHT / mi->map_height)
 		return (WIDTH / mi->map_width);
 	return (HEIGHT / mi->map_height);
-}
-
-/* static mlx_image_t	*make_color_image(t_gameInfo *gi, int size, uint32_t color)
-{
-	mlx_image_t	*new_image;
-	int			counter;
-	int			counter2;
-
-	new_image = mlx_new_image(gi->mlx, size, size);
-	counter = -1;
-	while (++counter < size)
-	{
-		counter2 = -1;
-		while (++counter2 < size)
-			mlx_put_pixel(new_image, counter2, counter, color);
-	}
-	return (new_image);
 } */
+
 
 void	free_game_info(t_gameInfo *gi)
 {
@@ -66,8 +51,9 @@ t_gameInfo	*init_game_info(char *argv[])
 	game_info->mlx = mlx_init(WIDTH, HEIGHT, "blah", true);
 	if (!game_info->mlx)
 		return (map_info_free(game_info->map_info), free(game_info), NULL);
-	game_info->image_size = get_image_size(game_info->map_info);
-	game_info->player_size = game_info->image_size * .5;
+	// game_info->image_size = get_image_size(game_info->map_info);
+	game_info->image_size = TEXTURE_SIZE;
+	game_info->player_size = PLAYER_SIZE;
 	game_info->player = get_player(game_info);
 	if (!game_info->player)
 		return (map_info_free(game_info->map_info), free(game_info), NULL);
@@ -76,7 +62,7 @@ t_gameInfo	*init_game_info(char *argv[])
 	game_info->bckg_texture = mlx_load_png("./textures/white32x32.png");
 
 	game_info->wall_texture = mlx_load_png("./textures/black32x32.png");
-	game_info->player_texture = mlx_load_png("./textures/red32x32.png");
+	game_info->player_texture = mlx_load_png("./textures/player16x16.png");
 
 	game_info->screen_image = mlx_new_image(game_info->mlx,
 		TEXTURE_SIZE * game_info->map_info->map_width,

@@ -15,12 +15,11 @@
 // returns the map char at position (x, y)
 char	coors_in_map(t_gameInfo *gi, int x, int y)
 {
-	// if (x < 0 || y < 0 || x > WIDTH || y > WIDTH)
 	if (x < 0 || y < 0 || x > WIDTH || y > HEIGHT)
 		return (0);
 	return (gi->map_info->map
-		[y / gi->image_size]
-		[x / gi->image_size]);
+		[y / TEXTURE_SIZE]
+		[x / TEXTURE_SIZE]);
 }
 
 static void	update_player(t_gameInfo *gi, int x, int y)
@@ -41,21 +40,8 @@ static int	change_x_y(int x, int y, t_gameInfo *gi)
 	i = -3;
 	while (++i < 3)
 	{
-		printf(" x = %d, y = %d, gi->image_size=%d\n", x, y, gi->image_size);
-		printf("old player_x = %d, player_y = %d\n", player_x, player_y);
 		player_x = ((gi->player->x + x) + ((i > 0) * gi->player_size));
 		player_y = ((gi->player->y + y) + ((i && !(i % 2)) * gi->player_size));
-		printf("new player_x = %d, player_y = %d\n", player_x, player_y);
-		/* if (player_x % gi->image_size != 0 || player_y % gi->image_size != 0)
-		{
-			if (coors_in_map(gi, player_x, player_y) != '0')
-			{
-				player_x = x + ((x <= 0) - 1) + (x < 0);
-				player_y = y + ((y <= 0) - 1) + (y < 0);
-				change_x_y(player_x, player_y, gi);
-				return (ERR);
-			}
-		} */
 		if (player_x % TEXTURE_SIZE != 0 || player_y % TEXTURE_SIZE != 0)
 		{
 			if (coors_in_map(gi, player_x, player_y) != '0')
@@ -77,7 +63,7 @@ void	player_rotate(t_gameInfo *gi, int orientation)
 		gi->player->orientation = (360 + gi->player->orientation + 45) % 360;
 	else
 		gi->player->orientation = (360 + gi->player->orientation - 45) % 360;
-	printf("PLAYER DIRECTION {%i}\n", gi->player->orientation);
+	printf("player direction : %i°\n",gi->player->orientation);
 }
 
 // 1 = UP; 0 = DOWN

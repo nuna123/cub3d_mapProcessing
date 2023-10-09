@@ -34,9 +34,8 @@ static t_player	*player_setup(t_gameInfo *gi, char *dir_c, int x, int y)
 	player = ft_calloc(1, sizeof(t_player));
 	if (!player)
 		return (NULL);
-	// printf("x = %d, y = %d\n", x, y);
-	player->x = x/* (x * gi->image_size) */;
-	player->y = y/* (y * gi->image_size) */;
+	player->x = x	* gi->image_size;
+	player->y = y	* gi->image_size;
 	if (*dir_c == 'N')
 		player->orientation = 0;
 	else

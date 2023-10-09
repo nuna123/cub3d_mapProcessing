@@ -24,7 +24,9 @@
 
 #define WIDTH 1600
 #define HEIGHT 864
+
 #define TEXTURE_SIZE 32
+#define PLAYER_SIZE 16
 
 
 

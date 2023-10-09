@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   player_funcs.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ymorozov <ymorozov@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yuliamorozova <yuliamorozova@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/25 13:25:50 by nroth             #+#    #+#             */
-/*   Updated: 2023/10/05 16:29:55 by ymorozov         ###   ########.fr       */
+/*   Updated: 2023/10/09 15:55:07 by yuliamorozo      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,8 +34,8 @@ static t_player	*player_setup(t_gameInfo *gi, char *dir_c, int x, int y)
 	player = ft_calloc(1, sizeof(t_player));
 	if (!player)
 		return (NULL);
-	player->x = x	* gi->image_size;
-	player->y = y	* gi->image_size;
+	player->x = x * gi->image_size;
+	player->y = y * gi->image_size;
 	if (*dir_c == 'N')
 		player->orientation = 0;
 	else

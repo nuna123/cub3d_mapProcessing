@@ -45,19 +45,19 @@ typedef struct s_mapInfo
 
 //STRUCT MANAGEMENT
 void		map_info_free(t_mapInfo *map_info);
-int			error(t_mapInfo *map_info, char *error_msg);
+/* int			error(t_mapInfo *map_info, char *error_msg);
 t_mapInfo	*map_info_init(void);
 int			check_map_info(t_mapInfo *map_info);
-uint32_t	rgb_to_hex(char **rgb_arr);
+uint32_t	rgb_to_hex(char **rgb_arr); */
 
 //VALUE PROCESSING
-int			textureline_fill(t_mapInfo	*map_info, char **mapline_split);
+/* int			textureline_fill(t_mapInfo	*map_info, char **mapline_split);
 int			rgb_fill(t_mapInfo	*map_info, char **mapline_split);
 int			get_info(t_mapInfo	*map_info, char *map_line);
-int			map_info_fill(t_mapInfo	*map_info, int map_fd);
+int			map_info_fill(t_mapInfo	*map_info, int map_fd); */
 t_mapInfo	*get_map(char *map_path); //THE ACTUAL MAIN FUNCTION
 
 //MAP PROCESSING
-int			is_map_line(char *map_line);
-int			process_map_arr(char *map_line, t_mapInfo *map_info, int map_fd);
+// int			is_map_line(char *map_line);
+// int			process_map_arr(char *map_line, t_mapInfo *map_info, int map_fd);
 #endif

@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   mapProcessing.c                                    :+:      :+:    :+:   */
+/*   valueProcessing.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nroth <marvin@42.fr>                       +#+  +:+       +#+        */
+/*   By: ymorozov <ymorozov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/01 13:08:32 by nroth             #+#    #+#             */
-/*   Updated: 2023/08/01 13:08:34 by nroth            ###   ########.fr       */
+/*   Updated: 2023/10/06 13:09:38 by ymorozov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -143,6 +143,10 @@ t_mapInfo	*get_map(char *map_path)
 		return (error(NULL, "Map path is invalid!"), NULL);
 	map_info = map_info_init();
 	if (!map_info || map_info_fill(map_info, map_fd) == ERR)
-		return (printf("Map initialization failed!\n"), NULL);
+	{
+		if (map_info)
+			map_info_free(map_info);
+		return (close (map_fd), printf("Map initialization failed!\n"), NULL);
+	}
 	return (close (map_fd), map_info);
 }

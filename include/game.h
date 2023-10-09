@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   game.h                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nroth <marvin@42.fr>                       +#+  +:+       +#+        */
+/*   By: ymorozov <ymorozov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/21 17:11:15 by nroth             #+#    #+#             */
-/*   Updated: 2023/08/21 17:11:16 by nroth            ###   ########.fr       */
+/*   Updated: 2023/10/05 16:08:39 by ymorozov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,8 +22,14 @@
 #include "MLX42.h"
 
 
-#define WIDTH 1500
-#define HEIGHT 840
+#define WIDTH 1600
+#define HEIGHT 864
+
+#define TEXTURE_SIZE 32
+#define PLAYER_SIZE 16
+
+
+
 #define PLAYER_PATH "../textures/droog.xpm42"
 
 typedef struct s_player
@@ -41,11 +47,11 @@ typedef struct s_gameInfo
 	mlx_t	*mlx;
 	t_mapInfo	*map_info;
 
-	mlx_image_t	*bckg_image;
-	mlx_image_t	*wall_image;
-	mlx_image_t	*player_image;
+	mlx_texture_t	*bckg_texture;
+	mlx_texture_t	*wall_texture;
+	mlx_texture_t	*player_texture;
 
-	// mlx_image_t	*screen_image;
+	mlx_image_t	*screen_image;
 
 	t_player	*player;
 

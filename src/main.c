@@ -11,9 +11,18 @@
 /* ************************************************************************** */
 
 #include "game.h"
+#include <math.h>
+
+// #define PI 3.141592
+
+double deg_to_rad(double deg)
+{
+	return(deg * (M_PI / 180));
+}
 
 ///TODO
-	// deg to radians
+	// regulate map to width - pad with 1s
+	// deg to radians ?
 
 uint32_t	get(uint8_t *texture_pixels)
 {
@@ -35,9 +44,9 @@ void	print_texture(mlx_image_t *img, mlx_texture_t *texture,
 	uint32_t	y;
 
 	y = -1;
-	x = -1;
 	while (++y < texture->height)
 	{
+		x = -1;
 		while (++x < texture->width)
 		{
 			pixel = (y * texture->height + x) * 4;
@@ -47,20 +56,45 @@ void	print_texture(mlx_image_t *img, mlx_texture_t *texture,
 	}
 }
 
+mlx_image_t	*print_bcg(t_gameInfo	*gi)
+{
+	mlx_image_t	*test;
+	int			x;
+	int			y;
+
+	test = mlx_new_image(gi->mlx, WIDTH, HEIGHT);
+	if (!test)
+		return (NULL);
+	y = -1;
+	while (++y < HEIGHT / 2 + 1)
+	{
+		x = -1;
+		while (++x < WIDTH)
+			mlx_put_pixel(test, x, y, gi->map_info->ceiling_color);
+	}
+	y--;
+	while (++y < HEIGHT)
+	{
+		x = -1;
+		while (++x < WIDTH)
+			mlx_put_pixel(test, x, y, gi->map_info->floor_color);
+	}
+	return (test);
+}
+
 mlx_image_t	*create_screen_image(t_gameInfo	*gi)
 {
 	mlx_image_t	*test;
 	int			x;
 	int			y;
 
-	x = -1;
 	y = -1;
-	test = mlx_new_image(gi->mlx, WIDTH, HEIGHT);
+	test = print_bcg(gi);
 	if (!test)
 		return (NULL);
-	ft_memset(test->pixels, 255, test->width * test->height * sizeof(int32_t));
 	while (gi->map_info->map[++y])
 	{
+		x = -1;
 		while (gi->map_info->map[y][++x])
 		{
 			if (gi->map_info->map[y][x] == '1')
@@ -74,6 +108,17 @@ mlx_image_t	*create_screen_image(t_gameInfo	*gi)
 	print_texture(test, gi->player_texture, gi->player->x, gi->player->y);
 	return (test);
 }
+
+/* void draw_dot(t_gameInfo	*gi, double angle, int dis)
+{
+	int dot_x;
+	int dot_y;
+
+	dot_y = gi->player->y + dis;
+
+} */
+
+
 
 void	print_screen(t_gameInfo *game_info)
 {

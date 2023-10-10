@@ -40,4 +40,6 @@ void	key_hooker(mlx_key_data_t keydata, void	*game_info)
 		else if (keydata.key == MLX_KEY_UP || keydata.key == MLX_KEY_DOWN)
 			player_move((t_gameInfo *) game_info, keydata.key - MLX_KEY_DOWN);
 	}
+	// draw_dot((t_gameInfo *) game_info, (double) ((t_gameInfo *)game_info)->player->orientation, 3);
+
 }

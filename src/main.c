@@ -114,15 +114,11 @@ void draw_dot(t_gameInfo	*gi, double angle, int dis)
 	double dot_x;
 	double dot_y;
 
-	dot_y = gi->player->y + dis;
-	dot_x = gi->player->x + tan(deg_to_rad(angle)) * dis;
+	dot_x = (gi->player->x + PLAYER_SIZE/2) + (dis * cos(deg_to_rad(angle)));
+	dot_y = (gi->player->y + PLAYER_SIZE/2) - (dis * sin(deg_to_rad(angle)));
 
+	mlx_put_pixel(gi->screen_image, (int) dot_x, (int) dot_y, 0xFF0000FF);
 
-	printf("angle %f, rad: %f\n",angle, deg_to_rad(angle));
-	printf("angle %f, tan: %f\n",angle, tan(4.712389));
-	printf("dot_x y: (%f, %f)\n", dot_x, dot_y);
-
-	// mlx_put_pixel(gi->screen_image, (int) dot_x, (int) dot_y, 0x00FF00FF);
 }
 
 
@@ -139,7 +135,13 @@ void	print_screen(t_gameInfo *game_info)
 	}
 	mlx_delete_image(game_info->mlx, game_info->screen_image);
 	game_info->screen_image = img;
-	draw_dot(game_info, (double) game_info->player->orientation, 3);
+
+	for(int a = -30; a < 30; a++)
+	{
+		for(int i = 0; i < 200; i++)
+			draw_dot(game_info,(double) game_info->player->orientation + a, i);
+	}
+
 	mlx_image_to_window(game_info->mlx, game_info->screen_image, 0, 0);
 }
 

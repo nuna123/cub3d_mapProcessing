@@ -114,14 +114,41 @@ void draw_dot(t_gameInfo	*gi, double angle, int dis)
 	double dot_x;
 	double dot_y;
 
-	dot_x = (gi->player->x + PLAYER_SIZE/2) + (dis * cos(deg_to_rad(angle)));
-	dot_y = (gi->player->y + PLAYER_SIZE/2) - (dis * sin(deg_to_rad(angle)));
+	dot_x = (gi->player->x) + (dis * cos(deg_to_rad(angle)));
+	dot_y = (gi->player->y) - (dis * sin(deg_to_rad(angle)));
+/* 	dot_x = (gi->player->x + PLAYER_SIZE/2) + (dis * cos(deg_to_rad(angle)));
+	dot_y = (gi->player->y + PLAYER_SIZE/2) - (dis * sin(deg_to_rad(angle))); */
 
 	mlx_put_pixel(gi->screen_image, (int) dot_x, (int) dot_y, 0xFF0000FF);
 
 }
 
+double get_dist(t_gameInfo	*gi, double angle)
+{
+	double dis = 0;
+	//this is checking from top left corner, not center of player
+	double y_pos = (gi->player->y / TEXTURE_SIZE);
+	double ray_x = (gi->player->x / TEXTURE_SIZE + 1) * TEXTURE_SIZE;
+	double ray_y = y_pos * TEXTURE_SIZE;
 
+	while (ray_x < WIDTH)
+	{
+		dis += TEXTURE_SIZE / cos(deg_to_rad(angle));
+		printf("dray_x=%f; distance:%f, %f\n", ray_x, dis,TEXTURE_SIZE / cos(deg_to_rad(angle) ));
+
+
+		//check position
+		if (coors_in_map(gi, ray_x, ray_y) == '1')
+			return (dis);
+		y_pos -= tan(deg_to_rad(angle)) * TEXTURE_SIZE;
+		printf("y ps:%f, %f\n", y_pos, tan(deg_to_rad(angle)) * TEXTURE_SIZE);
+
+		// ray_y = y_pos / TEXTURE_SIZE;
+		ray_x += TEXTURE_SIZE;
+	}
+
+	return (dis);
+}
 
 void	print_screen(t_gameInfo *game_info)
 {
@@ -136,10 +163,20 @@ void	print_screen(t_gameInfo *game_info)
 	mlx_delete_image(game_info->mlx, game_info->screen_image);
 	game_info->screen_image = img;
 
-	for(int a = -30; a < 30; a++)
+
+	if (game_info->player->orientation != 90 && game_info->player->orientation != 270)
 	{
-		for(int i = 0; i < 200; i++)
-			draw_dot(game_info,(double) game_info->player->orientation + a, i);
+		double dis = get_dist(game_info, (double) game_info->player->orientation);
+		printf("DIS: %f\n", dis);
+
+/* 		for(int a = -30; a < 30; a++)
+		{ */
+			for(int i = 0; i < (int) dis; i++)
+				{
+					// printf("i: %i\n", )
+					draw_dot(game_info,(double) game_info->player->orientation, i);
+				}
+		// }
 	}
 
 	mlx_image_to_window(game_info->mlx, game_info->screen_image, 0, 0);

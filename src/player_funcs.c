@@ -26,6 +26,13 @@
 			S = 22 (% 8 = 2),
 			W = 26  (% 8 = 3)
  */
+/*
+	logic:
+		'N' = 78; -> 90°
+		'E' = 69; -> 0°
+		'S' = 83; -> 270°
+		'W' = 87; -> 180°
+ */
 static t_player	*player_setup(t_gameInfo *gi, char *dir_c, int x, int y)
 {
 	t_player	*player;
@@ -36,13 +43,15 @@ static t_player	*player_setup(t_gameInfo *gi, char *dir_c, int x, int y)
 		return (NULL);
 	player->x = x * gi->image_size;
 	player->y = y * gi->image_size;
-	if (*dir_c == 'N')
+	if (*dir_c == 'E')
 		player->orientation = 0;
-	else
-	{
-		*(dir_c) -= 61;
-		player->orientation = 90 * (*(dir_c) / 8);
-	}
+	else if (*dir_c == 'N')
+		player->orientation = 90;
+	else if (*dir_c == 'W')
+		player->orientation = 180;
+	else if (*dir_c == 'S')
+		player->orientation = 270;
+	
 	*(dir_c) = '0';
 	return (player);
 }

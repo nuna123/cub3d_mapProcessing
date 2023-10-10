@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "game.h"
+void draw_dot(t_gameInfo	*gi, double angle, int dis);
 
 void	closeme(void	*game_info)
 {

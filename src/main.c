@@ -44,10 +44,10 @@ void	print_texture(mlx_image_t *img, mlx_texture_t *texture,
 	uint32_t	y;
 
 	y = -1;
-	while (++y < texture->height)
+	while (++y < texture->height - 1)
 	{
 		x = -1;
-		while (++x < texture->width)
+		while (++x < texture->width - 1)
 		{
 			pixel = (y * texture->height + x) * 4;
 			mlx_put_pixel(img, (coor_x + x), (coor_y + y),
@@ -99,7 +99,7 @@ mlx_image_t	*create_screen_image(t_gameInfo	*gi)
 		{
 			if (gi->map_info->map[y][x] == '1')
 				print_texture(test, gi->wall_texture,
-					TEXTURE_SIZE * x, TEXTURE_SIZE * y);
+					TEXTURE_SIZE * x, TEXTURE_SIZE * y );
 			else if (gi->map_info->map[y][x] == '0')
 				print_texture(test, gi->bckg_texture,
 					TEXTURE_SIZE * x, TEXTURE_SIZE * y);
@@ -123,7 +123,62 @@ void draw_dot(t_gameInfo	*gi, double angle, int dis)
 
 }
 
+void mark_pnt(t_gameInfo	*gi, int x, int y, uint32_t color)
+{
+	mlx_put_pixel(gi->screen_image, x - 1, y - 1, color);
+	mlx_put_pixel(gi->screen_image, x - 1, y, color);
+	mlx_put_pixel(gi->screen_image, x - 1, y + 1, color);
+
+	mlx_put_pixel(gi->screen_image, x, y - 1, color);
+	mlx_put_pixel(gi->screen_image, x, y, color);
+	mlx_put_pixel(gi->screen_image, x, y + 1, color);
+
+	mlx_put_pixel(gi->screen_image, x + 1, y - 1, color);
+	mlx_put_pixel(gi->screen_image, x + 1, y, color);
+	mlx_put_pixel(gi->screen_image, x + 1, y + 1, color);
+
+	mlx_image_to_window(gi->mlx, gi->screen_image, 0, 0);
+
+}
+
 double get_dist(t_gameInfo	*gi, double angle)
+{
+	
+	// double	dis = TEXTURE_SIZE - (TEXTURE_SIZE % gi->player->x);
+	//PLAYER XY
+	int P_x = gi->player->x;
+	int P_y = gi->player->y;
+	//FIRAST INTERSECTION XY
+	int B_x = ((int)(P_x / TEXTURE_SIZE) + 1) * TEXTURE_SIZE;
+	int B_y = P_y + (P_x-B_x)*tan(deg_to_rad(angle));
+
+	//how much to add to the y pos in each loop
+	double y_diff = TEXTURE_SIZE * tan (deg_to_rad(angle));
+
+	double dis_diff = TEXTURE_SIZE / cos(deg_to_rad(angle));
+			printf("DIS diff: %f\n", dis_diff);
+
+
+double	dis = (TEXTURE_SIZE - (P_x % TEXTURE_SIZE)) / cos(deg_to_rad(angle));
+
+
+	while (B_x < WIDTH)
+	{
+		printf("P(XY): %i, %i\n", P_x, P_y);
+		printf("B(XY): %i, %i", B_x, B_y);
+
+		mark_pnt(gi, B_x, B_y, 0xFF00FFFF);
+
+		if (coors_in_map(gi, B_x, B_y) == '1')
+			return (dis);
+		B_x += TEXTURE_SIZE;
+		B_y -= y_diff;
+		dis += dis_diff;
+	}
+	return (dis);
+}
+
+/* double get_dist(t_gameInfo	*gi, double angle)
 {
 	double dis = 0;
 	//this is checking from top left corner, not center of player
@@ -148,7 +203,7 @@ double get_dist(t_gameInfo	*gi, double angle)
 	}
 
 	return (dis);
-}
+} */
 
 void	print_screen(t_gameInfo *game_info)
 {
@@ -167,7 +222,7 @@ void	print_screen(t_gameInfo *game_info)
 	if (game_info->player->orientation != 90 && game_info->player->orientation != 270)
 	{
 		double dis = get_dist(game_info, (double) game_info->player->orientation);
-		printf("DIS: %f\n", dis);
+		printf("\n\n\n");
 
 /* 		for(int a = -30; a < 30; a++)
 		{ */

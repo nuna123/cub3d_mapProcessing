@@ -114,17 +114,20 @@ void draw_dot(t_gameInfo	*gi, double angle, int dis)
 	double dot_x;
 	double dot_y;
 
-	dot_x = (gi->player->x) + (dis * cos(deg_to_rad(angle)));
-	dot_y = (gi->player->y) - (dis * sin(deg_to_rad(angle)));
-/* 	dot_x = (gi->player->x + PLAYER_SIZE/2) + (dis * cos(deg_to_rad(angle)));
-	dot_y = (gi->player->y + PLAYER_SIZE/2) - (dis * sin(deg_to_rad(angle))); */
-
+/* 	dot_x = (gi->player->x) + (dis * cos(deg_to_rad(angle)));
+	dot_y = (gi->player->y) - (dis * sin(deg_to_rad(angle))); */
+	dot_x = (gi->player->x + PLAYER_SIZE/2) + (dis * cos(deg_to_rad(angle)));
+	dot_y = (gi->player->y + PLAYER_SIZE/2) - (dis * sin(deg_to_rad(angle)));
+	if (dot_x < 1 || dot_x > WIDTH - 1 || dot_y < 1 || dot_y > HEIGHT - 1)
+		return ;
 	mlx_put_pixel(gi->screen_image, (int) dot_x, (int) dot_y, 0xFF0000FF);
 
 }
 
 void mark_pnt(t_gameInfo	*gi, int x, int y, uint32_t color)
 {
+	if (x < 1 || x > WIDTH - 1 || y < 1 || y > HEIGHT - 1)
+		return ;
 	mlx_put_pixel(gi->screen_image, x - 1, y - 1, color);
 	mlx_put_pixel(gi->screen_image, x - 1, y, color);
 	mlx_put_pixel(gi->screen_image, x - 1, y + 1, color);
@@ -137,73 +140,104 @@ void mark_pnt(t_gameInfo	*gi, int x, int y, uint32_t color)
 	mlx_put_pixel(gi->screen_image, x + 1, y, color);
 	mlx_put_pixel(gi->screen_image, x + 1, y + 1, color);
 
-	mlx_image_to_window(gi->mlx, gi->screen_image, 0, 0);
-
 }
 
-double get_dist(t_gameInfo	*gi, double angle)
+double get_vert_dist(t_gameInfo	*gi, double angle)
 {
-	
-	// double	dis = TEXTURE_SIZE - (TEXTURE_SIZE % gi->player->x);
+
+	if (angle == 90 || angle == 270)
+		return 0;
+
+	int U_D = 1;
+	if (angle < 181)
+		U_D = 0;
+
+	int L_R = 0;
+	if (angle < 90 || angle > 270)
+		L_R = 1;
+
+	printf("L_R: %i, UD = %i\n", L_R, U_D);
+
 	//PLAYER XY
-	int P_x = gi->player->x;
-	int P_y = gi->player->y;
-	//FIRAST INTERSECTION XY
-	int B_x = ((int)(P_x / TEXTURE_SIZE) + 1) * TEXTURE_SIZE;
-	int B_y = P_y + (P_x-B_x)*tan(deg_to_rad(angle));
+	int P_x = gi->player->x + (PLAYER_SIZE / 2);
+	int P_y = gi->player->y + (PLAYER_SIZE / 2);
+	//FIRST INTERSECTION XY
+	int B_x;
+	int B_y;
+
+	if (L_R == 1) // RIGHT
+		B_x = ((int)(P_x / TEXTURE_SIZE) + 1) * TEXTURE_SIZE;
+	else
+		B_x = ((int)(P_x / TEXTURE_SIZE)) * TEXTURE_SIZE;
+
+	if (L_R == 1)
+	{
+		if (U_D == 0)
+			B_y = P_y + (P_x-B_x) * tan(deg_to_rad(angle)); // top right
+		else
+			B_y = P_y - (P_x-B_x) * tan(deg_to_rad(360 - angle)); // bottom right
+	}
+
+	if (L_R == 0)
+	{
+		if (U_D == 0)
+			B_y = P_y - (P_x-B_x) * tan(deg_to_rad(180 - angle)); // top left
+		else
+			B_y = P_y + (P_x-B_x) * tan(deg_to_rad(angle - 180)); // bottom left
+	}
+
+
 
 	//how much to add to the y pos in each loop
-	double y_diff = TEXTURE_SIZE * tan (deg_to_rad(angle));
 
+	double y_diff = TEXTURE_SIZE * tan (deg_to_rad(angle));
+	if (angle == 45 || angle == 315)
+		y_diff *= -1;
+
+
+	//first value is the hypoteneuse of player to the nearest check point
 	double dis_diff = TEXTURE_SIZE / cos(deg_to_rad(angle));
 			printf("DIS diff: %f\n", dis_diff);
+		//first value is the hypoteneuse of player to the nearest check point
+
+	double	dis;
+	if (U_D == 0 && L_R == 0)
+		dis = (TEXTURE_SIZE - (P_x % TEXTURE_SIZE)) / cos(deg_to_rad(180 - angle));
+	if (U_D == 1 && L_R == 0)
+		dis = (TEXTURE_SIZE - (P_x % TEXTURE_SIZE)) / cos(deg_to_rad(angle - 180));
+	if (U_D == 0 && L_R == 1)
+		dis = (TEXTURE_SIZE - (P_x % TEXTURE_SIZE)) / cos(deg_to_rad(angle));
+	if (U_D == 1 && L_R == 1)
+		dis = (TEXTURE_SIZE - (P_x % TEXTURE_SIZE)) / cos(deg_to_rad(360 - angle));
+
+	if(angle == 225 || angle == 135)
+		dis += dis_diff;
 
 
-double	dis = (TEXTURE_SIZE - (P_x % TEXTURE_SIZE)) / cos(deg_to_rad(angle));
+	int	x_diff = TEXTURE_SIZE;
+	if (L_R == 0) //left
+		x_diff *= -1;
+	printf("x diff: %i, tan: (%f) y diff: %f\n", x_diff,tan (deg_to_rad(angle)), y_diff);
+	printf("P(XY): %i, %i\n\n", P_x, P_y);
+	printf("B(XY): %i, %i\n", B_x, B_y);
 
 
-	while (B_x < WIDTH)
+	while (B_x < WIDTH && B_x > 0 && B_y > 0 && B_y < HEIGHT)
 	{
-		printf("P(XY): %i, %i\n", P_x, P_y);
-		printf("B(XY): %i, %i", B_x, B_y);
+
 
 		mark_pnt(gi, B_x, B_y, 0xFF00FFFF);
 
 		if (coors_in_map(gi, B_x, B_y) == '1')
-			return (dis);
-		B_x += TEXTURE_SIZE;
-		B_y -= y_diff;
+			return (fabs(dis));
+		B_x += x_diff;
+		B_y += y_diff;
 		dis += dis_diff;
+		// printf("B(XY): %i, %i\n", B_x, B_y);
 	}
-	return (dis);
+	return (fabs(dis));
 }
 
-/* double get_dist(t_gameInfo	*gi, double angle)
-{
-	double dis = 0;
-	//this is checking from top left corner, not center of player
-	double y_pos = (gi->player->y / TEXTURE_SIZE);
-	double ray_x = (gi->player->x / TEXTURE_SIZE + 1) * TEXTURE_SIZE;
-	double ray_y = y_pos * TEXTURE_SIZE;
-
-	while (ray_x < WIDTH)
-	{
-		dis += TEXTURE_SIZE / cos(deg_to_rad(angle));
-		printf("dray_x=%f; distance:%f, %f\n", ray_x, dis,TEXTURE_SIZE / cos(deg_to_rad(angle) ));
-
-
-		//check position
-		if (coors_in_map(gi, ray_x, ray_y) == '1')
-			return (dis);
-		y_pos -= tan(deg_to_rad(angle)) * TEXTURE_SIZE;
-		printf("y ps:%f, %f\n", y_pos, tan(deg_to_rad(angle)) * TEXTURE_SIZE);
-
-		// ray_y = y_pos / TEXTURE_SIZE;
-		ray_x += TEXTURE_SIZE;
-	}
-
-	return (dis);
-} */
 
 void	print_screen(t_gameInfo *game_info)
 {
@@ -219,20 +253,19 @@ void	print_screen(t_gameInfo *game_info)
 	game_info->screen_image = img;
 
 
-	if (game_info->player->orientation != 90 && game_info->player->orientation != 270)
-	{
-		double dis = get_dist(game_info, (double) game_info->player->orientation);
-		printf("\n\n\n");
 
-/* 		for(int a = -30; a < 30; a++)
-		{ */
+	double dis;
+
+	double arr[] = {0, 45, 90, 135, 180, 225, 270, 315};
+
+	for(int a = 0; a < 8; a++)
+		{
+			dis = get_vert_dist(game_info, arr[a]);
 			for(int i = 0; i < (int) dis; i++)
-				{
-					// printf("i: %i\n", )
-					draw_dot(game_info,(double) game_info->player->orientation, i);
-				}
-		// }
-	}
+			{
+				draw_dot(game_info,arr[a], i);
+			}
+		}
 
 	mlx_image_to_window(game_info->mlx, game_info->screen_image, 0, 0);
 }

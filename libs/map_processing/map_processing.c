@@ -56,23 +56,32 @@ static int	isvalid_midline(char *line)
 	return (OK);
 }
 
-static int	isvalid_map(char **map)
+static int	isvalid_map(char **map, int map_width)
 {
-	int	i;
-	int	player_found;
+	int		i;
+	int		player_found;
+	char	*temp_line;
 
 	i = 0;
 	player_found = 0;
-	if (isvalid_firstline(map[i]) == ERR)
+	if (isvalid_firstline(map[i--]) == ERR)
 		return (ERR);
 	while (map[++i])
 	{
+		while ((int)ft_strlen (map[i]) < map_width)
+		{
+			temp_line = ft_strjoin(map[i], "1");
+			free(map[i]);
+			map[i]= temp_line;
+		}
 		if (isvalid_midline(map[i]) == ERR)
 			return (ERR);
 		if (ft_strchr(map[i], 'N')
 			|| ft_strchr(map[i], 'S')
 			|| ft_strchr(map[i], 'E') || ft_strchr(map[i], 'W'))
 			player_found++;
+
+		
 	}
 	if (isvalid_firstline(map[i - 1]) == ERR || player_found != 1)
 		return (ERR);
@@ -93,7 +102,7 @@ int	process_map_arr(char *map_line, t_mapInfo *map_info, int map_fd)
 			map_info->map_width = ft_strlen (map_line) - 1;
 		map_line = (free (map_line), get_next_line(map_fd));
 	}
-	if (isvalid_map(map) == ERR)
+	if (isvalid_map(map, map_info->map_width) == ERR)
 	{
 		ft_arrfree((void **) map);
 		return (error (NULL, "Invalid Map!\n"), ERR);

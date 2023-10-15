@@ -82,4 +82,16 @@ void		player_move(t_gameInfo *gi, int direction);
 
 //MAIN
 void	print_screen (t_gameInfo *game_info);
+
+
+
+
+/////AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAa
+double get_vert_dist(t_gameInfo	*gi, double angle);
+double get_horiz_dist(t_gameInfo	*gi, double angle);
+
+
+double deg_to_rad(double deg);
+void mark_pnt(t_gameInfo	*gi, int x, int y, uint32_t color);
+
 #endif

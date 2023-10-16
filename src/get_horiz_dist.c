@@ -5,6 +5,8 @@ double get_horiz_dist(t_gameInfo	*gi, double angle)
 
 	if (angle == 90 || angle == 270)
 		return 0;
+
+	printf("ANGLE: %f\n", angle);
 	int U_D = 1;
 	if (angle < 180)
 		U_D = 0;
@@ -13,7 +15,7 @@ double get_horiz_dist(t_gameInfo	*gi, double angle)
 	if (angle < 90 || angle > 270)
 		L_R = 1;
 
-	// printf("L_R: %i, UD = %i\n", L_R, U_D);
+	printf("L_R: %i, UD = %i\n", L_R, U_D);
 
 	//PLAYER XY
 	int P_x = gi->player->x + (PLAYER_SIZE / 2);
@@ -43,22 +45,37 @@ double get_horiz_dist(t_gameInfo	*gi, double angle)
 		else
 			B_y = P_y + (P_x-B_x) * tan(dtr(angle - 180)); // bottom left
 	}
-	//how much to add to the y pos in each loop
-	double y_diff = TEXTURE_SIZE * tan (dtr(angle));
-	if (angle == 45 || angle == 315)
-		y_diff *= -1;
 
+
+
+
+
+
+	double dis_diff = fabs(TEXTURE_SIZE / cos(dtr(angle)));
 
 	//first value is the hypoteneuse of player to the nearest check point
-	double dis_diff = fabs(TEXTURE_SIZE / cos(dtr(angle)));
+	double	dis = abs( (int) ((P_x - B_x) / cos(dtr(angle))));
+
+
+	//how much to add to the y pos in each loop
+	double y_diff = -1 * sin(dtr(angle)) * dis_diff;
+
+
+	printf("dis diff: %f\n", dis_diff);
+	printf("y diff: %f\n", y_diff);
+
+
+
+
+
+
+
+
 			// printf("DIS diff: %f\n", dis_diff);
 		//first value is the hypoteneuse of player to the nearest check point
 
 
-double	dis;
 
-
-	dis = abs(P_x - B_x) / fabs(cos(dtr(angle)));
 
 /* 	printf("fabs : %d ", abs(P_y - B_y));
 	printf("cos : %f ", cos(dtr(angle)));
@@ -73,34 +90,59 @@ double	dis;
 	// printf("P(XY): %i, %i\n\n", P_x, P_y);
 	// printf("B(XY): %i, %i\n", B_x, B_y);
 
-char val;
+
+
+	// int check_x, check_y;
+	char val;
 	while (B_x < WIDTH && B_x > 0 && B_y > 0 && B_y < HEIGHT)
 	{
-		// mark_pnt(gi, B_x, B_y, 0xFF00FFFF);
+		printf("\n\n");
 
+
+		// mark_pnt(gi, B_x, B_y, 0xFF00FFFF);
+/* 		check_x = B_x;
+		check_y = B_y; */
+/*
+		if (U_D == 0)
+			check_y = floor(check_y / TEXTURE_SIZE) * TEXTURE_SIZE;
+		else
+			check_y = ceil(check_y / TEXTURE_SIZE) * TEXTURE_SIZE;
+		if (L_R == 0)
+			check_x = floor(check_x / TEXTURE_SIZE) * TEXTURE_SIZE;
+		else
+			check_x = ceil(check_x / TEXTURE_SIZE) * TEXTURE_SIZE; */
+printf("B(XY): %i, %i\n", B_x, B_y);
+// printf("CHECK(XY): %i, %i\n", check_x, check_y);
 		if (U_D == 0)
 		{
 			if (L_R == 0)
-				val = coors_in_map(gi, B_x - 1, B_y - 1);
+				val = coors_in_map(gi, B_x - (TEXTURE_SIZE / 2), B_y/*  - (TEXTURE_SIZE / 2) */);
 			else
-				val = coors_in_map(gi, B_x + 1, B_y - 1);
+				val = coors_in_map(gi, B_x/*  + (TEXTURE_SIZE / 2) */, B_y/*  - (TEXTURE_SIZE / 2) */);
 		}
 		else
 		{
 			if (L_R == 0)
-				val = coors_in_map(gi, B_x - 1, B_y + 1);
+				val = coors_in_map(gi, B_x - (TEXTURE_SIZE / 2), B_y + (TEXTURE_SIZE / 2));
 			else
-				val = coors_in_map(gi, B_x + 1, B_y + 1);
+				val = coors_in_map(gi, B_x/*  + (TEXTURE_SIZE / 2) */, B_y + (TEXTURE_SIZE / 2));
 		}
-		if ( val == '1')
+
+/* 			if (L_R == 0)
+				val = coors_in_map(gi, B_x - TEXTURE_SIZE / 2, B_y);
+			else
+				val = coors_in_map(gi, B_x + TEXTURE_SIZE / 2, B_y); */
+
+		if (val != '0')
+			return (dis);
+/* 		if ( val != '0')
 		{
 			return (fabs(dis));
-		}
+		} */
 
 		B_x += x_diff;
 		B_y += y_diff;
 		dis += dis_diff;
-		// printf("B(XY): %i, %i\n", B_x, B_y);
 	}
 	return (fabs(dis));
 }

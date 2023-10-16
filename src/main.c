@@ -145,6 +145,8 @@ void mark_pnt(t_gameInfo	*gi, int x, int y, uint32_t color)
 
 void	print_screen(t_gameInfo *game_info)
 {
+	printf("\n--------------------------------------------------------\n");
+	printf("\n--------------------------------------------------------\n");
 	mlx_image_t	*img;
 
 	img = create_screen_image(game_info);
@@ -176,12 +178,22 @@ void	print_screen(t_gameInfo *game_info)
 	} */
 
 	int vert_dis, horiz_dis, dis;
+	double angle;
 	// double arr[] = {0, 45, 90 , 135,  180, 225, 270, 315};
 
-	for(int a = 0; a < 360 ; a += 1)
+	for(int a = 30; a > -30 ; a -= 10)
 	{
-		vert_dis = get_vert_dist(game_info,a);
-		horiz_dis = get_horiz_dist(game_info,a);
+	// int a = +30;
+		angle = (game_info->player->orientation + a);
+		if (angle < 0)
+			angle += 360;
+
+		printf("\n--------------\na: %i, angle %f\n",a ,  angle);
+
+
+		vert_dis = get_vert_dist(game_info,angle);
+		horiz_dis = get_horiz_dist(game_info,angle);
+		// vert_dis = INT_MAX;
 
 		dis = vert_dis;
 		if (horiz_dis < vert_dis)
@@ -189,10 +201,11 @@ void	print_screen(t_gameInfo *game_info)
 
 
 		// printf("dis: %f\n", dis);
-		for(int i = 0; i < dis; i++)
+		if (dis != INT_MAX)
+{		for(int i = 0; i < dis; i++)
 		{
-			draw_dot(game_info,a, i);
-		}
+			draw_dot(game_info, angle, i);
+		}}
 	}
 
 	mlx_image_to_window(game_info->mlx, game_info->screen_image, 0, 0);

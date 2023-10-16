@@ -20,6 +20,7 @@
 #include "libft.h"
 #include "mapProcessing.h"
 #include "MLX42.h"
+#include <limits.h>
 
 
 #define WIDTH 1600

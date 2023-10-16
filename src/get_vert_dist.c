@@ -35,7 +35,7 @@ int	get_vert_dist(t_gameInfo	*gi, double a)
 	int	dis;
 
 	if (a == 0 || a == 180)
-		return (0);
+		return (INT_MAX);
 	pl[0] = gi->player->x + floor(PLAYER_SIZE / 2);
 	pl[1] = gi->player->y + floor(PLAYER_SIZE / 2);
 	dot[1] = ((int)(pl[1] / TEXTURE_SIZE + (a > 180))) * TEXTURE_SIZE;

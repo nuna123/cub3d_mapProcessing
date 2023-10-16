@@ -23,11 +23,11 @@ char	coors_in_map(t_gameInfo *gi, int x, int y)
 	|| x / TEXTURE_SIZE >= gi->map_info->map_width)
 		return (0);
 
-	// printf("xy: %i(%i), %i (%i)\n", x, x / TEXTURE_SIZE, y, y / TEXTURE_SIZE);
-// printf("BLOC: %i, %i\n", x / TEXTURE_SIZE, y / TEXTURE_SIZE);
+	printf("xy: %i(%i), %i (%i)\n", x, x % TEXTURE_SIZE, y, y % TEXTURE_SIZE);
+	printf("BLOC: %i, %i\n", (int)round (x / TEXTURE_SIZE), (int)round (y / TEXTURE_SIZE));
 	return (gi->map_info->map
-		[y / TEXTURE_SIZE]
-		[x / TEXTURE_SIZE]);
+		[(int)round (y / TEXTURE_SIZE)]
+		[(int)round (x / TEXTURE_SIZE)]);
 }
 
 static void	update_player(t_gameInfo *gi, int x, int y)

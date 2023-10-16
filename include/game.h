@@ -26,7 +26,7 @@
 #define HEIGHT 864
 
 #define TEXTURE_SIZE 32
-#define PLAYER_SIZE 16
+#define PLAYER_SIZE 15
 
 
 
@@ -41,6 +41,13 @@ typedef struct s_player
 
 
 } t_player;
+
+typedef struct s_point
+{
+	int	x;
+	int	y;
+
+} t_point;
 
 typedef struct s_gameInfo
 {
@@ -87,11 +94,11 @@ void	print_screen (t_gameInfo *game_info);
 
 
 /////AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAa
-double get_vert_dist(t_gameInfo	*gi, double angle);
+int get_vert_dist(t_gameInfo	*gi, double angle);
 double get_horiz_dist(t_gameInfo	*gi, double angle);
 
 
-double deg_to_rad(double deg);
+double dtr(double deg);
 void mark_pnt(t_gameInfo	*gi, int x, int y, uint32_t color);
 
 #endif

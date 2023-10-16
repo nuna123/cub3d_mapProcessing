@@ -29,38 +29,38 @@ double get_horz_dist(t_gameInfo	*gi, double angle)
 	if (L_R == 1)
 	{
 		if (U_D == 0)
-			B_y = P_y + (P_x-B_x) * tan(deg_to_rad(angle)); // top right
+			B_y = P_y + (P_x-B_x) * tan(dtr(angle)); // top right
 		else
-			B_y = P_y - (P_x-B_x) * tan(deg_to_rad(360 - angle)); // bottom right
+			B_y = P_y - (P_x-B_x) * tan(dtr(360 - angle)); // bottom right
 	}
 
 	if (L_R == 0)
 	{
 		if (U_D == 0)
-			B_y = P_y - (P_x-B_x) * tan(deg_to_rad(180 - angle)); // top left
+			B_y = P_y - (P_x-B_x) * tan(dtr(180 - angle)); // top left
 		else
-			B_y = P_y + (P_x-B_x) * tan(deg_to_rad(angle - 180)); // bottom left
+			B_y = P_y + (P_x-B_x) * tan(dtr(angle - 180)); // bottom left
 	}
 	//how much to add to the y pos in each loop
-	double y_diff = TEXTURE_SIZE * tan (deg_to_rad(angle));
+	double y_diff = TEXTURE_SIZE * tan (dtr(angle));
 	if (angle == 45 || angle == 315)
 		y_diff *= -1;
 
 
 	//first value is the hypoteneuse of player to the nearest check point
-	double dis_diff = TEXTURE_SIZE / cos(deg_to_rad(angle));
+	double dis_diff = TEXTURE_SIZE / cos(dtr(angle));
 			printf("DIS diff: %f\n", dis_diff);
 		//first value is the hypoteneuse of player to the nearest check point
 
 	double	dis;
 	if (U_D == 0 && L_R == 0)
-		dis = (TEXTURE_SIZE - (P_x % TEXTURE_SIZE)) / cos(deg_to_rad(180 - angle));
+		dis = (TEXTURE_SIZE - (P_x % TEXTURE_SIZE)) / cos(dtr(180 - angle));
 	if (U_D == 1 && L_R == 0)
-		dis = (TEXTURE_SIZE - (P_x % TEXTURE_SIZE)) / cos(deg_to_rad(angle - 180));
+		dis = (TEXTURE_SIZE - (P_x % TEXTURE_SIZE)) / cos(dtr(angle - 180));
 	if (U_D == 0 && L_R == 1)
-		dis = (TEXTURE_SIZE - (P_x % TEXTURE_SIZE)) / cos(deg_to_rad(angle));
+		dis = (TEXTURE_SIZE - (P_x % TEXTURE_SIZE)) / cos(dtr(angle));
 	if (U_D == 1 && L_R == 1)
-		dis = (TEXTURE_SIZE - (P_x % TEXTURE_SIZE)) / cos(deg_to_rad(360 - angle));
+		dis = (TEXTURE_SIZE - (P_x % TEXTURE_SIZE)) / cos(dtr(360 - angle));
 
 	if(angle == 225 || angle == 135)
 		dis += dis_diff;
@@ -69,7 +69,7 @@ double get_horz_dist(t_gameInfo	*gi, double angle)
 	int	x_diff = TEXTURE_SIZE;
 	if (L_R == 0) //left
 		x_diff *= -1;
-	printf("x diff: %i, tan: (%f) y diff: %f\n", x_diff,tan (deg_to_rad(angle)), y_diff);
+	printf("x diff: %i, tan: (%f) y diff: %f\n", x_diff,tan (dtr(angle)), y_diff);
 	printf("P(XY): %i, %i\n\n", P_x, P_y);
 	printf("B(XY): %i, %i\n", B_x, B_y);
 

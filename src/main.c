@@ -14,13 +14,15 @@
 
 // #define PI 3.141592
 
-double deg_to_rad(double deg)
+// DEGREES TO RADIANS
+double dtr(double deg)
 {
 	return(deg * (M_PI / 180));
 }
 
 ///TODO
 	// deg to radians ?
+	// One pixel difference in vertia/horizontal check, Top sector
 
 uint32_t	get(uint8_t *texture_pixels)
 {
@@ -112,10 +114,10 @@ void draw_dot(t_gameInfo	*gi, double angle, int dis)
 	double dot_x;
 	double dot_y;
 
-/* 	dot_x = (gi->player->x) + (dis * cos(deg_to_rad(angle)));
-	dot_y = (gi->player->y) - (dis * sin(deg_to_rad(angle))); */
-	dot_x = (gi->player->x + PLAYER_SIZE/2) + (dis * cos(deg_to_rad(angle)));
-	dot_y = (gi->player->y + PLAYER_SIZE/2) - (dis * sin(deg_to_rad(angle)));
+/* 	dot_x = (gi->player->x) + (dis * cos(dtr(angle)));
+	dot_y = (gi->player->y) - (dis * sin(dtr(angle))); */
+	dot_x = (gi->player->x + PLAYER_SIZE/2) + (dis * cos(dtr(angle)));
+	dot_y = (gi->player->y + PLAYER_SIZE/2) - (dis * sin(dtr(angle)));
 	if (dot_x < 1 || dot_x > WIDTH - 1 || dot_y < 1 || dot_y > HEIGHT - 1)
 		return ;
 	mlx_put_pixel(gi->screen_image, (int) dot_x, (int) dot_y, 0xFF0000FF);
@@ -173,28 +175,23 @@ void	print_screen(t_gameInfo *game_info)
 		draw_dot(game_info,(double)game_info->player->orientation, i);
 	} */
 
-	double vert_dis, horiz_dis, dis;
-	double arr[] = {0, 45, 90, 135, 180, 225, 270, 315};
+	int vert_dis, horiz_dis, dis;
+	// double arr[] = {0, 45, 90 , 135,  180, 225, 270, 315};
 
-	for(int a = 0; a < 8; a++)
+	for(int a = 0; a < 360 ; a += 1)
 	{
-		vert_dis = get_vert_dist(game_info,arr[a]);
-
-		horiz_dis = get_horiz_dist(game_info,arr[a]);
+		vert_dis = get_vert_dist(game_info,a);
+		horiz_dis = get_horiz_dist(game_info,a);
 
 		dis = vert_dis;
-		if (!vert_dis)
+		if (horiz_dis < vert_dis)
 			dis = horiz_dis;
-		else if (!horiz_dis)
-			dis = vert_dis;
-		else if (horiz_dis < vert_dis)
-			dis = horiz_dis;
-		else if (vert_dis < horiz_dis)
-			dis = vert_dis;
 
-		for(int i = 0; i < (int) dis; i++)
+
+		// printf("dis: %f\n", dis);
+		for(int i = 0; i < dis; i++)
 		{
-			draw_dot(game_info,arr[a], i);
+			draw_dot(game_info,a, i);
 		}
 	}
 

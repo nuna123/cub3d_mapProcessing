@@ -1,91 +1,105 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   get_vert_dist.c                                    :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: nroth <marvin@42.fr>                       +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/10/16 13:09:58 by nroth             #+#    #+#             */
+/*   Updated: 2023/10/16 13:10:00 by nroth            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "game.h"
+/*
 
-double get_vert_dist(t_gameInfo	*gi, double angle)
+	In case when angle == 0 or 180 we return 0 because it means ray will not hit
+		vertical lines
+	pl[2] - PLAYER XY
+	dot[2] - FIRST INTERSECTION XY
+	diff[0] is how much to add to the dot[0] pos in each loop - the x difference
+	diff[1] is how much to add to the dot[1] pos in each loop == TEXTURE_SIZE
+		y_diff = TEXTURE_SIZE * tan (deg_to_rad(angle));
+		for angle == 45 or angle == 315
+		y_diff = - TEXTURE_SIZE * tan (deg_to_rad(angle));
+
+	dis_diff - first value is the hypoteneuse of player to the nearest check point
+		dis_diff = fabs(TEXTURE_SIZE / cos(deg_to_rad(angle)));
+	dis is actual distance to the wall
+
+*/
+int	get_vert_dist(t_gameInfo	*gi, double a)
 {
-	if (angle == 0 || angle == 180)
+	int	pl[2];
+	int	dot[2];
+	int	diff[2];
+	int	dis_diff;
+	int	dis;
+
+	if (a == 0 || a == 180)
+		return (2147483647);
+	pl[0] = gi->player->x + floor(PLAYER_SIZE / 2);
+	pl[1] = gi->player->y + floor(PLAYER_SIZE / 2);
+	dot[1] = ((int)(pl[1] / TEXTURE_SIZE + (a > 180))) * TEXTURE_SIZE;
+	dot[0] = pl[0] + (a != 90 && a != 270) * ((pl[1] - dot[1]) / tan(dtr(a)));
+	dis_diff = abs((int)(TEXTURE_SIZE / sin(dtr(a))));
+	diff[0] = dis_diff * cos (dtr(a));
+	dis = abs((int)(abs(pl[1] - dot[1]) / sin(dtr(180 - a))));
+	diff[1] = TEXTURE_SIZE - (a < 180) * TEXTURE_SIZE * 2;
+	while (dot[0] < WIDTH && dot[0] > 0 && dot[1] > 0 && dot[1] < HEIGHT)
+	{
+		if (coors_in_map(gi, dot[0], dot[1] - (a < 180)) != '0')
+			return (dis);
+		dot[0] += diff[0];
+		dot[1] += diff[1];
+		dis += dis_diff;
+	}
+	return (dis);
+}
+
+/* double get_vert_dist(t_gameInfo	*gi, double a)
+{
+	if (a == 0 || a == 180)
 		return 0;
+int U_D;
 
+int pl[2];
+int dot[2]
 
-	int U_D = 1;
-	if (angle < 180)
-		U_D = 0;
-	int L_R = 0;
-	if (angle < 90 || angle > 270)
-		L_R = 1;
+double diff[0];
+int	diff[1];
 
-	// printf("L_R: %i, UD = %i\n", L_R, U_D);
+double dis_diff;
+double	dis;
 
-	//PLAYER XY
-	int P_x = gi->player->x + (PLAYER_SIZE / 2);
-	int P_y = gi->player->y + (PLAYER_SIZE / 2);
+	U_D = 1 - (a < 180);
+
+	//pl XY
+	pl[0] = gi->pl->x + floor(PLAYER_SIZE / 2);
+	pl[1] = gi->pl->y + floor(PLAYER_SIZE / 2);
 
 
 	//FIRST INTERSECTION XY
-		int B_x;
-		int B_y;
 
 
-		B_y = (P_y / TEXTURE_SIZE) * TEXTURE_SIZE;
+	dot[1] = ((int)(pl[1] / TEXTURE_SIZE + U_D)) * TEXTURE_SIZE;
+	dot[0] = pl[0] + (a != 90 && a != 270) * ((pl[1] - dot[1]) / tan(dtr(a)));
 
-		if (U_D == 0) // UP
-			B_y = ((int)(P_y / TEXTURE_SIZE)) * TEXTURE_SIZE;
-		else // DOWN
-			B_y = ((int)(P_y / TEXTURE_SIZE + 1)) * TEXTURE_SIZE;
-
-
-		if (U_D == 0) // UP
-			B_x = P_x + (abs(P_y - B_y) / tan(deg_to_rad(angle)));
-		else
-			B_x = P_x - (abs(P_y - B_y) / tan(deg_to_rad(angle)));
-		if (angle == 90 || angle == 270)
-			B_x = P_x;
-
-		// printf("B(XY): %i, %i\n", B_x, B_y);
-
-
-
-
-	double dis_diff =  fabs(TEXTURE_SIZE / sin(deg_to_rad(angle)));
-	// printf("DIS diff: %f\n\n", dis_diff);
-	// printf("angle : %f, sin %f \n", angle, sin (deg_to_rad(angle)));
-
+	dis_diff = abs(TEXTURE_SIZE / sin(dtr(a)));
 
 	//how much to add to the x pos in each loop
-	double x_diff = dis_diff * cos (deg_to_rad(angle));
+	diff[0] = dis_diff * cos (dtr(a));
+	dis = abs(abs(pl[1] - dot[1]) / sin(dtr(180 - a)));
+	diff[1] = TEXTURE_SIZE - (U_D == 0) * TEXTURE_SIZE * 2;
 
-	double	dis = fabs(abs(P_y - B_y) / sin(deg_to_rad(180 - angle)));
-
-
-	int	y_diff = TEXTURE_SIZE;
-	if (U_D == 0) //up
-		y_diff *= -1;
-
-	// printf("x diff: %f, sin: (%f) y diff: %i\n", x_diff,sin (deg_to_rad(angle)), y_diff);
-
-char val;
-	while (B_x < WIDTH && B_x > 0 && B_y > 0 && B_y < HEIGHT)
+	while (dot[0] < WIDTH && dot[0] > 0 && dot[1] > 0 && dot[1] < HEIGHT)
 	{
-		// mark_pnt(gi, B_x, B_y, 0xFF00FFFF);
-		if (U_D == 0)
-		{
-			if (L_R == 0)
-				val = coors_in_map(gi, B_x - 1, B_y - 1);
-			else
-				val = coors_in_map(gi, B_x + 1, B_y - 1);
-		}
-		else
-		{
-			if (L_R == 0)
-				val = coors_in_map(gi, B_x - 1, B_y + 1);
-			else
-				val = coors_in_map(gi, B_x + 1, B_y + 1);
-		}
-
-		if (val == '1')
-			return (fabs(dis));
-		B_x += x_diff;
-		B_y += y_diff;
+		// mark_pnt(gi, dot[0], dot[1], 0xFF00FFFF);
+		if (coors_in_map(gi, dot[0] , dot[1] - (U_D == 0)) == '1')
+			return (abs(dis));
+		dot[0] += diff[0];
+		dot[1] += diff[1];
 		dis += dis_diff;
 	}
-	return (fabs(dis));
-}
+	return (abs(dis));
+} */

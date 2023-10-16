@@ -17,11 +17,14 @@
 // returns the map char at position (x, y)
 char	coors_in_map(t_gameInfo *gi, int x, int y)
 {
-	if (x < 0 || y < 0 || x > WIDTH || y > HEIGHT)
+	if (x < 0 || y < 0 || x >= WIDTH || y >= HEIGHT)
+		return (0);
+	if (y / TEXTURE_SIZE >= gi->map_info->map_height
+	|| x / TEXTURE_SIZE >= gi->map_info->map_width)
 		return (0);
 
-/* 	printf("xy: %i(%i), %i (%i)\n", x, x % TEXTURE_SIZE, y, y % TEXTURE_SIZE);
-	printf("BLOC: %i, %i\n", x / TEXTURE_SIZE, y / TEXTURE_SIZE); */
+	// printf("xy: %i(%i), %i (%i)\n", x, x / TEXTURE_SIZE, y, y / TEXTURE_SIZE);
+// printf("BLOC: %i, %i\n", x / TEXTURE_SIZE, y / TEXTURE_SIZE);
 	return (gi->map_info->map
 		[y / TEXTURE_SIZE]
 		[x / TEXTURE_SIZE]);

@@ -15,18 +15,16 @@
 
 	In case when angle == 0 or 180 we return 0 because it means ray will not hit
 		vertical lines
-	pl[2] - PLAYER XY
+	pl[2] - PLAYER XY - reset to player center
 	dot[2] - FIRST INTERSECTION XY
+
 	diff[0] is how much to add to the dot[0] pos in each loop - the x difference
 	diff[1] is how much to add to the dot[1] pos in each loop == TEXTURE_SIZE
-		y_diff = TEXTURE_SIZE * tan (deg_to_rad(angle));
-		for angle == 45 or angle == 315
-		y_diff = - TEXTURE_SIZE * tan (deg_to_rad(angle));
 
 	dis_diff - first value is the hypoteneuse of player to the nearest check point
-		dis_diff = fabs(TEXTURE_SIZE / cos(deg_to_rad(angle)));
 	dis is actual distance to the wall
 
+	!!! dtr is Degrees To Radians function !!!
 */
 int	get_vert_dist(t_gameInfo	*gi, double a)
 {
@@ -37,7 +35,7 @@ int	get_vert_dist(t_gameInfo	*gi, double a)
 	int	dis;
 
 	if (a == 0 || a == 180)
-		return (2147483647);
+		return (0);
 	pl[0] = gi->player->x + floor(PLAYER_SIZE / 2);
 	pl[1] = gi->player->y + floor(PLAYER_SIZE / 2);
 	dot[1] = ((int)(pl[1] / TEXTURE_SIZE + (a > 180))) * TEXTURE_SIZE;

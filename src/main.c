@@ -11,18 +11,18 @@
 /* ************************************************************************** */
 
 #include "game.h"
-#include <math.h>
 
 // #define PI 3.141592
 
-double deg_to_rad(double deg)
+// DEGREES TO RADIANS
+double dtr(double deg)
 {
 	return(deg * (M_PI / 180));
 }
 
 ///TODO
-	// regulate map to width - pad with 1s
 	// deg to radians ?
+	// One pixel difference in vertia/horizontal check, Top sector
 
 uint32_t	get(uint8_t *texture_pixels)
 {
@@ -114,17 +114,21 @@ void draw_dot(t_gameInfo	*gi, double angle, int dis)
 	double dot_x;
 	double dot_y;
 
-	dot_x = (gi->player->x) + (dis * cos(deg_to_rad(angle)));
-	dot_y = (gi->player->y) - (dis * sin(deg_to_rad(angle)));
-/* 	dot_x = (gi->player->x + PLAYER_SIZE/2) + (dis * cos(deg_to_rad(angle)));
-	dot_y = (gi->player->y + PLAYER_SIZE/2) - (dis * sin(deg_to_rad(angle))); */
+/* 	dot_x = (gi->player->x) + (dis * cos(dtr(angle)));
+	dot_y = (gi->player->y) - (dis * sin(dtr(angle))); */
 
-	mlx_put_pixel(gi->screen_image, (int) dot_x, (int) dot_y, 0xFF0000FF);
+	dot_x = (gi->player->x + floor(PLAYER_SIZE / 2)) + (dis * cos(dtr(angle)));
+	dot_y = (gi->player->y + floor(PLAYER_SIZE / 2)) - (dis * sin(dtr(angle)));
+	if (dot_x < 1 || dot_x > WIDTH - 1 || dot_y < 1 || dot_y > HEIGHT - 1)
+		return ;
+	mlx_put_pixel(gi->screen_image, (int) dot_x, (int) dot_y, 0x0000FFFF);
 
 }
 
 void mark_pnt(t_gameInfo	*gi, int x, int y, uint32_t color)
 {
+	if (x < 1 || x > WIDTH - 1 || y < 1 || y > HEIGHT - 1)
+		return ;
 	mlx_put_pixel(gi->screen_image, x - 1, y - 1, color);
 	mlx_put_pixel(gi->screen_image, x - 1, y, color);
 	mlx_put_pixel(gi->screen_image, x - 1, y + 1, color);
@@ -137,101 +141,81 @@ void mark_pnt(t_gameInfo	*gi, int x, int y, uint32_t color)
 	mlx_put_pixel(gi->screen_image, x + 1, y, color);
 	mlx_put_pixel(gi->screen_image, x + 1, y + 1, color);
 
-	mlx_image_to_window(gi->mlx, gi->screen_image, 0, 0);
-
 }
 
-double get_dist(t_gameInfo	*gi, double angle)
-{
-	
-	// double	dis = TEXTURE_SIZE - (TEXTURE_SIZE % gi->player->x);
-	//PLAYER XY
-	int P_x = gi->player->x;
-	int P_y = gi->player->y;
-	//FIRAST INTERSECTION XY
-	int B_x = ((int)(P_x / TEXTURE_SIZE) + 1) * TEXTURE_SIZE;
-	int B_y = P_y + (P_x-B_x)*tan(deg_to_rad(angle));
-
-	//how much to add to the y pos in each loop
-	double y_diff = TEXTURE_SIZE * tan (deg_to_rad(angle));
-
-	double dis_diff = TEXTURE_SIZE / cos(deg_to_rad(angle));
-			printf("DIS diff: %f\n", dis_diff);
-
-
-double	dis = (TEXTURE_SIZE - (P_x % TEXTURE_SIZE)) / cos(deg_to_rad(angle));
-
-
-	while (B_x < WIDTH)
-	{
-		printf("P(XY): %i, %i\n", P_x, P_y);
-		printf("B(XY): %i, %i", B_x, B_y);
-
-		mark_pnt(gi, B_x, B_y, 0xFF00FFFF);
-
-		if (coors_in_map(gi, B_x, B_y) == '1')
-			return (dis);
-		B_x += TEXTURE_SIZE;
-		B_y -= y_diff;
-		dis += dis_diff;
-	}
-	return (dis);
-}
-
-/* double get_dist(t_gameInfo	*gi, double angle)
-{
-	double dis = 0;
-	//this is checking from top left corner, not center of player
-	double y_pos = (gi->player->y / TEXTURE_SIZE);
-	double ray_x = (gi->player->x / TEXTURE_SIZE + 1) * TEXTURE_SIZE;
-	double ray_y = y_pos * TEXTURE_SIZE;
-
-	while (ray_x < WIDTH)
-	{
-		dis += TEXTURE_SIZE / cos(deg_to_rad(angle));
-		printf("dray_x=%f; distance:%f, %f\n", ray_x, dis,TEXTURE_SIZE / cos(deg_to_rad(angle) ));
-
-
-		//check position
-		if (coors_in_map(gi, ray_x, ray_y) == '1')
-			return (dis);
-		y_pos -= tan(deg_to_rad(angle)) * TEXTURE_SIZE;
-		printf("y ps:%f, %f\n", y_pos, tan(deg_to_rad(angle)) * TEXTURE_SIZE);
-
-		// ray_y = y_pos / TEXTURE_SIZE;
-		ray_x += TEXTURE_SIZE;
-	}
-
-	return (dis);
-} */
 
 void	print_screen(t_gameInfo *game_info)
 {
+	dprintf(FD, "\n--------------------------------------------------------\n");
+	dprintf(FD, "\n--------------------------------------------------------\n");
 	mlx_image_t	*img;
 
 	img = create_screen_image(game_info);
 	if (!img)
 	{
-		printf("ERR printscreen\n");
+		dprintf(FD, "ERR printscreen\n");
 		return ;
 	}
 	mlx_delete_image(game_info->mlx, game_info->screen_image);
 	game_info->screen_image = img;
+/*
+	double vert_dis = get_vert_dist(game_info,(double)game_info->player->orientation);
 
+	double horiz_dis = get_horiz_dist(game_info,(double)game_info->player->orientation);
 
-	if (game_info->player->orientation != 90 && game_info->player->orientation != 270)
+	double dis = vert_dis;
+	if (!vert_dis)
+		dis = horiz_dis;
+	else if (!horiz_dis)
+		dis = vert_dis;
+	else if (horiz_dis < vert_dis)
+		dis = horiz_dis;
+	else if (vert_dis < horiz_dis)
+		dis = vert_dis;
+
+	for(int i = 0; i < (int) dis; i++)
 	{
-		double dis = get_dist(game_info, (double) game_info->player->orientation);
-		printf("\n\n\n");
+		draw_dot(game_info,(double)game_info->player->orientation, i);
+	} */
 
-/* 		for(int a = -30; a < 30; a++)
-		{ */
-			for(int i = 0; i < (int) dis; i++)
-				{
-					// printf("i: %i\n", )
-					draw_dot(game_info,(double) game_info->player->orientation, i);
-				}
-		// }
+	int vert_dis, horiz_dis, dis;
+	double angle;
+	// double arr[] = {0, 45, 90 , 135,  180, 225, 270, 315};
+
+	for(int a = 30; a > -30 ; a -= 10)
+	{
+	// int a = +30;
+		angle = (game_info->player->orientation + a);
+		if (angle < 0)
+			angle += 360;
+
+		dprintf(FD, "\n--------------\na: %i, angle %f\n",a ,  angle);
+
+
+		horiz_dis = get_horiz_dist(game_info,angle);
+		// horiz_dis = INT_MAX;
+
+		vert_dis = get_vert_dist(game_info,angle);
+		// vert_dis = INT_MAX;
+
+
+		dis = vert_dis;
+		if (horiz_dis < vert_dis)
+		{
+			dis = horiz_dis;
+			dprintf(FD, "horiz used!\n");
+		}
+
+		// dprintf(FD, "dis: %f\n", dis);
+		if (dis != INT_MAX)
+		{
+			printf("VERTICAL DIS: %i\n",  vert_dis);
+			printf("HORIZONTAL DIS: %i\n", horiz_dis);
+			printf("DIS: %i\n", dis);
+
+			for(int i = 0; i < dis; i++)
+				draw_dot(game_info, angle, i);
+		}
 	}
 
 	mlx_image_to_window(game_info->mlx, game_info->screen_image, 0, 0);
@@ -239,10 +223,10 @@ void	print_screen(t_gameInfo *game_info)
 
 int	main(int argc, char *argv[])
 {
-	t_gameInfo	*game_info;
+	 t_gameInfo	*game_info;
 
 	if (argc <= 1)
-		return (printf("Error!\nNo map path specified.\n"), 1);
+		return (dprintf(FD, "Error!\nNo map path specified.\n"), 1);
 	game_info = init_game_info(argv);
 	if (!game_info)
 		exit(-1);
@@ -251,5 +235,10 @@ int	main(int argc, char *argv[])
 	mlx_key_hook(game_info->mlx, key_hooker, game_info);
 	mlx_loop(game_info->mlx);
 	mlx_terminate(game_info->mlx);
+/*
+	printf ("%c\n\n", coors_in_map(game_info, 0, 0));
+	printf ("%c\n\n", coors_in_map(game_info, TEXTURE_SIZE, 0));
+	printf ("%c\n\n", coors_in_map(game_info, TEXTURE_SIZE + 1, 0)); */
 	return (EXIT_SUCCESS);
 }
+

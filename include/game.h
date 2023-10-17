@@ -20,13 +20,19 @@
 #include "libft.h"
 #include "mapProcessing.h"
 #include "MLX42.h"
+#include <limits.h>
+
+#define MAG "\e[0;35m"
+#define CYN "\e[0;36m"
+#define WHT "\e[0;37m"
 
 
 #define WIDTH 1600
 #define HEIGHT 864
+#define FD 1
 
 #define TEXTURE_SIZE 32
-#define PLAYER_SIZE 16
+#define PLAYER_SIZE 15
 
 
 
@@ -41,6 +47,13 @@ typedef struct s_player
 
 
 } t_player;
+
+typedef struct s_point
+{
+	int	x;
+	int	y;
+
+} t_point;
 
 typedef struct s_gameInfo
 {
@@ -82,4 +95,16 @@ void		player_move(t_gameInfo *gi, int direction);
 
 //MAIN
 void	print_screen (t_gameInfo *game_info);
+
+
+
+
+/////AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAa
+int get_vert_dist(t_gameInfo	*gi, double angle);
+double get_horiz_dist(t_gameInfo	*gi, double angle);
+
+
+double dtr(double deg);
+void mark_pnt(t_gameInfo	*gi, int x, int y, uint32_t color);
+
 #endif

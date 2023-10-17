@@ -13,16 +13,26 @@
 #include "game.h"
 
 
+//	0				-	TEXTURE SIZE - 1		-> Block 0
+//	TEXTURE SIZE	-	(TEXTURE SIZE * 2) - 1	-> Block 1
+//	TEXTURE SIZE*2	-	(TEXTURE SIZE * 3) - 1	-> Block 2
 
 // returns the map char at position (x, y)
 char	coors_in_map(t_gameInfo *gi, int x, int y)
 {
-	if (x < 0 || y < 0 || x > WIDTH || y > HEIGHT)
+
+	if (x < 0 || y < 0 || x >= WIDTH || y >= HEIGHT)
 		return (0);
+	if (y / TEXTURE_SIZE >= gi->map_info->map_height
+	|| x / TEXTURE_SIZE >= gi->map_info->map_width)
+		return (0);
+	dprintf(FD, "xy: %i(%i), %i (%i)\n", x, x % TEXTURE_SIZE, y, y % TEXTURE_SIZE);
+	dprintf(FD, "BLOC: %i, %i\n", (int)round (x / TEXTURE_SIZE), (int)round (y / TEXTURE_SIZE));
 	return (gi->map_info->map
-		[y / TEXTURE_SIZE]
-		[x / TEXTURE_SIZE]);
+		[(int)ceil (y / TEXTURE_SIZE)]
+		[(int)ceil (x / TEXTURE_SIZE)]);
 }
+
 
 static void	update_player(t_gameInfo *gi, int x, int y)
 {
@@ -65,7 +75,7 @@ void	player_rotate(t_gameInfo *gi, int orientation)
 		gi->player->orientation = (360 + gi->player->orientation - 45) % 360;
 	else
 		gi->player->orientation = (360 + gi->player->orientation + 45) % 360;
-	printf("player direction : %i°\n", gi->player->orientation);
+	dprintf(FD, "player direction : %i°\n", gi->player->orientation);
 }
 
 

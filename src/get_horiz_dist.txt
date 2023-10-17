@@ -1,0 +1,22 @@
+
+/*
+	In case when angle == 90 or 270 we return 0 because it means ray will not hit vertical lines
+
+	U_D is a flag for up/down sector, U_D == 0 means top sector, 1 means down z
+
+	L_R is a flag for left/right, L_R == 0 is left half and L_R == 1 is right
+
+	P_x, P_y - PLAYER XY
+	B_x, B_y - FIRST INTERSECTION XY
+
+
+	y_diff is how much to add to the B_y pos in each loop
+		y_diff = TEXTURE_SIZE * tan (dtr(angle));
+		for angle == 45 or angle == 315
+		y_diff = - TEXTURE_SIZE * tan (dtr(angle));
+
+	dis_diff - first value is the hypoteneuse of player to the nearest check point
+		dis_diff = fabs(TEXTURE_SIZE / cos(dtr(angle)));
+
+	dis is actual distance to the wall
+*/

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   player_movement.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yuliamorozova <yuliamorozova@student.42    +#+  +:+       +#+        */
+/*   By: ymorozov <ymorozov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/25 13:25:56 by nroth             #+#    #+#             */
-/*   Updated: 2023/10/09 15:55:42 by yuliamorozo      ###   ########.fr       */
+/*   Updated: 2023/10/17 17:31:37 by ymorozov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,9 +72,9 @@ static int	change_x_y(int x, int y, t_gameInfo *gi)
 void	player_rotate(t_gameInfo *gi, int orientation)
 {
 	if (orientation == MLX_KEY_RIGHT)
-		gi->player->orientation = (360 + gi->player->orientation - 45) % 360;
+		gi->player->orientation = (360 + gi->player->orientation - 10) % 360;
 	else
-		gi->player->orientation = (360 + gi->player->orientation + 45) % 360;
+		gi->player->orientation = (360 + gi->player->orientation + 10) % 360;
 	print_screen (gi);
 	printf ("player direction : %i°\n", gi->player->orientation);
 }

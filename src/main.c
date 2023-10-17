@@ -6,7 +6,7 @@
 /*   By: ymorozov <ymorozov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/21 17:11:08 by nroth             #+#    #+#             */
-/*   Updated: 2023/10/05 17:31:05 by ymorozov         ###   ########.fr       */
+/*   Updated: 2023/10/17 17:32:39 by ymorozov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,7 @@ void	line(mlx_image_t *img, int a[2], int b[2])
 {
 	float		steps[2];
 	int			c[2];
-	uint32_t	color = 0xFF0000FF;
+	uint32_t	color = 0x3F51B5FF;
 	int			max;
 
 	if (a[0] == b[0] && a[1] == b[1])
@@ -129,14 +129,18 @@ int margin;
 		// printf("ANGLE increase: %f\n", angle_increase);
 		dis = get_dist(gi, gi->player->orientation + (FOV / 2) - (ang_incr * x));
 		printf("dist: %f\n", dis);
-		printf("PRINTED HEIGHT: %f\n", (32 * 277) / dis);
+		
 
-		printed_height = round ((32 * 277) / dis);
-		if (printed_height <= HEIGHT)
-		{
-			margin = (HEIGHT - printed_height) / 2;
-			line(test, (int[2]){x, margin}, (int[2]){x, margin + printed_height});
-		}
+		// printed_height = round ((32 * 277) / dis);
+		printed_height = round ((32 * (WIDTH * 0.5 / tan(dtr(FOV / 2)))) / dis);
+		printf("PRINTED HEIGHT: %d\n", printed_height);
+		if (printed_height > HEIGHT)
+			printed_height = HEIGHT;
+		// if (printed_height <= HEIGHT)
+		// {
+		margin = (HEIGHT - printed_height) / 2;
+		line(test, (int[2]){x, margin}, (int[2]){x, margin + printed_height});
+		// }
 
 	printf("height: %i\n", printed_height);
 	printf("margin: %i\n", margin);

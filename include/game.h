@@ -29,14 +29,13 @@
 
 #define WIDTH 1600
 #define HEIGHT 864
-#define FD 1
 
 #define TEXTURE_SIZE 32
-#define PLAYER_SIZE 15
+#define PLAYER_SIZE 16
 
+#define FOV 60
+#define CAM_DIS 1386
 
-
-#define PLAYER_PATH "../textures/droog.xpm42"
 
 typedef struct s_player
 {
@@ -100,9 +99,9 @@ void	print_screen (t_gameInfo *game_info);
 
 
 /////AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAa
-int get_vert_dist(t_gameInfo	*gi, double angle);
-int get_horiz_dist(t_gameInfo	*gi, double angle);
-
+double	get_vert_dist(t_gameInfo	*gi, double angle);
+double	get_horiz_dist(t_gameInfo	*gi, double angle);
+double get_dist (t_gameInfo *gi, double angle);
 
 double dtr(double deg);
 void mark_pnt(t_gameInfo	*gi, int x, int y, uint32_t color);

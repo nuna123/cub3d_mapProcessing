@@ -1,17 +1,53 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_vert_dist.c                                    :+:      :+:    :+:   */
+/*   get_horiz_dist.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nroth <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/10/16 13:09:58 by nroth             #+#    #+#             */
-/*   Updated: 2023/10/16 13:10:00 by nroth            ###   ########.fr       */
+/*   Created: 2023/10/17 14:28:40 by nroth             #+#    #+#             */
+/*   Updated: 2023/10/17 14:28:41 by nroth            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "game.h"
 
+static void	horiz_init(t_gameInfo *gi, double a, double pl[2], double dot[2])
+{
+	pl[0] = gi->player->x + floor(PLAYER_SIZE / 2);
+	pl[1] = gi->player->y + floor(PLAYER_SIZE / 2);
+	dot[0] = (((int)(pl[0] / TEXTURE_SIZE))
+			+ (a < 90 || a > 270)) * TEXTURE_SIZE;
+	dot[1] = pl[1] - ((dot[0] - pl[0]) * tan(dtr(a)));
+}
+
+double	get_horiz_dist(t_gameInfo *gi, double a)
+{
+	double	pl[2];
+	double	dot[2];
+	double	diff[2];
+	double	dis_diff;
+	double	dis;
+
+	if (a == 90 || a == 270)
+		return (-1);
+	horiz_init(gi, a, pl, dot);
+	dis_diff = fabs(TEXTURE_SIZE / cos(dtr(a)));
+	dis = abs((int)((pl[0] - dot[0]) / cos(dtr(a))));
+	diff[1] = -1 * sin(dtr(a)) * dis_diff;
+	diff[0] = TEXTURE_SIZE - (((a > 90 && a < 270)) * TEXTURE_SIZE * 2);
+	while (dot[0] < WIDTH && dot[0] > 0 && dot[1] > 0 && dot[1] < HEIGHT)
+	{
+		if (coors_in_map(gi, dot[0] - (a > 90 && a < 270),
+				dot[1] - (((int) round (dot[1]) % TEXTURE_SIZE == 0)
+					&& (a < 180))) != '0')
+			return (round(dis));
+		dot[0] += diff[0];
+		dot[1] += diff[1];
+		dis += dis_diff;
+	}
+	return (round(dis));
+}
 /*
 	In case when angle == 0 or 180 we return 0 because it means ray will not hit
 		vertical lines
@@ -35,7 +71,7 @@ static void	vert_init(t_gameInfo *gi, double a, double pl[2], double dot[2])
 	dot[0] = pl[0] + ((a != 90 && a != 270) * ((pl[1] - dot[1]) / tan(dtr(a))));
 }
 
-int	get_vert_dist(t_gameInfo *gi, double a)
+double	get_vert_dist(t_gameInfo *gi, double a)
 {
 	double	pl[2];
 	double	dot[2];
@@ -44,7 +80,7 @@ int	get_vert_dist(t_gameInfo *gi, double a)
 	double	dis;
 
 	if (a == 0 || a == 180)
-		return (INT_MAX);
+		return (-1);
 	vert_init(gi, a, pl, dot);
 	dis_diff = fabs((TEXTURE_SIZE / sin(dtr(a))));
 	diff[0] = dis_diff * cos (dtr(a));
@@ -55,10 +91,30 @@ int	get_vert_dist(t_gameInfo *gi, double a)
 		if (coors_in_map (gi, dot[0] - (((int)round(dot[0]) % TEXTURE_SIZE == 0)
 					&& (a > 90 && a < 270)),
 				dot[1] - (a < 180)) != '0')
-			return ((int)round(dis));
+			return (round(dis));
 		dot[0] += diff[0];
 		dot[1] += diff[1];
 		dis += dis_diff;
 	}
-	return ((int)round(dis));
+	return (round(dis));
+}
+
+double get_dist (t_gameInfo *gi, double angle)
+{
+	double		vert_dis;
+	double		horiz_dis;
+
+	horiz_dis = get_horiz_dist(gi,fmod((angle + 360), 360));
+	vert_dis = get_vert_dist(gi,fmod((angle + 360), 360));
+
+	// printf("%f ", angle);
+/*	printf("HOR DIST: %i\n", horiz_dis);
+	printf("VER DIST: %i\n", vert_dis); */
+	if (vert_dis == -1)
+		return (horiz_dis);
+	if (horiz_dis == -1)
+		return (vert_dis);
+	if (horiz_dis < vert_dis)
+		return (horiz_dis);
+	return (vert_dis);
 }

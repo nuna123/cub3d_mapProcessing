@@ -26,8 +26,8 @@ char	coors_in_map(t_gameInfo *gi, int x, int y)
 	if (y / TEXTURE_SIZE >= gi->map_info->map_height
 	|| x / TEXTURE_SIZE >= gi->map_info->map_width)
 		return (0);
-/* 	dprintf(FD, "xy: %i(%i), %i (%i)\n", x, x % TEXTURE_SIZE, y, y % TEXTURE_SIZE);
-	dprintf(FD, "BLOC: %i, %i\n", (int)round (x / TEXTURE_SIZE), (int)round (y / TEXTURE_SIZE)); */
+/* 	printf ("xy: %i(%i), %i (%i)\n", x, x % TEXTURE_SIZE, y, y % TEXTURE_SIZE);
+	printf ("BLOC: %i, %i\n", (int)round (x / TEXTURE_SIZE), (int)round (y / TEXTURE_SIZE)); */
 	return (gi->map_info->map
 		[(int)ceil (y / TEXTURE_SIZE)]
 		[(int)ceil (x / TEXTURE_SIZE)]);
@@ -75,14 +75,10 @@ void	player_rotate(t_gameInfo *gi, int orientation)
 		gi->player->orientation = (360 + gi->player->orientation - 45) % 360;
 	else
 		gi->player->orientation = (360 + gi->player->orientation + 45) % 360;
-	dprintf(FD, "player direction : %i°\n", gi->player->orientation);
+	print_screen (gi);
+	printf ("player direction : %i°\n", gi->player->orientation);
 }
 
-
-#define NORTH 90
-#define EAST 0
-#define SOUTH 180
-#define WEST 270
 // 1 = UP; 0 = DOWN
 // if statements define the N, S, WE and EA areas in order
 void	player_move(t_gameInfo *gi, int direction)

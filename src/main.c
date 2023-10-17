@@ -56,6 +56,34 @@ void	print_texture(mlx_image_t *img, mlx_texture_t *texture,
 	}
 }
 
+void	line(mlx_image_t *img, int a[2], int b[2])
+{
+	float		steps[2];
+	int			c[2];
+	uint32_t	color = 0xFF0000FF;
+	int			max;
+
+	if (a[0] == b[0] && a[1] == b[1])
+	{
+		mlx_put_pixel(img, a[0], a[1], color);
+		return ;
+	}
+	steps[0] = b[0] - a[0];
+	steps[1] = b[1] - a[1];
+	c[0] = a[0];
+	c[1] = a[1];
+	max = fmax(fabs(steps[0]), fabs(steps[1]));
+	if (max == 0)
+		return ;
+	steps[0] /= max;
+	steps[1] /= max;
+	while ((int)(b[0] - c[0]) || (int)(b[1] - c[1]))
+	{
+		mlx_put_pixel(img, c[0], c[1], color);
+		c[0] += steps[0];
+		c[1] += steps[1];
+	}
+}
 mlx_image_t	*print_bcg(t_gameInfo	*gi)
 {
 	mlx_image_t	*test;
@@ -86,6 +114,41 @@ mlx_image_t	*create_screen_image(t_gameInfo	*gi)
 {
 	mlx_image_t	*test;
 	int			x;
+	double			dis;
+	double		ang_incr;
+	int		printed_height;
+int margin;
+	x = -1;
+	test = print_bcg(gi);
+	if (!test)
+		return (NULL);
+	ang_incr = 60.0 / 1600.0;
+
+ 	while (++x < WIDTH)
+	{
+		// printf("ANGLE increase: %f\n", angle_increase);
+		dis = get_dist(gi, gi->player->orientation + (FOV / 2) - (ang_incr * x));
+		printf("dist: %f\n", dis);
+		printf("PRINTED HEIGHT: %f\n", (32 * 277) / dis);
+
+		printed_height = round ((32 * 277) / dis);
+		if (printed_height <= HEIGHT)
+		{
+			margin = (HEIGHT - printed_height) / 2;
+			line(test, (int[2]){x, margin}, (int[2]){x, margin + printed_height});
+		}
+
+	printf("height: %i\n", printed_height);
+	printf("margin: %i\n", margin);
+	printf("Axy: %i %i, Bxy:%i, %i \n\n", x, margin, x, margin + printed_height);
+
+	}
+	return (test);
+}
+/* mlx_image_t	*create_screen_image(t_gameInfo	*gi)
+{
+	mlx_image_t	*test;
+	int			x;
 	int			y;
 
 	y = -1;
@@ -107,7 +170,7 @@ mlx_image_t	*create_screen_image(t_gameInfo	*gi)
 	}
 	print_texture(test, gi->player_texture, gi->player->x, gi->player->y);
 	return (test);
-}
+} */
 
 void draw_dot(t_gameInfo	*gi, double angle, int dis)
 {
@@ -146,77 +209,33 @@ void mark_pnt(t_gameInfo	*gi, int x, int y, uint32_t color)
 
 void	print_screen(t_gameInfo *game_info)
 {
-	dprintf(FD, "\n--------------------------------------------------------\n");
-	dprintf(FD, "\n--------------------------------------------------------\n");
 	mlx_image_t	*img;
 
 	img = create_screen_image(game_info);
 	if (!img)
 	{
-		dprintf(FD, "ERR printscreen\n");
+		printf ("ERR printscreen\n");
 		return ;
 	}
 	mlx_delete_image(game_info->mlx, game_info->screen_image);
 	game_info->screen_image = img;
-/*
-	double vert_dis = get_vert_dist(game_info,(double)game_info->player->orientation);
 
-	double horiz_dis = get_horiz_dist(game_info,(double)game_info->player->orientation);
-
-	double dis = vert_dis;
-	if (!vert_dis)
-		dis = horiz_dis;
-	else if (!horiz_dis)
-		dis = vert_dis;
-	else if (horiz_dis < vert_dis)
-		dis = horiz_dis;
-	else if (vert_dis < horiz_dis)
-		dis = vert_dis;
-
-	for(int i = 0; i < (int) dis; i++)
-	{
-		draw_dot(game_info,(double)game_info->player->orientation, i);
-	} */
-
-	int vert_dis, horiz_dis, dis;
+/* 	int vert_dis, horiz_dis, dis;
 	double angle;
-	// double arr[] = {0, 45, 90 , 135,  180, 225, 270, 315};
 
 	for(int a = 30; a > -30 ; a -= 3)
 	{
-	// int a = +30;
 		angle = (game_info->player->orientation + a);
 		if (angle < 0)
 			angle += 360;
 
-		dprintf(FD, "\n--------------\na: %i, angle %f\n",a ,  angle);
-
-
-		horiz_dis = get_horiz_dist(game_info,angle);
-		// horiz_dis = INT_MAX;
-
-		vert_dis = get_vert_dist(game_info,angle);
-		// vert_dis = INT_MAX;
-
-
-		dis = vert_dis;
-		if (horiz_dis < vert_dis)
-		{
-			dis = horiz_dis;
-			dprintf(FD, "horiz used!\n");
-		}
-
-		// dprintf(FD, "dis: %f\n", dis);
+		dis = get_dist(game_info)
 		if (dis != INT_MAX)
 		{
-			printf("VERTICAL DIS: %i\n",  vert_dis);
-			printf("HORIZONTAL DIS: %i\n", horiz_dis);
-			printf("DIS: %i\n", dis);
-
 			for(int i = 0; i < dis; i++)
 				draw_dot(game_info, angle, i);
 		}
-	}
+	} */
 
 	mlx_image_to_window(game_info->mlx, game_info->screen_image, 0, 0);
 }
@@ -226,7 +245,7 @@ int	main(int argc, char *argv[])
 	 t_gameInfo	*game_info;
 
 	if (argc <= 1)
-		return (dprintf(FD, "Error!\nNo map path specified.\n"), 1);
+		return (printf ("Error!\nNo map path specified.\n"), 1);
 	game_info = init_game_info(argv);
 	if (!game_info)
 		exit(-1);

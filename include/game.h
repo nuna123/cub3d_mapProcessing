@@ -101,7 +101,7 @@ void	print_screen (t_gameInfo *game_info);
 
 /////AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAa
 int get_vert_dist(t_gameInfo	*gi, double angle);
-double get_horiz_dist(t_gameInfo	*gi, double angle);
+int get_horiz_dist(t_gameInfo	*gi, double angle);
 
 
 double dtr(double deg);

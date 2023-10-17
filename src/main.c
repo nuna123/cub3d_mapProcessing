@@ -182,7 +182,7 @@ void	print_screen(t_gameInfo *game_info)
 	double angle;
 	// double arr[] = {0, 45, 90 , 135,  180, 225, 270, 315};
 
-	for(int a = 30; a > -30 ; a -= 10)
+	for(int a = 30; a > -30 ; a -= 3)
 	{
 	// int a = +30;
 		angle = (game_info->player->orientation + a);

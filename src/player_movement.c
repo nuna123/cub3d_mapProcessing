@@ -26,8 +26,8 @@ char	coors_in_map(t_gameInfo *gi, int x, int y)
 	if (y / TEXTURE_SIZE >= gi->map_info->map_height
 	|| x / TEXTURE_SIZE >= gi->map_info->map_width)
 		return (0);
-	dprintf(FD, "xy: %i(%i), %i (%i)\n", x, x % TEXTURE_SIZE, y, y % TEXTURE_SIZE);
-	dprintf(FD, "BLOC: %i, %i\n", (int)round (x / TEXTURE_SIZE), (int)round (y / TEXTURE_SIZE));
+/* 	dprintf(FD, "xy: %i(%i), %i (%i)\n", x, x % TEXTURE_SIZE, y, y % TEXTURE_SIZE);
+	dprintf(FD, "BLOC: %i, %i\n", (int)round (x / TEXTURE_SIZE), (int)round (y / TEXTURE_SIZE)); */
 	return (gi->map_info->map
 		[(int)ceil (y / TEXTURE_SIZE)]
 		[(int)ceil (x / TEXTURE_SIZE)]);

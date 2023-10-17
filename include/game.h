@@ -22,9 +22,14 @@
 #include "MLX42.h"
 #include <limits.h>
 
+#define MAG "\e[0;35m"
+#define CYN "\e[0;36m"
+#define WHT "\e[0;37m"
+
 
 #define WIDTH 1600
 #define HEIGHT 864
+#define FD 1
 
 #define TEXTURE_SIZE 32
 #define PLAYER_SIZE 15

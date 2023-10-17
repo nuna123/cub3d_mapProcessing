@@ -116,11 +116,12 @@ void draw_dot(t_gameInfo	*gi, double angle, int dis)
 
 /* 	dot_x = (gi->player->x) + (dis * cos(dtr(angle)));
 	dot_y = (gi->player->y) - (dis * sin(dtr(angle))); */
-	dot_x = (gi->player->x + PLAYER_SIZE/2) + (dis * cos(dtr(angle)));
-	dot_y = (gi->player->y + PLAYER_SIZE/2) - (dis * sin(dtr(angle)));
+
+	dot_x = (gi->player->x + floor(PLAYER_SIZE / 2)) + (dis * cos(dtr(angle)));
+	dot_y = (gi->player->y + floor(PLAYER_SIZE / 2)) - (dis * sin(dtr(angle)));
 	if (dot_x < 1 || dot_x > WIDTH - 1 || dot_y < 1 || dot_y > HEIGHT - 1)
 		return ;
-	mlx_put_pixel(gi->screen_image, (int) dot_x, (int) dot_y, 0xFF0000FF);
+	mlx_put_pixel(gi->screen_image, (int) dot_x, (int) dot_y, 0x0000FFFF);
 
 }
 
@@ -145,14 +146,14 @@ void mark_pnt(t_gameInfo	*gi, int x, int y, uint32_t color)
 
 void	print_screen(t_gameInfo *game_info)
 {
-	printf("\n--------------------------------------------------------\n");
-	printf("\n--------------------------------------------------------\n");
+	dprintf(FD, "\n--------------------------------------------------------\n");
+	dprintf(FD, "\n--------------------------------------------------------\n");
 	mlx_image_t	*img;
 
 	img = create_screen_image(game_info);
 	if (!img)
 	{
-		printf("ERR printscreen\n");
+		dprintf(FD, "ERR printscreen\n");
 		return ;
 	}
 	mlx_delete_image(game_info->mlx, game_info->screen_image);
@@ -188,24 +189,33 @@ void	print_screen(t_gameInfo *game_info)
 		if (angle < 0)
 			angle += 360;
 
-		printf("\n--------------\na: %i, angle %f\n",a ,  angle);
+		dprintf(FD, "\n--------------\na: %i, angle %f\n",a ,  angle);
 
+
+		horiz_dis = get_horiz_dist(game_info,angle);
+		// horiz_dis = INT_MAX;
 
 		vert_dis = get_vert_dist(game_info,angle);
-		horiz_dis = get_horiz_dist(game_info,angle);
 		// vert_dis = INT_MAX;
+
 
 		dis = vert_dis;
 		if (horiz_dis < vert_dis)
-			dis = horiz_dis;
-
-
-		// printf("dis: %f\n", dis);
-		if (dis != INT_MAX)
-{		for(int i = 0; i < dis; i++)
 		{
-			draw_dot(game_info, angle, i);
-		}}
+			dis = horiz_dis;
+			dprintf(FD, "horiz used!\n");
+		}
+
+		// dprintf(FD, "dis: %f\n", dis);
+		if (dis != INT_MAX)
+		{
+			printf("VERTICAL DIS: %i\n",  vert_dis);
+			printf("HORIZONTAL DIS: %i\n", horiz_dis);
+			printf("DIS: %i\n", dis);
+
+			for(int i = 0; i < dis; i++)
+				draw_dot(game_info, angle, i);
+		}
 	}
 
 	mlx_image_to_window(game_info->mlx, game_info->screen_image, 0, 0);
@@ -213,10 +223,10 @@ void	print_screen(t_gameInfo *game_info)
 
 int	main(int argc, char *argv[])
 {
-	t_gameInfo	*game_info;
+	 t_gameInfo	*game_info;
 
 	if (argc <= 1)
-		return (printf("Error!\nNo map path specified.\n"), 1);
+		return (dprintf(FD, "Error!\nNo map path specified.\n"), 1);
 	game_info = init_game_info(argv);
 	if (!game_info)
 		exit(-1);
@@ -225,6 +235,10 @@ int	main(int argc, char *argv[])
 	mlx_key_hook(game_info->mlx, key_hooker, game_info);
 	mlx_loop(game_info->mlx);
 	mlx_terminate(game_info->mlx);
+/*
+	printf ("%c\n\n", coors_in_map(game_info, 0, 0));
+	printf ("%c\n\n", coors_in_map(game_info, TEXTURE_SIZE, 0));
+	printf ("%c\n\n", coors_in_map(game_info, TEXTURE_SIZE + 1, 0)); */
 	return (EXIT_SUCCESS);
 }
 

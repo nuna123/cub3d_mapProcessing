@@ -28,31 +28,50 @@
 */
 int	get_vert_dist(t_gameInfo	*gi, double a)
 {
-	int	pl[2];
-	int	dot[2];
-	int	diff[2];
-	int	dis_diff;
-	int	dis;
+	double	pl[2];
+	double	dot[2];
+	double	diff[2];
+
+	double	dis_diff;
+	double	dis;
 
 	if (a == 0 || a == 180)
 		return (INT_MAX);
-	pl[0] = gi->player->x + floor(PLAYER_SIZE / 2);
-	pl[1] = gi->player->y + floor(PLAYER_SIZE / 2);
-	dot[1] = ((int)(pl[1] / TEXTURE_SIZE + (a > 180))) * TEXTURE_SIZE;
+	pl[0] = (double) gi->player->x + floor(PLAYER_SIZE / 2);
+	pl[1] = (double) gi->player->y + floor(PLAYER_SIZE / 2);
+	dot[1] = (((int) (pl[1] / TEXTURE_SIZE) + (a > 180))) * TEXTURE_SIZE;
 	dot[0] = pl[0] + (a != 90 && a != 270) * ((pl[1] - dot[1]) / tan(dtr(a)));
-	dis_diff = abs((int)(TEXTURE_SIZE / sin(dtr(a))));
+	dis_diff = fabs((TEXTURE_SIZE / sin(dtr(a))));
+		printf("\n\nPLAYER XY = %f, %f\n", pl[0], pl[1]);
+		printf("dis diff %f\n", dis_diff);
+
+
 	diff[0] = dis_diff * cos (dtr(a));
-	dis = abs((int)(abs(pl[1] - dot[1]) / sin(dtr(180 - a))));
+	dis = fabs((fabs(pl[1] - dot[1]) / sin(dtr(180 - a))));
 	diff[1] = TEXTURE_SIZE - (a < 180) * TEXTURE_SIZE * 2;
 	while (dot[0] < WIDTH && dot[0] > 0 && dot[1] > 0 && dot[1] < HEIGHT)
 	{
-		if (coors_in_map(gi, dot[0], dot[1] - (a < 180)) != '0')
-			return (dis);
+		dprintf(FD, "\n%sB(XY): %f, %f%s\n",CYN, dot[0], dot[1], WHT);
+
+		if (coors_in_map(gi, dot[0] - (((int)round (dot[0]) % TEXTURE_SIZE == 0)&&(a > 90 && a < 270)),
+			dot[1] - (((int)round (dot[1]) % TEXTURE_SIZE == 0)&&(a < 180))) != '0')
+		{
+			printf("%sfinal xy: %f, %f\n%s",CYN, dot[0], dot[1], WHT);
+			printf("%sfinal dis: %f\n%s",CYN, dis, WHT);
+
+			// mark_pnt(gi, dot[0], dot[1], 0x00FF00FF);
+			return ((int) ceil(dis));
+		}
+/* 		if (coors_in_map(gi, dot[0], dot[1] - (a < 180)) != '0')
+			return (dis); */
+/* 		if (coors_in_map(gi, dot[0], dot[1]) != '0')
+			return (dis); */
 		dot[0] += diff[0];
 		dot[1] += diff[1];
 		dis += dis_diff;
+		printf("dis %f\n", dis);
 	}
-	return (dis);
+	return ((int) ceil(dis));
 }
 
 /* double get_vert_dist(t_gameInfo	*gi, double a)

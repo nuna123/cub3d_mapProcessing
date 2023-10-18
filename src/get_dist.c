@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_horiz_dist.c                                   :+:      :+:    :+:   */
+/*   get_dist.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nroth <marvin@42.fr>                       +#+  +:+       +#+        */
+/*   By: ymorozov <ymorozov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/17 14:28:40 by nroth             #+#    #+#             */
-/*   Updated: 2023/10/17 14:28:41 by nroth            ###   ########.fr       */
+/*   Updated: 2023/10/18 14:34:46 by ymorozov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,12 +41,12 @@ double	get_horiz_dist(t_gameInfo *gi, double a)
 		if (coors_in_map(gi, dot[0] - (a > 90 && a < 270),
 				dot[1] - (((int) round (dot[1]) % TEXTURE_SIZE == 0)
 					&& (a < 180))) != '0')
-			return (round(dis));
+			return (dis);
 		dot[0] += diff[0];
 		dot[1] += diff[1];
 		dis += dis_diff;
 	}
-	return (round(dis));
+	return (dis);
 }
 /*
 	In case when angle == 0 or 180 we return 0 because it means ray will not hit
@@ -91,30 +91,42 @@ double	get_vert_dist(t_gameInfo *gi, double a)
 		if (coors_in_map (gi, dot[0] - (((int)round(dot[0]) % TEXTURE_SIZE == 0)
 					&& (a > 90 && a < 270)),
 				dot[1] - (a < 180)) != '0')
-			return (round(dis));
+			return (dis);
 		dot[0] += diff[0];
 		dot[1] += diff[1];
 		dis += dis_diff;
 	}
-	return (round(dis));
+	return (dis);
 }
 
-double get_dist (t_gameInfo *gi, double angle)
+double get_dist (t_gameInfo *gi, double angle, int *txtr)
 {
 	double		vert_dis;
 	double		horiz_dis;
+	int			corr_ang;
 
+	corr_ang = (int)(fmod((angle + 360), 360) - gi->player->orientation);
+	// printf("gi->player->orientation = %d	corr_ang = %d\n", gi->player->orientation, corr_ang);
 	horiz_dis = get_horiz_dist(gi,fmod((angle + 360), 360));
 	vert_dis = get_vert_dist(gi,fmod((angle + 360), 360));
+	// printf("HOR DIST: %f\n", horiz_dis);
+	// printf("VER DIST: %f\n", vert_dis);
+	if ((angle < 90 || angle > 270) && (vert_dis == -1 || horiz_dis < vert_dis))
+		*txtr = 0;
+	else if ((angle > 0 && angle < 180) && (horiz_dis == -1 || horiz_dis > vert_dis))
+		*txtr = 1;
+	else if ((angle > 90 && angle < 270) && (vert_dis == -1 || horiz_dis < vert_dis))
+		*txtr = 2;
+	else if ((angle >180 && angle < 360) && (horiz_dis == -1 || horiz_dis > vert_dis))
+		*txtr = 3;
+	printf("angle = %f, texture = %d\n", angle, *txtr);
 
-	// printf("%f ", angle);
-/*	printf("HOR DIST: %i\n", horiz_dis);
-	printf("VER DIST: %i\n", vert_dis); */
+
 	if (vert_dis == -1)
-		return (horiz_dis);
+		return (horiz_dis * cos(dtr(corr_ang)));
 	if (horiz_dis == -1)
-		return (vert_dis);
+		return (vert_dis * cos(dtr(corr_ang)));
 	if (horiz_dis < vert_dis)
-		return (horiz_dis);
-	return (vert_dis);
+		return (horiz_dis * cos(dtr(corr_ang)));
+	return (vert_dis * cos(dtr(corr_ang)));
 }

@@ -6,7 +6,7 @@
 /*   By: ymorozov <ymorozov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/21 17:11:15 by nroth             #+#    #+#             */
-/*   Updated: 2023/10/05 16:08:39 by ymorozov         ###   ########.fr       */
+/*   Updated: 2023/10/18 11:57:43 by ymorozov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,7 +101,8 @@ void	print_screen (t_gameInfo *game_info);
 /////AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAa
 double	get_vert_dist(t_gameInfo	*gi, double angle);
 double	get_horiz_dist(t_gameInfo	*gi, double angle);
-double get_dist (t_gameInfo *gi, double angle);
+// double get_dist (t_gameInfo *gi, double angle);
+double get_dist (t_gameInfo *gi, double angle, int *txtr);
 
 double dtr(double deg);
 void mark_pnt(mlx_image_t *img, int x, int y, uint32_t color);

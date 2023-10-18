@@ -6,7 +6,7 @@
 /*   By: ymorozov <ymorozov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/21 17:11:08 by nroth             #+#    #+#             */
-/*   Updated: 2023/10/17 17:32:39 by ymorozov         ###   ########.fr       */
+/*   Updated: 2023/10/18 14:36:40 by ymorozov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ void	print_texture(mlx_image_t *img, mlx_texture_t *texture,
 	}
 }
 
-void	line(mlx_image_t *img, int a[2], int b[2])
+/* void	line(mlx_image_t *img, int a[2], int b[2])
 {
 	float		steps[2];
 	int			c[2];
@@ -83,7 +83,44 @@ void	line(mlx_image_t *img, int a[2], int b[2])
 		c[0] += steps[0];
 		c[1] += steps[1];
 	}
+} */
+void	line(mlx_image_t *img, int a[2], int b[2], int txtr)
+{
+	float		steps[2];
+	int			c[2];
+	uint32_t	color = 0x3F51B5FF;
+	int			max;
+
+	if (txtr == 0)
+		color = 0xFFD54FFF;	//yellow east
+	else if (txtr == 1)
+		color = 0x4A148CFF;	//purple north
+	else if (txtr == 2)
+		color = 0xFF6E40FF;	// coral west
+	else if (txtr == 3)
+		color = 0x388E3CFF;	//green south
+	if (a[0] == b[0] && a[1] == b[1])
+	{
+		mlx_put_pixel(img, a[0], a[1], color);
+		return ;
+	}
+	steps[0] = b[0] - a[0];
+	steps[1] = b[1] - a[1];
+	c[0] = a[0];
+	c[1] = a[1];
+	max = fmax(fabs(steps[0]), fabs(steps[1]));
+	if (max == 0)
+		return ;
+	steps[0] /= max;
+	steps[1] /= max;
+	while ((int)(b[0] - c[0]) || (int)(b[1] - c[1]))
+	{
+		mlx_put_pixel(img, c[0], c[1], color);
+		c[0] += steps[0];
+		c[1] += steps[1];
+	}
 }
+
 mlx_image_t	*print_bcg(t_gameInfo	*gi)
 {
 	mlx_image_t	*test;
@@ -117,34 +154,32 @@ mlx_image_t	*create_screen_image(t_gameInfo	*gi)
 	double			dis;
 	double		ang_incr;
 	int		printed_height;
-int margin;
+	int		margin;
+	int	texture = -1; //0 east, 1 north, 2 west, 3 south
 	x = -1;
 	test = print_bcg(gi);
 	if (!test)
 		return (NULL);
 	ang_incr = 60.0 / 1600.0;
-
+	// double counter = round(x + 1 / 27);
  	while (++x < WIDTH)
 	{
-		// printf("ANGLE increase: %f\n", angle_increase);
-		dis = get_dist(gi, gi->player->orientation + (FOV / 2) - (ang_incr * x));
-		printf("dist: %f\n", dis);
-		
-
-		// printed_height = round ((32 * 277) / dis);
-		printed_height = round ((32 * (WIDTH * 0.5 / tan(dtr(FOV / 2)))) / dis);
-		printf("PRINTED HEIGHT: %d\n", printed_height);
+		// printf("ANGLE increase: %f\n", ang_incr);
+		dis = get_dist(gi, gi->player->orientation + (FOV / 2) - (ang_incr * x), &texture);
+		printf("\nDIST: %f\n", dis);
+		printed_height =  ((32 * (WIDTH * 0.5 / tan(dtr(FOV / 2)))) / dis);
+		// printf("PRINTED HEIGHT: %d\n", printed_height);
 		if (printed_height > HEIGHT)
 			printed_height = HEIGHT;
 		// if (printed_height <= HEIGHT)
 		// {
 		margin = (HEIGHT - printed_height) / 2;
-		line(test, (int[2]){x, margin}, (int[2]){x, margin + printed_height});
+		line(test, (int[2]){x, margin}, (int[2]){x, margin + printed_height}, texture);
 		// }
 
-	printf("height: %i\n", printed_height);
-	printf("margin: %i\n", margin);
-	printf("Axy: %i %i, Bxy:%i, %i \n\n", x, margin, x, margin + printed_height);
+	// printf("height: %i\n", printed_height);
+	// printf("margin: %i\n", margin);
+	// printf("Axy: %i %i, Bxy:%i, %i \n\n", x, margin, x, margin + printed_height);
 
 	}
 	return (test);

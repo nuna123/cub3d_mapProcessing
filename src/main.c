@@ -6,7 +6,7 @@
 /*   By: ymorozov <ymorozov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/21 17:11:08 by nroth             #+#    #+#             */
-/*   Updated: 2023/10/18 14:36:40 by ymorozov         ###   ########.fr       */
+/*   Updated: 2023/10/18 18:51:14 by ymorozov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,7 +87,7 @@ void	print_texture(mlx_image_t *img, mlx_texture_t *texture,
 void	line(mlx_image_t *img, int a[2], int b[2], int txtr)
 {
 	float		steps[2];
-	int			c[2];
+	float			c[2];
 	uint32_t	color = 0x3F51B5FF;
 	int			max;
 
@@ -106,16 +106,16 @@ void	line(mlx_image_t *img, int a[2], int b[2], int txtr)
 	}
 	steps[0] = b[0] - a[0];
 	steps[1] = b[1] - a[1];
-	c[0] = a[0];
-	c[1] = a[1];
+	c[0] = (float)a[0];
+	c[1] = (float)a[1];
 	max = fmax(fabs(steps[0]), fabs(steps[1]));
 	if (max == 0)
 		return ;
 	steps[0] /= max;
 	steps[1] /= max;
-	while ((int)(b[0] - c[0]) || (int)(b[1] - c[1]))
+	while (((int)(b[0] - (int)round(c[0])) || (int)(b[1] - (int)round(c[1]))))
 	{
-		mlx_put_pixel(img, c[0], c[1], color);
+		mlx_put_pixel(img, (int)c[0], (int)c[1], color);
 		c[0] += steps[0];
 		c[1] += steps[1];
 	}
@@ -168,7 +168,7 @@ mlx_image_t	*create_screen_image(t_gameInfo	*gi)
 
 		// printf("ANGLE increase: %f\n", ang_incr);
 		dis = get_dist(gi, gi->player->orientation + (FOV / 2) - (ang_incr * x), &texture);
-		printf("\nDIST: %f\n", dis);
+		// printf("\nDIST: %f\n", dis);
 		printed_height =  ((32 * (WIDTH * 0.5 / tan(dtr(FOV / 2)))) / dis);
 		// printf("PRINTED HEIGHT: %d\n", printed_height);
 		if (printed_height > HEIGHT)

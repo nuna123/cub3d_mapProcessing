@@ -6,7 +6,7 @@
 /*   By: ymorozov <ymorozov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/17 14:28:40 by nroth             #+#    #+#             */
-/*   Updated: 2023/10/18 14:34:46 by ymorozov         ###   ########.fr       */
+/*   Updated: 2023/10/18 16:46:48 by ymorozov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -119,7 +119,7 @@ double get_dist (t_gameInfo *gi, double angle, int *txtr)
 		*txtr = 2;
 	else if ((angle >180 && angle < 360) && (horiz_dis == -1 || horiz_dis > vert_dis))
 		*txtr = 3;
-	printf("angle = %f, texture = %d\n", angle, *txtr);
+	// printf("angle = %f, texture = %d\n", angle, *txtr);
 
 
 	if (vert_dis == -1)

@@ -6,7 +6,7 @@
 /*   By: ymorozov <ymorozov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/21 17:11:15 by nroth             #+#    #+#             */
-/*   Updated: 2023/10/18 11:57:43 by ymorozov         ###   ########.fr       */
+/*   Updated: 2023/10/18 16:44:45 by ymorozov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,7 +106,8 @@ double get_dist (t_gameInfo *gi, double angle, int *txtr);
 
 double dtr(double deg);
 void mark_pnt(mlx_image_t *img, int x, int y, uint32_t color);
-void	line(mlx_image_t *img, int a[2], int b[2]);
+// void	line(mlx_image_t *img, int a[2], int b[2]);
+void	line(mlx_image_t *img, int a[2], int b[2], int txtr);
 
 void draw_minimap (t_gameInfo	*gi, mlx_image_t *img, int pos[2]);
 

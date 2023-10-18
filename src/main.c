@@ -160,10 +160,12 @@ mlx_image_t	*create_screen_image(t_gameInfo	*gi)
 	test = print_bcg(gi);
 	if (!test)
 		return (NULL);
+
 	ang_incr = 60.0 / 1600.0;
 	// double counter = round(x + 1 / 27);
  	while (++x < WIDTH)
 	{
+
 		// printf("ANGLE increase: %f\n", ang_incr);
 		dis = get_dist(gi, gi->player->orientation + (FOV / 2) - (ang_incr * x), &texture);
 		printf("\nDIST: %f\n", dis);
@@ -180,7 +182,6 @@ mlx_image_t	*create_screen_image(t_gameInfo	*gi)
 	// printf("height: %i\n", printed_height);
 	// printf("margin: %i\n", margin);
 	// printf("Axy: %i %i, Bxy:%i, %i \n\n", x, margin, x, margin + printed_height);
-
 	}
 	return (test);
 }
@@ -227,56 +228,56 @@ void draw_dot(t_gameInfo	*gi, double angle, int dis)
 
 }
 
-void mark_pnt(t_gameInfo	*gi, int x, int y, uint32_t color)
+void mark_pnt(mlx_image_t *img, int x, int y, uint32_t color)
 {
 	if (x < 1 || x > WIDTH - 1 || y < 1 || y > HEIGHT - 1)
 		return ;
-	mlx_put_pixel(gi->screen_image, x - 1, y - 1, color);
-	mlx_put_pixel(gi->screen_image, x - 1, y, color);
-	mlx_put_pixel(gi->screen_image, x - 1, y + 1, color);
+	mlx_put_pixel(img, x - 1, y - 1, color);
+	mlx_put_pixel(img, x - 1, y, color);
+	mlx_put_pixel(img, x - 1, y + 1, color);
 
-	mlx_put_pixel(gi->screen_image, x, y - 1, color);
-	mlx_put_pixel(gi->screen_image, x, y, color);
-	mlx_put_pixel(gi->screen_image, x, y + 1, color);
+	mlx_put_pixel(img, x, y - 1, color);
+	mlx_put_pixel(img, x, y, color);
+	mlx_put_pixel(img, x, y + 1, color);
 
-	mlx_put_pixel(gi->screen_image, x + 1, y - 1, color);
-	mlx_put_pixel(gi->screen_image, x + 1, y, color);
-	mlx_put_pixel(gi->screen_image, x + 1, y + 1, color);
+	mlx_put_pixel(img, x + 1, y - 1, color);
+	mlx_put_pixel(img, x + 1, y, color);
+	mlx_put_pixel(img, x + 1, y + 1, color);
 
 }
 
 
-void	print_screen(t_gameInfo *game_info)
+void	print_screen(t_gameInfo *gi)
 {
 	mlx_image_t	*img;
 
-	img = create_screen_image(game_info);
+	img = create_screen_image(gi);
 	if (!img)
 	{
 		printf ("ERR printscreen\n");
 		return ;
 	}
-	mlx_delete_image(game_info->mlx, game_info->screen_image);
-	game_info->screen_image = img;
+	mlx_delete_image(gi->mlx, gi->screen_image);
+	gi->screen_image = img;
 
 /* 	int vert_dis, horiz_dis, dis;
 	double angle;
 
 	for(int a = 30; a > -30 ; a -= 3)
 	{
-		angle = (game_info->player->orientation + a);
+		angle = (gi->player->orientation + a);
 		if (angle < 0)
 			angle += 360;
 
-		dis = get_dist(game_info)
+		dis = get_dist(gi)
 		if (dis != INT_MAX)
 		{
 			for(int i = 0; i < dis; i++)
-				draw_dot(game_info, angle, i);
+				draw_dot(gi, angle, i);
 		}
 	} */
-
-	mlx_image_to_window(game_info->mlx, game_info->screen_image, 0, 0);
+	draw_minimap (gi, gi->screen_image, (int[2]){20, 20});
+	mlx_image_to_window(gi->mlx, gi->screen_image, 0, 0);
 }
 
 int	main(int argc, char *argv[])

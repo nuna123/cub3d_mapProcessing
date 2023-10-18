@@ -105,6 +105,9 @@ double	get_horiz_dist(t_gameInfo	*gi, double angle);
 double get_dist (t_gameInfo *gi, double angle, int *txtr);
 
 double dtr(double deg);
-void mark_pnt(t_gameInfo	*gi, int x, int y, uint32_t color);
+void mark_pnt(mlx_image_t *img, int x, int y, uint32_t color);
+void	line(mlx_image_t *img, int a[2], int b[2]);
+
+void draw_minimap (t_gameInfo	*gi, mlx_image_t *img, int pos[2]);
 
 #endif

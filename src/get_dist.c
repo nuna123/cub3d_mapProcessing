@@ -33,7 +33,7 @@ double	get_horiz_dist(t_gameInfo *gi, double a)
 		return (-1);
 	horiz_init(gi, a, pl, dot);
 	dis_diff = fabs(TEXTURE_SIZE / cos(dtr(a)));
-	dis = abs((int)((pl[0] - dot[0]) / cos(dtr(a))));
+	dis = fabs(((pl[0] - dot[0]) / cos(dtr(a))));
 	diff[1] = -1 * sin(dtr(a)) * dis_diff;
 	diff[0] = TEXTURE_SIZE - (((a > 90 && a < 270)) * TEXTURE_SIZE * 2);
 	while (dot[0] < WIDTH && dot[0] > 0 && dot[1] > 0 && dot[1] < HEIGHT)
@@ -103,9 +103,9 @@ double get_dist (t_gameInfo *gi, double angle, int *txtr)
 {
 	double		vert_dis;
 	double		horiz_dis;
-	int			corr_ang;
+	double		corr_ang;
 
-	corr_ang = (int)(fmod((angle + 360), 360) - gi->player->orientation);
+	corr_ang = fmod((angle + 360), 360) - gi->player->orientation;
 	// printf("gi->player->orientation = %d	corr_ang = %d\n", gi->player->orientation, corr_ang);
 	horiz_dis = get_horiz_dist(gi,fmod((angle + 360), 360));
 	vert_dis = get_vert_dist(gi,fmod((angle + 360), 360));

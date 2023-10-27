@@ -21,8 +21,8 @@ static void	horiz_init(t_gameInfo *gi, double a, double pl[2], double dot[2])
 	dot[1] = pl[1] - ((dot[0] - pl[0]) * tan(dtr(a)));
 }
 
-// double	get_horiz_dist(t_gameInfo *gi, double a)
-double	get_horiz_dist(t_gameInfo *gi, double a,  FILE ** fp)
+// double	get_horiz_dist(t_gameInfo *gi, double a,  FILE ** fp)
+double	get_horiz_dist(t_gameInfo *gi, double a)
 {
 	double	pl[2];
 	double	dot[2];
@@ -39,7 +39,7 @@ double	get_horiz_dist(t_gameInfo *gi, double a,  FILE ** fp)
 	diff[0] = TEXTURE_SIZE - (((a > 90 && a < 270)) * TEXTURE_SIZE * 2);
 	while (dot[0] < WIDTH && dot[0] > 0 && dot[1] > 0 && dot[1] < HEIGHT)
 	{
-		
+
 		if (coors_in_map(gi, dot[0] - (a > 90 && a < 270),
 				dot[1] - ( (fmod(dot[1], TEXTURE_SIZE) == 0) && (a < 180))) != '0')
 			break;
@@ -73,8 +73,8 @@ static void	vert_init(t_gameInfo *gi, double a, double pl[2], double dot[2])
 	dot[0] = pl[0] + ((a != 90 && a != 270) * ((pl[1] - dot[1]) / tan(dtr(a))));
 }
 
-// double	get_vert_dist(t_gameInfo *gi, double a)
-double	get_vert_dist(t_gameInfo *gi, double a, FILE ** fp)
+// double	get_vert_dist(t_gameInfo *gi, double a, FILE ** fp)
+double	get_vert_dist(t_gameInfo *gi, double a)
 {
 	double	pl[2];
 	double	dot[2];
@@ -116,12 +116,12 @@ new_ang = fmod((angle + 360), 360);
 		corr_ang = (fmod((angle + 360), 360) - gi->player->orientation);
 	else
 		corr_ang = (angle - gi->player->orientation);
-	horiz_dis = (float)get_horiz_dist(gi,fmod((angle + 360), 360), fp);
-	vert_dis = (float)get_vert_dist(gi,fmod((angle + 360), 360), fp);
-		// fprintf(*fp, "HOR DIST: %f		VER DIST: %f\n", horiz_dis, vert_dis);
-		// fprintf(*fp, "first angle: %f, sec_angle: %f;corr_ang = %f, cos(cor) = %f;\n", angle,fmod((angle + 360), 360), corr_ang, cos(dtr(corr_ang)));
+	horiz_dis = (float)get_horiz_dist(gi,fmod((angle + 360), 360));
+	vert_dis = (float)get_vert_dist(gi,fmod((angle + 360), 360));
+		fprintf(*fp, "HOR DIST: %f		VER DIST: %f\n", horiz_dis, vert_dis);
+		fprintf(*fp, "first angle: %f, sec_angle: %f;corr_ang = %f, cos(cor) = %f;\n", angle,fmod((angle + 360), 360), corr_ang, cos(dtr(corr_ang)));
 
-		
+
 	if ((new_ang < 90 || new_ang > 270) && (vert_dis == -1 || horiz_dis < vert_dis))
 		*txtr = 0;
 	else if ((new_ang > 0 && new_ang < 180) && (horiz_dis == -1 || horiz_dis > vert_dis))
@@ -130,7 +130,7 @@ new_ang = fmod((angle + 360), 360);
 		*txtr = 2;
 	else if ((new_ang >180 && new_ang < 360) && (horiz_dis == -1 || horiz_dis > vert_dis))
 		*txtr = 3;
-	
+
 	if (vert_dis == -1)
 		return (horiz_dis * cos(dtr(corr_ang)));
 	if (horiz_dis == -1)
@@ -154,7 +154,7 @@ new_ang = fmod((angle + 360), 360);
 		fprintf(*fp, " case 3: txtr = 0, yellow\n");
 	}
 	else if ((angle < 90 || (angle > 270 && angle < 360)) && (horiz_dis == vert_dis))//4
-	{	
+	{
 		//HEADACHE
 		if (angle < 90)
 			*txtr = 0;

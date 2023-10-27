@@ -23,6 +23,8 @@ double dtr(double deg)
 ///TODO
 	// deg to radians ?
 	// One pixel difference in vertia/horizontal check, Top sector
+	// Player movements still depend on 8 dirctions while orientation is by 36 (ish?) directions
+	// line uses colors - not the given textures for NSWE
 
 uint32_t	get(uint8_t *texture_pixels)
 {
@@ -56,41 +58,16 @@ void	print_texture(mlx_image_t *img, mlx_texture_t *texture,
 	}
 }
 
-/* void	line(mlx_image_t *img, int a[2], int b[2])
-{
-	float		steps[2];
-	int			c[2];
-	uint32_t	color = 0x3F51B5FF;
-	int			max;
 
-	if (a[0] == b[0] && a[1] == b[1])
-	{
-		mlx_put_pixel(img, a[0], a[1], color);
-		return ;
-	}
-	steps[0] = b[0] - a[0];
-	steps[1] = b[1] - a[1];
-	c[0] = a[0];
-	c[1] = a[1];
-	max = fmax(fabs(steps[0]), fabs(steps[1]));
-	if (max == 0)
-		return ;
-	steps[0] /= max;
-	steps[1] /= max;
-	while ((int)(b[0] - c[0]) || (int)(b[1] - c[1]))
-	{
-		mlx_put_pixel(img, c[0], c[1], color);
-		c[0] += steps[0];
-		c[1] += steps[1];
-	}
-} */
-void	line(mlx_image_t *img, double a[2], double b[2], int txtr)
+// void	line(mlx_image_t *img, double a[2], double b[2], int txtr)
+void	line(mlx_image_t *img, double a[2], double b[2], uint32_t txtr)
 {
 	double		steps[2];
 	double			c[2];
-	uint32_t	color = 0x9E9E9EFF;
+	uint32_t	color;
 	double			max;
 
+	color = txtr;
 	if (txtr == 0)
 		color = 0xFFD54FFF;	//yellow east
 	else if (txtr == 1)
@@ -163,7 +140,8 @@ mlx_image_t	*create_screen_image(t_gameInfo	*gi)
 
 	ang_incr = 60.0 / 1600.0;
 	// double counter = round(x + 1 / 27);
-		FILE * fp = fopen("log.log", "w+");
+		// FILE * fp = fopen("log.log", "w+");
+		FILE * fp = fopen("/dev/null", "w+");
  	while (++x < WIDTH)
 	{
 		fprintf(fp, "(player orientation = %d\n", gi->player->orientation);

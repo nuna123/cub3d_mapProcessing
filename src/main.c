@@ -24,7 +24,9 @@ double dtr(double deg)
 	// deg to radians ?
 	// One pixel difference in vertia/horizontal check, Top sector
 	// Player movements still depend on 8 dirctions while orientation is by 36 (ish?) directions
+		// WASD keys to move in 4 directions
 	// line uses colors - not the given textures for NSWE
+
 
 uint32_t	get(uint8_t *texture_pixels)
 {
@@ -169,32 +171,6 @@ mlx_image_t	*create_screen_image(t_gameInfo	*gi)
 	// line(test, (double[2]){971, 0}, (double[2]){971, HEIGHT}, -1);
 	return (test);
 }
-/* mlx_image_t	*create_screen_image(t_gameInfo	*gi)
-{
-	mlx_image_t	*test;
-	int			x;
-	int			y;
-
-	y = -1;
-	test = print_bcg(gi);
-	if (!test)
-		return (NULL);
-	while (gi->map_info->map[++y])
-	{
-		x = -1;
-		while (gi->map_info->map[y][++x])
-		{
-			if (gi->map_info->map[y][x] == '1')
-				print_texture(test, gi->wall_texture,
-					TEXTURE_SIZE * x, TEXTURE_SIZE * y );
-			else if (gi->map_info->map[y][x] == '0')
-				print_texture(test, gi->bckg_texture,
-					TEXTURE_SIZE * x, TEXTURE_SIZE * y);
-		}
-	}
-	print_texture(test, gi->player_texture, gi->player->x, gi->player->y);
-	return (test);
-} */
 
 void draw_dot(t_gameInfo	*gi, double angle, int dis)
 {
@@ -243,23 +219,6 @@ void	print_screen(t_gameInfo *gi)
 	}
 	mlx_delete_image(gi->mlx, gi->screen_image);
 	gi->screen_image = img;
-
-/* 	int vert_dis, horiz_dis, dis;
-	double angle;
-
-	for(int a = 30; a > -30 ; a -= 3)
-	{
-		angle = (gi->player->orientation + a);
-		if (angle < 0)
-			angle += 360;
-
-		dis = get_dist(gi)
-		if (dis != INT_MAX)
-		{
-			for(int i = 0; i < dis; i++)
-				draw_dot(gi, angle, i);
-		}
-	} */
 	draw_minimap (gi, gi->screen_image, (int[2]){20, 20});
 	mlx_image_to_window(gi->mlx, gi->screen_image, 0, 0);
 }
@@ -278,10 +237,6 @@ int	main(int argc, char *argv[])
 	mlx_key_hook(game_info->mlx, key_hooker, game_info);
 	mlx_loop(game_info->mlx);
 	mlx_terminate(game_info->mlx);
-/*
-	printf ("%c\n\n", coors_in_map(game_info, 0, 0));
-	printf ("%c\n\n", coors_in_map(game_info, TEXTURE_SIZE, 0));
-	printf ("%c\n\n", coors_in_map(game_info, TEXTURE_SIZE + 1, 0)); */
 	return (EXIT_SUCCESS);
 }
 

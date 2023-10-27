@@ -6,7 +6,7 @@
 /*   By: ymorozov <ymorozov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/21 17:11:08 by nroth             #+#    #+#             */
-/*   Updated: 2023/10/18 18:51:14 by ymorozov         ###   ########.fr       */
+/*   Updated: 2023/10/26 15:51:14 by ymorozov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,12 +84,12 @@ void	print_texture(mlx_image_t *img, mlx_texture_t *texture,
 		c[1] += steps[1];
 	}
 } */
-void	line(mlx_image_t *img, int a[2], int b[2], int txtr)
+void	line(mlx_image_t *img, double a[2], double b[2], int txtr)
 {
-	float		steps[2];
-	float			c[2];
-	uint32_t	color = 0x3F51B5FF;
-	int			max;
+	double		steps[2];
+	double			c[2];
+	uint32_t	color = 0x9E9E9EFF;
+	double			max;
 
 	if (txtr == 0)
 		color = 0xFFD54FFF;	//yellow east
@@ -101,7 +101,7 @@ void	line(mlx_image_t *img, int a[2], int b[2], int txtr)
 		color = 0x388E3CFF;	//green south
 	if (a[0] == b[0] && a[1] == b[1])
 	{
-		mlx_put_pixel(img, a[0], a[1], color);
+		mlx_put_pixel(img, (int)a[0], (int)a[1], color);
 		return ;
 	}
 	steps[0] = b[0] - a[0];
@@ -113,9 +113,9 @@ void	line(mlx_image_t *img, int a[2], int b[2], int txtr)
 		return ;
 	steps[0] /= max;
 	steps[1] /= max;
-	while (((int)(b[0] - (int)round(c[0])) || (int)(b[1] - (int)round(c[1]))))
+	while (((b[0] - round(c[0])) || (b[1] - round(c[1]))))
 	{
-		mlx_put_pixel(img, (int)c[0], (int)c[1], color);
+		mlx_put_pixel(img, (int)round(c[0]), (int)round(c[1]), color);
 		c[0] += steps[0];
 		c[1] += steps[1];
 	}
@@ -155,7 +155,7 @@ mlx_image_t	*create_screen_image(t_gameInfo	*gi)
 	double		ang_incr;
 	int		printed_height;
 	int		margin;
-	int	texture = -1; //0 east, 1 north, 2 west, 3 south
+	int	texture = -1; //0 east(yellow), 1 north(purple), 2 west(coral), 3 south(green)
 	x = -1;
 	test = print_bcg(gi);
 	if (!test)
@@ -163,26 +163,32 @@ mlx_image_t	*create_screen_image(t_gameInfo	*gi)
 
 	ang_incr = 60.0 / 1600.0;
 	// double counter = round(x + 1 / 27);
+		FILE * fp = fopen("log.log", "w+");
  	while (++x < WIDTH)
 	{
-
-		// printf("ANGLE increase: %f\n", ang_incr);
-		dis = get_dist(gi, gi->player->orientation + (FOV / 2) - (ang_incr * x), &texture);
+		fprintf(fp, "(player orientation = %d\n", gi->player->orientation);
+		dis = get_dist(gi, gi->player->orientation + (FOV / 2) - (ang_incr * x), &texture, &fp);
+		// dis = get_dist(gi, gi->player->orientation + (FOV / 2) - (ang_incr * x), &texture);
 		// printf("\nDIST: %f\n", dis);
-		printed_height =  ((32 * (WIDTH * 0.5 / tan(dtr(FOV / 2)))) / dis);
+		printed_height = round((32 * (WIDTH * 0.5 / tan(dtr(FOV / 2)))) / dis);
 		// printf("PRINTED HEIGHT: %d\n", printed_height);
 		if (printed_height > HEIGHT)
 			printed_height = HEIGHT;
 		// if (printed_height <= HEIGHT)
 		// {
+		// fprintf(fp, "(32 * (WIDTH * 0.5 / tan(dtr(FOV / 2)))) / dis =  %f,\n", (32 * (WIDTH * 0.5 / tan(dtr(FOV / 2)))) / dis);
 		margin = (HEIGHT - printed_height) / 2;
-		line(test, (int[2]){x, margin}, (int[2]){x, margin + printed_height}, texture);
+			fprintf(fp, "dis =  %f, printed_height = %i, margin = %d\n", dis, printed_height, margin);
+			fprintf(fp, "	dot1(x: %i y = %i), dot2(x = %d, y = %d). COLOUR = %d\n", x, margin, x, margin + printed_height, texture);
+			fprintf(fp, "--------------------------------------------------------------------------------------------------------\n");
+		line(test, (double[2]){x, margin}, (double[2]){x, margin + printed_height}, texture);
 		// }
 
 	// printf("height: %i\n", printed_height);
 	// printf("margin: %i\n", margin);
 	// printf("Axy: %i %i, Bxy:%i, %i \n\n", x, margin, x, margin + printed_height);
 	}
+	// line(test, (double[2]){971, 0}, (double[2]){971, HEIGHT}, -1);
 	return (test);
 }
 /* mlx_image_t	*create_screen_image(t_gameInfo	*gi)

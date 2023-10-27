@@ -11,7 +11,7 @@
 /* ************************************************************************** */
 
 #include "game.h"
-#define MINIMAP_WIDTH_FACTOR .2		// multiplied by WIDTH
+#define MINIMAP_WIDTH_FACTOR .2		// multiplied by gi->screen_w
 
 #define BCKG_COLOR 0xFF			// black
 #define WALL_COLOR 0xFFFFFFFF	// white
@@ -29,8 +29,8 @@ static void	draw_minimap_texture(mlx_image_t *img, double pos[2],
 		x = -1;
 		while (++x < size)
 		{
-			if (pos[0] + x < WIDTH && pos[1] + y < HEIGHT)
-				mlx_put_pixel(img, round(pos[0] + x),
+			if (pos[0] + x < img->width && pos[1] + y < img->height)
+				my_put_pixel(img, round(pos[0] + x),
 					round(pos[1] + y), color);
 		}
 	}
@@ -38,7 +38,7 @@ static void	draw_minimap_texture(mlx_image_t *img, double pos[2],
 
 /*
 	the initial minimap width depends on the screen width, it will be equal
-		to WIDTH * width factor	then the minimap bloc size is calculated based
+		to gi->screen_w * width factor	then the minimap bloc size is calculated based
 		on the minimap width and the amount of blocks it needs to
 		fit (gi->map_info->map_width)
 	minimap height is based on the block size and the amount of blocks in the
@@ -82,13 +82,13 @@ void	draw_minimap(t_gameInfo *gi, mlx_image_t *img, int pos[2])
 	double	mini_pl_end[2];
 	int		bloc_size;
 
-	bloc_size = (MINIMAP_WIDTH_FACTOR * WIDTH) / gi->map_info->map_width;
+	bloc_size = (MINIMAP_WIDTH_FACTOR * gi->screen_w) / gi->map_info->map_width;
 	print_minimap(gi, img, pos, bloc_size);
 	mini_pl[0] = pos[0] + round(
-			((double)gi->player->x / (gi->map_info->map_width * TEXTURE_SIZE))
+			((double)gi->player->x / (gi->map_info->map_width * gi->texture_size))
 			* (bloc_size * gi->map_info->map_width));
 	mini_pl[1] = pos[1] + round(
-			((double)gi->player->y / (gi->map_info->map_height * TEXTURE_SIZE))
+			((double)gi->player->y / (gi->map_info->map_height * gi->texture_size))
 			* (bloc_size * gi->map_info->map_height));
 	mini_pl_end[0] = mini_pl[0] + round (cos(dtr(gi->player->orientation)) * 10)
 		+ (bloc_size / 4);

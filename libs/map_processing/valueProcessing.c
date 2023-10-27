@@ -19,7 +19,7 @@ int	textureline_fill(t_mapInfo	*map_info, char **mapline_split)
 	char	**compass_arr;
 	int		i;
 
-	compass_str = ft_strdup("NO|SO|WE|EA");
+	compass_str = ft_strdup("EA|NO|WE|SO");
 	compass_arr = ft_split(compass_str, '|');
 	i = -1;
 	while (++i < 4)

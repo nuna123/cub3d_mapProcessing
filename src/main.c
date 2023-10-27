@@ -14,17 +14,10 @@
 
 // #define PI 3.141592
 
-// DEGREES TO RADIANS
-double dtr(double deg)
-{
-	return(deg * (M_PI / 180));
-}
 
 ///TODO
 	// deg to radians ?
 	// One pixel difference in vertia/horizontal check, Top sector
-	// Player movements still depend on 8 dirctions while orientation is by 36 (ish?) directions
-		// WASD keys to move in 4 directions
 	// line uses colors - not the given textures for NSWE
 
 
@@ -40,28 +33,6 @@ uint32_t	get(uint8_t *texture_pixels)
 	return (res);
 }
 
-void	print_texture(mlx_image_t *img, mlx_texture_t *texture,
-		int coor_x, int coor_y)
-{
-	uint32_t	pixel;
-	uint32_t	x;
-	uint32_t	y;
-
-	y = -1;
-	while (++y < texture->height - 1)
-	{
-		x = -1;
-		while (++x < texture->width - 1)
-		{
-			pixel = (y * texture->height + x) * 4;
-			mlx_put_pixel(img, (coor_x + x), (coor_y + y),
-				get(&texture->pixels[pixel]));
-		}
-	}
-}
-
-
-// void	line(mlx_image_t *img, double a[2], double b[2], int txtr)
 void	line(mlx_image_t *img, double a[2], double b[2], uint32_t txtr)
 {
 	double		steps[2];
@@ -80,7 +51,7 @@ void	line(mlx_image_t *img, double a[2], double b[2], uint32_t txtr)
 		color = 0x388E3CFF;	//green south
 	if (a[0] == b[0] && a[1] == b[1])
 	{
-		mlx_put_pixel(img, (int)a[0], (int)a[1], color);
+		my_put_pixel(img, (int)a[0], (int)a[1], color);
 		return ;
 	}
 	steps[0] = b[0] - a[0];
@@ -94,7 +65,7 @@ void	line(mlx_image_t *img, double a[2], double b[2], uint32_t txtr)
 	steps[1] /= max;
 	while (((b[0] - round(c[0])) || (b[1] - round(c[1]))))
 	{
-		mlx_put_pixel(img, (int)round(c[0]), (int)round(c[1]), color);
+		my_put_pixel(img, (int)round(c[0]), (int)round(c[1]), color);
 		c[0] += steps[0];
 		c[1] += steps[1];
 	}
@@ -106,24 +77,71 @@ mlx_image_t	*print_bcg(t_gameInfo	*gi)
 	int			x;
 	int			y;
 
-	test = mlx_new_image(gi->mlx, WIDTH, HEIGHT);
+	test = mlx_new_image(gi->mlx, gi->screen_w, gi->screen_h);
 	if (!test)
 		return (NULL);
 	y = -1;
-	while (++y < HEIGHT / 2 + 1)
+	while (++y < gi->screen_h / 2 + 1)
 	{
 		x = -1;
-		while (++x < WIDTH)
-			mlx_put_pixel(test, x, y, gi->map_info->ceiling_color);
+		while (++x < gi->screen_w)
+			my_put_pixel(test, x, y, gi->map_info->ceiling_color);
 	}
 	y--;
-	while (++y < HEIGHT)
+	while (++y < gi->screen_h)
 	{
 		x = -1;
-		while (++x < WIDTH)
-			mlx_put_pixel(test, x, y, gi->map_info->floor_color);
+		while (++x < gi->screen_w)
+			my_put_pixel(test, x, y, gi->map_info->floor_color);
 	}
 	return (test);
+}
+
+void print_texture(t_gameInfo	*gi,mlx_image_t	*img, int x, int margin, int line_height, int t_idx)
+{
+	mlx_texture_t *texture = gi->textures[t_idx];
+	static int j;
+	uint32_t px_to_print;
+	int times2print = line_height / texture->height;
+	int texture_column = x % texture->width;
+
+	if (!j)
+	{
+		printf("times2print %i, line_height = %d\n",times2print , line_height);
+		printf("txt column %i\n",texture_column );
+	}
+
+
+	int i = 0; //screen y
+	int t = 0;
+	// int g = 0; //texture y
+	while (i < line_height - 19)
+	{
+		//pxX (texture_column)
+		//pxY(t % times2print)
+
+		if (!j)
+		{
+			printf("pixel: %i\n",((i / times2print * texture->height) + (texture_column)));
+			printf("i: %i, text %i\n", i, ((i / times2print * texture->height) + (texture_column)) * 4);
+		}
+		px_to_print = get(&(texture->pixels[
+
+			((i / times2print * texture->height) + (texture_column)) * 4
+
+			]));
+		t = -1;
+		while (++t < times2print && i < line_height)
+		{
+			my_put_pixel(img,
+			x,
+			margin + i,
+			px_to_print
+			);
+			i++;
+		}
+	}
+	j = 1;
 }
 
 mlx_image_t	*create_screen_image(t_gameInfo	*gi)
@@ -139,36 +157,24 @@ mlx_image_t	*create_screen_image(t_gameInfo	*gi)
 	test = print_bcg(gi);
 	if (!test)
 		return (NULL);
-
-	ang_incr = 60.0 / 1600.0;
-	// double counter = round(x + 1 / 27);
+	ang_incr = FOV / (double) gi->screen_w;
 		// FILE * fp = fopen("log.log", "w+");
 		FILE * fp = fopen("/dev/null", "w+");
- 	while (++x < WIDTH)
+ 	while (++x < gi->screen_w)
 	{
 		fprintf(fp, "(player orientation = %d\n", gi->player->orientation);
 		dis = get_dist(gi, gi->player->orientation + (FOV / 2) - (ang_incr * x), &texture, &fp);
-		// dis = get_dist(gi, gi->player->orientation + (FOV / 2) - (ang_incr * x), &texture);
-		// printf("\nDIST: %f\n", dis);
-		printed_height = round((32 * (WIDTH * 0.5 / tan(dtr(FOV / 2)))) / dis);
-		// printf("PRINTED HEIGHT: %d\n", printed_height);
-		if (printed_height > HEIGHT)
-			printed_height = HEIGHT;
-		// if (printed_height <= HEIGHT)
-		// {
-		// fprintf(fp, "(32 * (WIDTH * 0.5 / tan(dtr(FOV / 2)))) / dis =  %f,\n", (32 * (WIDTH * 0.5 / tan(dtr(FOV / 2)))) / dis);
-		margin = (HEIGHT - printed_height) / 2;
+		printed_height = round((32 * (gi->screen_w * 0.5 / tan(dtr(FOV / 2)))) / dis);
+		if (printed_height > gi->screen_h)
+			printed_height = gi->screen_h;
+		margin = (gi->screen_h - printed_height) / 2;
 			fprintf(fp, "dis =  %f, printed_height = %i, margin = %d\n", dis, printed_height, margin);
 			fprintf(fp, "	dot1(x: %i y = %i), dot2(x = %d, y = %d). COLOUR = %d\n", x, margin, x, margin + printed_height, texture);
 			fprintf(fp, "--------------------------------------------------------------------------------------------------------\n");
-		line(test, (double[2]){x, margin}, (double[2]){x, margin + printed_height}, texture);
-		// }
+		// line(test, (double[2]){x, margin}, (double[2]){x, margin + printed_height}, texture);
+		print_texture(gi, test,(int) x, margin, printed_height, texture);
 
-	// printf("height: %i\n", printed_height);
-	// printf("margin: %i\n", margin);
-	// printf("Axy: %i %i, Bxy:%i, %i \n\n", x, margin, x, margin + printed_height);
 	}
-	// line(test, (double[2]){971, 0}, (double[2]){971, HEIGHT}, -1);
 	return (test);
 }
 
@@ -180,31 +186,31 @@ void draw_dot(t_gameInfo	*gi, double angle, int dis)
 /* 	dot_x = (gi->player->x) + (dis * cos(dtr(angle)));
 	dot_y = (gi->player->y) - (dis * sin(dtr(angle))); */
 
-	dot_x = (gi->player->x + floor(PLAYER_SIZE / 2)) + (dis * cos(dtr(angle)));
-	dot_y = (gi->player->y + floor(PLAYER_SIZE / 2)) - (dis * sin(dtr(angle)));
-	if (dot_x < 1 || dot_x > WIDTH - 1 || dot_y < 1 || dot_y > HEIGHT - 1)
+	dot_x = (gi->player->x + floor(gi->player_size / 2)) + (dis * cos(dtr(angle)));
+	dot_y = (gi->player->y + floor(gi->player_size / 2)) - (dis * sin(dtr(angle)));
+	if (dot_x < 1 || dot_x > gi->screen_w - 1 || dot_y < 1 || dot_y > gi->screen_h - 1)
 		return ;
-	mlx_put_pixel(gi->screen_image, (int) dot_x, (int) dot_y, 0x0000FFFF);
+	my_put_pixel(gi->screen_image, (int) dot_x, (int) dot_y, 0x0000FFFF);
 
 }
-
+/*
 void mark_pnt(mlx_image_t *img, int x, int y, uint32_t color)
 {
-	if (x < 1 || x > WIDTH - 1 || y < 1 || y > HEIGHT - 1)
+	if (x < 1 || x > gi->screen_w - 1 || y < 1 || y > gi->screen_h - 1)
 		return ;
-	mlx_put_pixel(img, x - 1, y - 1, color);
-	mlx_put_pixel(img, x - 1, y, color);
-	mlx_put_pixel(img, x - 1, y + 1, color);
+	my_put_pixel(img, x - 1, y - 1, color);
+	my_put_pixel(img, x - 1, y, color);
+	my_put_pixel(img, x - 1, y + 1, color);
 
-	mlx_put_pixel(img, x, y - 1, color);
-	mlx_put_pixel(img, x, y, color);
-	mlx_put_pixel(img, x, y + 1, color);
+	my_put_pixel(img, x, y - 1, color);
+	my_put_pixel(img, x, y, color);
+	my_put_pixel(img, x, y + 1, color);
 
-	mlx_put_pixel(img, x + 1, y - 1, color);
-	mlx_put_pixel(img, x + 1, y, color);
-	mlx_put_pixel(img, x + 1, y + 1, color);
+	my_put_pixel(img, x + 1, y - 1, color);
+	my_put_pixel(img, x + 1, y, color);
+	my_put_pixel(img, x + 1, y + 1, color);
 
-}
+} */
 
 
 void	print_screen(t_gameInfo *gi)
@@ -233,8 +239,11 @@ int	main(int argc, char *argv[])
 	if (!game_info)
 		exit(-1);
 	print_screen(game_info);
+
 	mlx_close_hook(game_info->mlx, closeme, game_info);
 	mlx_key_hook(game_info->mlx, key_hooker, game_info);
+	mlx_resize_hook(game_info->mlx, resize_hook, game_info);
+
 	mlx_loop(game_info->mlx);
 	mlx_terminate(game_info->mlx);
 	return (EXIT_SUCCESS);

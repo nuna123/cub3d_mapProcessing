@@ -14,36 +14,61 @@
 
 void	free_game_info(t_gameInfo *gi)
 {
+	int	i;
+
 	if (gi->player)
 		free(gi->player);
 	if (gi->map_info)
 		map_info_free(gi->map_info);
-	if (gi->bckg_texture)
-		mlx_delete_texture(gi->bckg_texture);
-	if (gi->player_texture)
-		mlx_delete_texture(gi->player_texture);
-	if (gi->wall_texture)
-		mlx_delete_texture(gi->wall_texture);
+	if (gi->textures)
+	{
+		i = -1;
+		while (++i < 4)
+		{
+			if (gi->textures[i])
+				mlx_delete_texture(gi->textures[i]);
+		}
+		free(gi->textures);
+	}
 	if (gi->screen_image)
 		mlx_delete_image(gi->mlx, gi->screen_image);
 	mlx_terminate(gi->mlx);
 	free(gi);
 }
+	/* gi->E_texture = mlx_load_png(gi->map_info->texture_paths[0]);
+	if (!gi->E_texture)
+		return (ERR);
 
+	gi->N_texture = mlx_load_png(gi->map_info->texture_paths[1]);
+	if (!gi->N_texture)
+		return (ERR);
+
+	gi->W_texture = mlx_load_png(gi->map_info->texture_paths[2]);
+	if (!gi->W_texture)
+		return (ERR);
+
+	gi->S_texture = mlx_load_png(gi->map_info->texture_paths[3]);
+	if (!gi->S_texture)
+		return (ERR); */
 int	gi_create_textures(t_gameInfo *gi)
 {
-	gi->bckg_texture = mlx_load_png("./textures/white32x32.png");
-	if (!gi->bckg_texture)
+	gi->textures = ft_calloc (sizeof(mlx_texture_t	*), 5);
+	gi->textures[0] = mlx_load_png(gi->map_info->texture_paths[0]);
+	if (!gi->textures[0])
 		return (ERR);
-	gi->wall_texture = mlx_load_png("./textures/black32x32.png");
-	if (!gi->wall_texture)
+	gi->textures[1] = mlx_load_png(gi->map_info->texture_paths[1]);
+	if (!gi->textures[1])
 		return (ERR);
-	gi->player_texture = mlx_load_png("./textures/player16x16.png");
-	if (!gi->player_texture)
+	gi->textures[2] = mlx_load_png(gi->map_info->texture_paths[2]);
+	if (!gi->textures[2])
 		return (ERR);
+	gi->textures[3] = mlx_load_png(gi->map_info->texture_paths[3]);
+	if (!gi->textures[3])
+		return (ERR);
+
 	gi->screen_image = mlx_new_image(gi->mlx,
-			TEXTURE_SIZE * gi->map_info->map_width,
-			TEXTURE_SIZE * gi->map_info->map_height);
+			gi->texture_size * gi->map_info->map_width,
+			gi->texture_size * gi->map_info->map_height);
 	if (!gi->screen_image)
 		return (ERR);
 	ft_memset(gi->screen_image->pixels, 255,
@@ -61,15 +86,17 @@ t_gameInfo	*init_game_info(char *argv[])
 	gi->map_info = get_map(argv[1]);
 	if (!gi->map_info)
 		return (free(gi), NULL);
-	gi->mlx = mlx_init(WIDTH, HEIGHT, "blah", true);
+	gi->mlx = mlx_init(WIDTH, HEIGHT, "Our Awesome Game", false);
 	if (!gi->mlx)
 		return (map_info_free(gi->map_info), free(gi), NULL);
-	gi->image_size = TEXTURE_SIZE;
-	gi->player_size = PLAYER_SIZE;
+	gi->texture_size = TEXTURE_SIZE;
+	gi->player_size = TEXTURE_SIZE / 2;
 	gi->player = get_player(gi);
 	if (!gi->player)
 		return (map_info_free(gi->map_info), free(gi), NULL);
 	if (gi_create_textures(gi) == ERR)
 		return (free_game_info(gi), NULL);
+	gi->screen_w = WIDTH;
+	gi->screen_h = HEIGHT;
 	return (gi);
 }

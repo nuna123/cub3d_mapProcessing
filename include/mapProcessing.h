@@ -38,7 +38,7 @@ typedef struct s_mapInfo
 	uint32_t	ceiling_color;
 	uint32_t	floor_color;
 
-	char		**texture_paths;
+	char		**texture_paths;	//ORDER E N W S
 
 	char		**map;
 }	t_mapInfo;

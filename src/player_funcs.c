@@ -41,8 +41,8 @@ static t_player	*player_setup(t_gameInfo *gi, char *dir_c, int x, int y)
 	player = ft_calloc(1, sizeof(t_player));
 	if (!player)
 		return (NULL);
-	player->x = x * gi->image_size;
-	player->y = y * gi->image_size;
+	player->x = x * gi->texture_size;
+	player->y = y * gi->texture_size;
 	if (*dir_c == 'E')
 		player->orientation = 0;
 	else if (*dir_c == 'N')
@@ -51,7 +51,7 @@ static t_player	*player_setup(t_gameInfo *gi, char *dir_c, int x, int y)
 		player->orientation = 180;
 	else if (*dir_c == 'S')
 		player->orientation = 270;
-	
+
 	*(dir_c) = '0';
 	return (player);
 }

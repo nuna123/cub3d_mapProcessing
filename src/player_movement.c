@@ -17,17 +17,7 @@
 //	TEXTURE SIZE*2	-	(TEXTURE SIZE * 3) - 1	-> Block 2
 
 // returns the map char at position (x, y)
-char	coors_in_map(t_gameInfo *gi, int x, int y)
-{
-	if (x < 0 || y < 0 || x >= WIDTH || y >= HEIGHT)
-		return (0);
-	if (y / TEXTURE_SIZE >= gi->map_info->map_height
-		|| x / TEXTURE_SIZE >= gi->map_info->map_width)
-		return (0);
-	return (gi->map_info->map
-		[(int)ceil (y / TEXTURE_SIZE)]
-		[(int)ceil (x / TEXTURE_SIZE)]);
-}
+
 
 static void	update_player(t_gameInfo *gi, int x, int y)
 {
@@ -58,8 +48,8 @@ static int	check4pnts(t_gameInfo *gi, int player_x, int player_y)
 	i = -3;
 	while (++i < 3)
 	{
-		x = ((player_x) + ((i > 0) * PLAYER_SIZE));
-		y = ((player_y) + ((i && !(i % 2)) * PLAYER_SIZE));
+		x = ((player_x) + ((i > 0) * gi->player_size));
+		y = ((player_y) + ((i && !(i % 2)) * gi->player_size));
 		if (coors_in_map(gi, x, y) != '0')
 			return (ERR);
 	}

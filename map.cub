@@ -1,9 +1,11 @@
-NO ./textures/halfsies.png
-SO ./textures/black32x32.png
-WE ./textures/black32x32.png
-EA ./textures/black32x32.png
-F 220,100,0
-C 225,30,0
+NO ./textures/forest128.png
+SO ./textures/brick_gray128.png
+WE ./textures/purplestone.png
+EA ./textures/sand_floor128.png
+
+
+C 232,234,246
+F 140,158,255
 
 
         1111111111111111111111111

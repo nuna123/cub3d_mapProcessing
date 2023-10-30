@@ -104,39 +104,48 @@ void print_texture(t_gameInfo	*gi,mlx_image_t	*img, int x, int margin, int line_
 {
 // FILE * fp = fopen("log.log", "w+");
 
+	static int texture_offset;
+	static int prev_texture = -1;
 	mlx_texture_t *texture = gi->textures[t_idx];
-	static int j;
+	// static int j;
 
-	int times2print = round ((double)line_height / (double)texture->height);
-	int texture_column = x % texture->width;
+	double times2print = (double)line_height / (double)texture->height;
+	int texture_column/*  = x % texture->width */;
 
-	if (!(j % 10))
+	if (prev_texture != t_idx)
+		texture_offset = 0;
+	texture_column = texture_offset;
+
+
+/*  	if (!(j % 10))
 	{
 		printf("texture: %s\n",gi->map_info->texture_paths[t_idx]);
-		printf("times2print %i, line_height = %d\n",times2print, line_height);
+		printf("times2print %f, line_height = %d\n",times2print, line_height);
 		printf(" texture size %i x %i\n",texture->width, texture->height);
-		printf("max loops %i\n",texture->height / times2print * 4);
+		// printf("max loops %i\n",texture->height / times2print * 4);
 		printf("line_height %i\n",line_height );
 		printf("txt column %i\n\n\n",texture_column );
-	}
+	} */
 
+	int bloc = 0; //max bloks = line_height / times2print
 	int line_idx = 0;
 	int	t;
 	unsigned int px_to_print_idx = texture_column * 4;
 	uint32_t px_to_print;
+	// j = 0;
 	while (px_to_print_idx <= ((texture->width * texture->height) - 1) * 4)
 	{
-		//pxX (texture_column)
-		//pxY(t % times2print)
+		// j++;
 		px_to_print = get(&(texture->pixels[px_to_print_idx]));
-		if (!(j % 10))
+/* 		if (!(j % 10))
 		{
 			printf("line_idx %i\n", line_idx);
 			printf("pixel_idx: %i\n", px_to_print_idx);
 			printf("pixel color: %x\n\n", px_to_print);
-		}
-		t = line_idx;
-		while (t < line_height)
+}		 */
+
+		t = bloc * times2print;
+		while (t < ((bloc + 1) * times2print))
 		{
 			my_put_pixel(img,
 			x,
@@ -145,15 +154,23 @@ void print_texture(t_gameInfo	*gi,mlx_image_t	*img, int x, int margin, int line_
 			);
 			t++;
 		}
+/* 		t = line_idx;
+		while (t < line_height)
+		{
+			my_put_pixel(img,
+			x,
+			margin + t,
+			px_to_print
+			);
+			t++;
+		} */
+
 		line_idx += times2print;
 		px_to_print_idx += texture->width * 4;
+		bloc++;
 	}
-	if (!(j % 10)){
-	printf("last pixel_idx: %i\nxxxxxxxxxxxxxxxxxxxxxxxxxx\n",
-				px_to_print_idx - times2print);}
-	// closeme((void	*)gi);
-
-	j ++;
+	texture_offset = (texture_offset + 1) % texture->width;
+	prev_texture = t_idx;
 }
 /* void print_texture(t_gameInfo	*gi,mlx_image_t	*img, int x, int margin, int line_height, int t_idx)
 {
@@ -222,8 +239,8 @@ mlx_image_t	*create_screen_image(t_gameInfo	*gi)
 		fprintf(fp, "(player orientation = %d\n", gi->player->orientation);
 		dis = get_dist(gi, gi->player->orientation + (FOV / 2) - (ang_incr * x), &texture, &fp);
 		printed_height = round((32 * (gi->screen_w * 0.5 / tan(dtr(FOV / 2)))) / dis);
-		if (printed_height > gi->screen_h)
-			printed_height = gi->screen_h;
+/* 		if (printed_height > gi->screen_h)
+			printed_height = gi->screen_h; */
 		margin = (gi->screen_h - printed_height) / 2;
 			fprintf(fp, "dis =  %f, printed_height = %i, margin = %d\n", dis, printed_height, margin);
 			fprintf(fp, "	dot1(x: %i y = %i), dot2(x = %d, y = %d). COLOUR = %d\n", x, margin, x, margin + printed_height, texture);

@@ -12,8 +12,6 @@
 
 #include "mapProcessing.h"
 
-
-
 int	main(int argc, char **argv)
 {
 	char		*map_path;

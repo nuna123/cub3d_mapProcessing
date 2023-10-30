@@ -35,24 +35,10 @@ void	free_game_info(t_gameInfo *gi)
 	mlx_terminate(gi->mlx);
 	free(gi);
 }
-	/* gi->E_texture = mlx_load_png(gi->map_info->texture_paths[0]);
-	if (!gi->E_texture)
-		return (ERR);
 
-	gi->N_texture = mlx_load_png(gi->map_info->texture_paths[1]);
-	if (!gi->N_texture)
-		return (ERR);
-
-	gi->W_texture = mlx_load_png(gi->map_info->texture_paths[2]);
-	if (!gi->W_texture)
-		return (ERR);
-
-	gi->S_texture = mlx_load_png(gi->map_info->texture_paths[3]);
-	if (!gi->S_texture)
-		return (ERR); */
-int	gi_create_textures(t_gameInfo *gi)
+static int	gi_create_textures(t_gameInfo *gi)
 {
-	gi->textures = ft_calloc (sizeof(mlx_texture_t	*), 5);
+	gi->textures = ft_calloc (sizeof(mlx_texture_t *), 5);
 	gi->textures[0] = mlx_load_png(gi->map_info->texture_paths[0]);
 	if (!gi->textures[0])
 		return (ERR);
@@ -65,10 +51,9 @@ int	gi_create_textures(t_gameInfo *gi)
 	gi->textures[3] = mlx_load_png(gi->map_info->texture_paths[3]);
 	if (!gi->textures[3])
 		return (ERR);
-
 	gi->screen_image = mlx_new_image(gi->mlx,
-			gi->texture_size * gi->map_info->map_width,
-			gi->texture_size * gi->map_info->map_height);
+			gi->txtr_size * gi->map_info->map_width,
+			gi->txtr_size * gi->map_info->map_height);
 	if (!gi->screen_image)
 		return (ERR);
 	ft_memset(gi->screen_image->pixels, 255,
@@ -89,7 +74,7 @@ t_gameInfo	*init_game_info(char *argv[])
 	gi->mlx = mlx_init(WIDTH, HEIGHT, "Our Awesome Game", false);
 	if (!gi->mlx)
 		return (map_info_free(gi->map_info), free(gi), NULL);
-	gi->texture_size = TEXTURE_SIZE;
+	gi->txtr_size = TEXTURE_SIZE;
 	gi->player_size = TEXTURE_SIZE / 2;
 	gi->player = get_player(gi);
 	if (!gi->player)

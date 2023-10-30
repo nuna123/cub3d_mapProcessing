@@ -4,8 +4,8 @@ WE ./textures/purplestone.png
 EA ./textures/sand_floor128.png
 
 
-C 232,234,246
-F 140,158,255
+C 0,0,102
+F 0,51,25
 
 
         1111111111111111111111111

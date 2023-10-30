@@ -11,95 +11,91 @@
 /* ************************************************************************** */
 
 #ifndef GAME_H
-#define GAME_H
+# define GAME_H
 
-#include <stdio.h>
-#include <math.h>
+# include <stdio.h>
+# include <math.h>
+# include <limits.h>
 
+# include "libft.h"
+# include "mapProcessing.h"
+# include "MLX42.h"
 
-#include "libft.h"
-#include "mapProcessing.h"
-#include "MLX42.h"
-#include <limits.h>
+# define WIDTH 1600
+# define HEIGHT 864
 
-#define MAG "\e[0;35m"
-#define CYN "\e[0;36m"
-#define WHT "\e[0;37m"
+# define TEXTURE_SIZE 32
 
-#define WIDTH 1600
-#define HEIGHT 864
+# define FOV 60.0
 
-#define TEXTURE_SIZE 32
+// MINIMAP VALUES
+# define MINIMAP_WIDTH_FACTOR .2		// multiplied by gi->screen_w
+# define BCKG_COLOR 0xFF			// black
+# define WALL_COLOR 0xFFFFFFFF	// white
+# define PLAYER_COLOR 0xFF0FF0FF	// red
 
-#define FOV 60.0
-#define CAM_DIS 1386
-
-
+//	int	x;  top left corner's x position
+//	int	y; top left corner's y position
+//	int	angle;  where is it facing
 typedef struct s_player
 {
-	int	x; // top left corner's x position
-	int	y; // top left corner's y position
-	int	orientation; // where is it facing
-} t_player;
+	int	x;
+	int	y;
+	int	angle;
+}	t_player;
 
+//TEXTURE ORDER:  E N W S
 typedef struct s_gameInfo
 {
-	mlx_t	*mlx;
-	t_mapInfo	*map_info;
+	mlx_t			*mlx;
+	t_mapInfo		*map_info;
 
-	mlx_texture_t	**textures; // E N W S
-/* 	mlx_texture_t	*S_texture;
-	mlx_texture_t	*E_texture;
-	mlx_texture_t	*W_texture; */
-
+	mlx_texture_t	**textures;
 	mlx_image_t		*screen_image;
 	t_player		*player;
-	int				texture_size;
+	int				txtr_size;
 	int				player_size;
 
 	int				screen_w;
 	int				screen_h;
-} t_gameInfo;
+}	t_gameInfo;
 
-// GAME_INFO.C
-	// static int	get_image_size(t_mapInfo *mi);
-	// static mlx_image_t	*make_color_image(t_gameInfo *gi, int size, uint32_t color);
+// GAME_INFO
 void		free_game_info(t_gameInfo *gi);
 t_gameInfo	*init_game_info(char *argv[]);
 
-//HOOKS.C
+//HOOKS
 void		closeme(void	*game_info);
 void		key_hooker(mlx_key_data_t keydata, void	*game_info);
-void		resize_hook(int32_t width, int32_t height, void	*game_info);
 
-// PLAYER_FUNCS.C
-	// static t_player	*player_setup(t_gameInfo *gi, char *dir_c, int x, int y)
+// PLAYER_FUNCS
 t_player	*get_player(t_gameInfo *gi);
 
 //PLAYER_MOVEMENT
-	// static void	update_player(t_gameInfo *gi, int x, int y);
-	// static int	change_x_y(int x, int y, t_gameInfo *gi);
-char	coors_in_map(t_gameInfo *gi, int x, int y);
 void		player_rotate(t_gameInfo *gi, int orientation);
 void		move_player(t_gameInfo *gi, int direction);
 
-//MAIN
-void	print_screen (t_gameInfo *game_info);
-void	my_put_pixel(mlx_image_t* img, uint32_t x, uint32_t y, uint32_t color);
-
-//GET_DIST .C
-double	get_vert_dist(t_gameInfo	*gi, double angle);
-double	get_horiz_dist(t_gameInfo	*gi, double angle);
-double get_dist (t_gameInfo *gi, double angle, int *txtr, FILE ** fp);
+//GET_DIST
+double		get_dist(t_gameInfo *gi, double angle, int *txtr);
 
 //UTILS
-double	dtr(double deg);
-void	my_put_pixel(mlx_image_t* img, uint32_t x, uint32_t y, uint32_t color);
-char	coors_in_map(t_gameInfo *gi, int x, int y);
+double		dtr(double deg);
+void		my_put_pixel(mlx_image_t *img, uint32_t x, uint32_t y,
+				uint32_t color);
+char		coors_in_map(t_gameInfo *gi, int x, int y);
+void		define_texture(double horizontal_dis, double vertical_dis,
+				double angle, int *txtr);
+uint32_t	get(uint8_t *texture_pixels);
 
-
-void	line(mlx_image_t *img, double a[2], double b[2], uint32_t txtr);
 //MINIMAP
-void draw_minimap (t_gameInfo	*gi, mlx_image_t *img, int pos[2]);
+void		draw_minimap(t_gameInfo	*gi, mlx_image_t *img, int pos[2]);
+
+//PRINTING
+void		line(mlx_image_t *img, double a[2], double b[2], uint32_t color);
+mlx_image_t	*print_bcg(t_gameInfo	*gi);
+void		print_texture(t_gameInfo *gi, mlx_image_t *img, int vals[3],
+				int t_idx);
+mlx_image_t	*create_screen_image(t_gameInfo	*gi);
+void		print_screen(t_gameInfo *game_info);
 
 #endif

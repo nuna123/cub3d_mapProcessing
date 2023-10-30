@@ -12,13 +12,6 @@
 
 #include "game.h"
 
-//	0				-	TEXTURE SIZE - 1		-> Block 0
-//	TEXTURE SIZE	-	(TEXTURE SIZE * 2) - 1	-> Block 1
-//	TEXTURE SIZE*2	-	(TEXTURE SIZE * 3) - 1	-> Block 2
-
-// returns the map char at position (x, y)
-
-
 static void	update_player(t_gameInfo *gi, int x, int y)
 {
 	gi->player->x += x;
@@ -26,14 +19,14 @@ static void	update_player(t_gameInfo *gi, int x, int y)
 	print_screen (gi);
 }
 
-void	player_rotate(t_gameInfo *gi, int orientation)
+void	player_rotate(t_gameInfo *gi, int angle)
 {
-	if (orientation == MLX_KEY_RIGHT)
-		gi->player->orientation = (360 + gi->player->orientation - 10) % 360;
+	if (angle == MLX_KEY_RIGHT)
+		gi->player->angle = (360 + gi->player->angle - 10) % 360;
 	else
-		gi->player->orientation = (360 + gi->player->orientation + 10) % 360;
+		gi->player->angle = (360 + gi->player->angle + 10) % 360;
 	print_screen (gi);
-	printf ("player direction : %i°\n", gi->player->orientation);
+	printf ("player direction : %i°\n", gi->player->angle);
 }
 
 //int direction is one of 4:
@@ -62,7 +55,7 @@ void	move_player(t_gameInfo *gi, int dir)
 	int		new_x;
 	int		new_y;
 
-	movement_angle = fmod (gi->player->orientation + (90 * dir) + 360, 360);
+	movement_angle = fmod (gi->player->angle + (90 * dir) + 360, 360);
 	new_x = (int) round (cos(dtr(movement_angle)) * 10);
 	new_y = (int) round (sin(dtr(movement_angle)) * -10);
 	while (new_x && check4pnts(gi, gi->player->x + new_x, gi->player->y) != OK)

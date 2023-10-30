@@ -19,6 +19,9 @@
 	// deg to radians ?
 	// One pixel difference in vertia/horizontal check, Top sector
 	// line uses colors - not the given textures for NSWE
+	//*********
+	// void mlx_set_icon(mlx_t* mlx, mlx_texture_t* image);
+
 
 
 uint32_t	get(uint8_t *texture_pixels)
@@ -99,6 +102,61 @@ mlx_image_t	*print_bcg(t_gameInfo	*gi)
 
 void print_texture(t_gameInfo	*gi,mlx_image_t	*img, int x, int margin, int line_height, int t_idx)
 {
+// FILE * fp = fopen("log.log", "w+");
+
+	mlx_texture_t *texture = gi->textures[t_idx];
+	static int j;
+
+	int times2print = round ((double)line_height / (double)texture->height);
+	int texture_column = x % texture->width;
+
+	if (!(j % 10))
+	{
+		printf("texture: %s\n",gi->map_info->texture_paths[t_idx]);
+		printf("times2print %i, line_height = %d\n",times2print, line_height);
+		printf(" texture size %i x %i\n",texture->width, texture->height);
+		printf("max loops %i\n",texture->height / times2print * 4);
+		printf("line_height %i\n",line_height );
+		printf("txt column %i\n\n\n",texture_column );
+	}
+
+	int line_idx = 0;
+	int	t;
+	unsigned int px_to_print_idx = texture_column * 4;
+	uint32_t px_to_print;
+	while (px_to_print_idx <= ((texture->width * texture->height) - 1) * 4)
+	{
+		//pxX (texture_column)
+		//pxY(t % times2print)
+		px_to_print = get(&(texture->pixels[px_to_print_idx]));
+		if (!(j % 10))
+		{
+			printf("line_idx %i\n", line_idx);
+			printf("pixel_idx: %i\n", px_to_print_idx);
+			printf("pixel color: %x\n\n", px_to_print);
+		}
+		t = line_idx;
+		while (t < line_height)
+		{
+			my_put_pixel(img,
+			x,
+			margin + t,
+			px_to_print
+			);
+			t++;
+		}
+		line_idx += times2print;
+		px_to_print_idx += texture->width * 4;
+	}
+	if (!(j % 10)){
+	printf("last pixel_idx: %i\nxxxxxxxxxxxxxxxxxxxxxxxxxx\n",
+				px_to_print_idx - times2print);}
+	// closeme((void	*)gi);
+
+	j ++;
+}
+/* void print_texture(t_gameInfo	*gi,mlx_image_t	*img, int x, int margin, int line_height, int t_idx)
+{
 	mlx_texture_t *texture = gi->textures[t_idx];
 	static int j;
 	uint32_t px_to_print;
@@ -110,7 +168,6 @@ void print_texture(t_gameInfo	*gi,mlx_image_t	*img, int x, int margin, int line_
 		printf("times2print %i, line_height = %d\n",times2print , line_height);
 		printf("txt column %i\n",texture_column );
 	}
-
 
 	int i = 0; //screen y
 	int t = 0;
@@ -142,7 +199,7 @@ void print_texture(t_gameInfo	*gi,mlx_image_t	*img, int x, int margin, int line_
 		}
 	}
 	j = 1;
-}
+} */
 
 mlx_image_t	*create_screen_image(t_gameInfo	*gi)
 {
@@ -173,6 +230,7 @@ mlx_image_t	*create_screen_image(t_gameInfo	*gi)
 			fprintf(fp, "--------------------------------------------------------------------------------------------------------\n");
 		// line(test, (double[2]){x, margin}, (double[2]){x, margin + printed_height}, texture);
 		print_texture(gi, test,(int) x, margin, printed_height, texture);
+
 
 	}
 	return (test);

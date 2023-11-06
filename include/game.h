@@ -28,12 +28,21 @@
 
 # define FOV 60.0
 
+typedef enum e_mapchar
+{
+	SPACE = 0,
+	WALL = 1,
+	COLLECTIBLE = 2
+} t_mapchar;
+
 // MINIMAP VALUES
 # define MINIMAP_WIDTH_FACTOR .2		// multiplied by gi->screen_w
 # define BCKG_COLOR 0xFF			// black
 # define WALL_COLOR 0xFFFFFFFF	// white
 # define PLAYER_COLOR 0xFF0FF0FF	// red
 # define DIR_COLOR 0xFFBF00FF	// yellow
+
+# define COLL_COLOR 0x00FF00FF	// yellow
 
 //	int	x;  top left corner's x position
 //	int	y; top left corner's y position
@@ -61,6 +70,7 @@ typedef struct s_gameInfo
 	int				screen_h;
 
 	int				offset; // viewpnt offset
+	int				score; // collectible counter
 }	t_gameInfo;
 
 // GAME_INFO

@@ -31,8 +31,7 @@ void	player_rotate(t_gameInfo *gi, int angle)
 
 //int direction is one of 4:
 // D = 0, W = 1, A = 2, S = 3
-
-static int	check4pnts(t_gameInfo *gi, int player_x, int player_y)
+static t_mapchar	check4pnts(t_gameInfo *gi, int player_x, int player_y)
 {
 	int	i;
 	int	x;
@@ -43,34 +42,35 @@ static int	check4pnts(t_gameInfo *gi, int player_x, int player_y)
 	{
 		x = ((player_x) + ((i > 0) * gi->player_size));
 		y = ((player_y) + ((i && !(i % 2)) * gi->player_size));
-		if (coors_in_map(gi, x, y) != '0')
-			return (ERR);
+		if (coors_in_map(gi, x, y) == '1')
+			return (WALL);
+		if (coors_in_map(gi, x, y) == 'C')
+		{
+			gi->map_info->map
+			[(int)round (y / gi->txtr_size)]
+			[(int)round (x / gi->txtr_size)] = '0';
+			gi->score ++;
+			printf("***COLLECTIBLE SCORE %i***\n", gi->score);
+			return (COLLECTIBLE);
+		}
 	}
-	return (OK);
+	return (SPACE);
 }
 
 void	move_player(t_gameInfo *gi, int dir)
 {
-	double	movement_angle;
-	int		new_x;
-	int		new_y;
+	double		movement_angle;
+	int			new_x;
+	int			new_y;
 
 	movement_angle = fmod (gi->player->angle + (90 * dir) + 360, 360);
 	new_x = (int) round (cos(dtr(movement_angle)) * 10);
 	new_y = (int) round (sin(dtr(movement_angle)) * -10);
-	while (new_x && check4pnts(gi, gi->player->x + new_x, gi->player->y) != OK)
-	{
-		if (new_x > 0)
-			new_x--;
-		else
-			new_x++;
-	}
-	while (new_y && check4pnts(gi, gi->player->x, gi->player->y + new_y) != OK)
-	{
-		if (new_y > 0)
-			new_y--;
-		else
-			new_y++;
-	}
+	while (new_x
+		&& check4pnts(gi, gi->player->x + new_x, gi->player->y) == WALL)
+		new_x += -(new_x > 0) +(new_x < 0);
+	while (new_y
+		&& check4pnts(gi, gi->player->x, gi->player->y + new_y) == WALL)
+		new_y += -(new_y > 0) +(new_y < 0);
 	update_player(gi, new_x, new_y);
 }

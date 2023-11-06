@@ -84,5 +84,6 @@ t_gameInfo	*init_game_info(char *argv[])
 	gi->screen_w = WIDTH;
 	gi->screen_h = HEIGHT;
 	gi->offset = 0;
+	gi->score = 0;
 	return (gi);
 }

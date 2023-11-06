@@ -16,7 +16,7 @@
 # define OK 0
 # define ERR 1
 
-# define ALLOWED_MAPCHARS "NSEW10 "
+# define ALLOWED_MAPCHARS "NSEW10C "
 # include "include/libft.h"
 
 # include <stdio.h>

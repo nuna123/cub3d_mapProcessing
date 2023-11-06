@@ -36,11 +36,11 @@ static double	get_horiz_dist(t_gameInfo *gi, double a)
 	dis = fabs(((pl[0] - dot[0]) / cos(dtr(a))));
 	diff[1] = -1 * sin(dtr(a)) * dis_diff;
 	diff[0] = gi->txtr_size - (((a > 90 && a < 270)) * gi->txtr_size * 2);
-	while (dot[0] < gi->screen_w && dot[0] > 0
-		&& dot[1] > 0 && dot[1] < gi->screen_h)
+	while (dot[0] < (gi->map_info->map_width * gi->txtr_size) && dot[0] > 0
+		&& dot[1] > 0 && dot[1] < (gi->map_info->map_height * gi->txtr_size))
 	{
 		if (coors_in_map(gi, dot[0] - (a > 90 && a < 270), dot[1] - (
-					(fmod(dot[1], gi->txtr_size) == 0) && (a < 180))) != '0')
+					(fmod(dot[1], gi->txtr_size) == 0) && (a < 180))) == '1')
 			break ;
 		dot[0] += diff[0];
 		dot[1] += diff[1];
@@ -86,11 +86,11 @@ static double	get_vert_dist(t_gameInfo *gi, double a)
 	diff[0] = dis_diff * cos (dtr(a));
 	dis = fabs((fabs(pl[1] - dot[1]) / sin(dtr(180 - a))));
 	diff[1] = gi->txtr_size - (a < 180) * gi->txtr_size * 2;
-	while (dot[0] < gi->screen_w && dot[0] > 0
-		&& dot[1] > 0 && dot[1] < gi->screen_h)
+	while (dot[0] < (gi->map_info->map_width * gi->txtr_size) && dot[0] > 0
+		&& dot[1] > 0 && dot[1] < (gi->map_info->map_height * gi->txtr_size))
 	{
 		if (coors_in_map (gi, dot[0] - ((fmod(dot[0], gi->txtr_size) == 0)
-					&& (a > 90 && a < 270)), dot[1] - (a < 180)) != '0')
+					&& (a > 90 && a < 270)), dot[1] - (a < 180)) == '1')
 			break ;
 		dot[0] += diff[0];
 		dot[1] += diff[1];

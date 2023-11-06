@@ -28,14 +28,14 @@ void	my_put_pixel(mlx_image_t *img, uint32_t x, uint32_t y, uint32_t color)
 
 char	coors_in_map(t_gameInfo *gi, int x, int y)
 {
-	if (x < 0 || y < 0 || x >= gi->screen_w || y >= gi->screen_h)
-		return (0);
+	if (x < 0 || y < 0)
+		return (printf("1ERR! %i, %i\n", x, y), -1);
 	if (y / gi->txtr_size >= gi->map_info->map_height
 		|| x / gi->txtr_size >= gi->map_info->map_width)
-		return (0);
+		return (printf("2ERR! %i, %i\n\n", x, y), -1);
 	return (gi->map_info->map
-		[(int)ceil (y / gi->txtr_size)]
-		[(int)ceil (x / gi->txtr_size)]);
+		[(y / gi->txtr_size)]
+		[(x / gi->txtr_size)]);
 }
 
 void	define_texture(double horiz_dis, double vert_dis,

@@ -67,6 +67,11 @@ static void	print_minimap(t_gameInfo *gi, mlx_image_t *img,
 				draw_minimap_texture (img, bloc, bloc_size, WALL_COLOR);
 			else
 				draw_minimap_texture (img, bloc, bloc_size, BCKG_COLOR);
+			if (gi->map_info->map[map_pos[1]][map_pos[0]] == 'C')
+				draw_minimap_texture (img, (double [2])
+				{bloc[0] + bloc_size / 2 - bloc_size / 8,
+					bloc[1] + bloc_size / 2 - bloc_size / 8},
+					bloc_size / 4, COLL_COLOR);
 		}
 	}
 }

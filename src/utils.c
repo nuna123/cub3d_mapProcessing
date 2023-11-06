@@ -44,6 +44,8 @@ void	define_texture(double horiz_dis, double vert_dis,
 	double	new_ang;
 
 	new_ang = fmod((angle + 360), 360);
+	if (vert_dis == horiz_dis)
+		vert_dis = -1;
 	if ((new_ang < 90 || new_ang > 270)
 		&& (vert_dis == -1 || horiz_dis < vert_dis))
 		*txtr = 0;
@@ -57,6 +59,7 @@ void	define_texture(double horiz_dis, double vert_dis,
 		&& (horiz_dis == -1 || horiz_dis > vert_dis))
 		*txtr = 3;
 }
+
 uint32_t	get(uint8_t *texture_pixels)
 {
 	uint32_t	res;

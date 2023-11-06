@@ -58,6 +58,8 @@ typedef struct s_gameInfo
 
 	int				screen_w;
 	int				screen_h;
+
+	int				offset; // viewpnt offset
 }	t_gameInfo;
 
 // GAME_INFO
@@ -65,8 +67,9 @@ void		free_game_info(t_gameInfo *gi);
 t_gameInfo	*init_game_info(char *argv[]);
 
 //HOOKS
-void		closeme(void	*game_info);
-void		key_hooker(mlx_key_data_t keydata, void	*game_info);
+void		closeme(void *game_info);
+void		key_hooker(mlx_key_data_t keydata, void *game_info);
+void		our_mousefunc(mouse_key_t button, action_t action, modifier_key_t mods, void* game_info);
 
 // PLAYER_FUNCS
 t_player	*get_player(t_gameInfo *gi);

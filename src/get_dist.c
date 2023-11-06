@@ -106,9 +106,10 @@ double	get_dist(t_gameInfo *gi, double angle, int *txtr)
 	double			corr_ang;
 
 	if (angle < 360)
-		corr_ang = (fmod((angle + 360), 360) - gi->player->angle);
+		corr_ang = (fmod((angle + 360), 360)
+				- (gi->player->angle - gi->offset));
 	else
-		corr_ang = (angle - gi->player->angle);
+		corr_ang = (angle - (gi->player->angle - gi->offset));
 	horiz_dis = (float)get_horiz_dist(gi, fmod((angle + 360), 360));
 	vert_dis = (float)get_vert_dist(gi, fmod((angle + 360), 360));
 	define_texture(horiz_dis, vert_dis, angle, txtr);

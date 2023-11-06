@@ -71,10 +71,28 @@ static void	print_minimap(t_gameInfo *gi, mlx_image_t *img,
 	}
 }
 
+void	draw_fov(t_gameInfo *gi, mlx_image_t *img, double mini_pl[2])
+{
+	double	mini_pl_end[2];
+
+	mini_pl_end[0] = mini_pl[0] + round (cos(dtr(gi->player->angle)) * 10);
+	mini_pl_end[1] = mini_pl[1] - round (sin(dtr(gi->player->angle)) * 10);
+	line(img, mini_pl, mini_pl_end, PLAYER_COLOR);
+	mini_pl_end[0] = (mini_pl[0]) + round (cos(dtr(gi->player->angle
+					- (FOV / 2) - gi->offset)) * 20);
+	mini_pl_end[1] = (mini_pl[1]) - round (sin(dtr(gi->player->angle
+					- (FOV / 2) - gi->offset)) * 20);
+	line(img, mini_pl, mini_pl_end, PLAYER_COLOR);
+	mini_pl_end[0] = (mini_pl[0]) + round (cos(dtr(gi->player->angle
+					+ (FOV / 2) - gi->offset)) * 20);
+	mini_pl_end[1] = (mini_pl[1]) - round (sin(dtr(gi->player->angle
+					+ (FOV / 2) - gi->offset)) * 20);
+	line(img, mini_pl, mini_pl_end, PLAYER_COLOR);
+}
+
 void	draw_minimap(t_gameInfo *gi, mlx_image_t *img, int pos[2])
 {
 	double	mini_pl[2];
-	double	mini_pl_end[2];
 	int		bloc_size;
 
 	bloc_size = (MINIMAP_WIDTH_FACTOR * gi->screen_w) / gi->map_info->map_width;
@@ -85,12 +103,8 @@ void	draw_minimap(t_gameInfo *gi, mlx_image_t *img, int pos[2])
 	mini_pl[1] = pos[1] + round(
 			(double)gi->player->y / (gi->map_info->map_height * gi->txtr_size)
 			* (bloc_size * gi->map_info->map_height));
-	mini_pl_end[0] = mini_pl[0] + round (cos(dtr(gi->player->angle)) * 10)
-		+ (bloc_size / 4);
-	mini_pl_end[1] = mini_pl[1] - round (sin(dtr(gi->player->angle)) * 10)
-		+ (bloc_size / 4);
 	draw_minimap_texture (img, mini_pl, bloc_size / 2, PLAYER_COLOR);
 	mini_pl[0] += (bloc_size / 4);
 	mini_pl[1] += (bloc_size / 4);
-	line(img, mini_pl, mini_pl_end, PLAYER_COLOR);
+	draw_fov(gi, img, mini_pl);
 }

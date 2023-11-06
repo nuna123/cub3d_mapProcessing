@@ -12,6 +12,7 @@
 		"utility": "c",
 		"math.h": "c",
 		"cmath": "c",
-		"random": "c"
+		"random": "c",
+		"compare": "c"
 	}
 }

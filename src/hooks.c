@@ -48,3 +48,24 @@ void	key_hooker(mlx_key_data_t keydata, void	*gi)
 			move_player((t_gameInfo *) gi, 3);
 	}
 }
+
+void	our_mousefunc(mouse_key_t button, action_t action,
+		modifier_key_t mods, void *game_info)
+{
+	int32_t		mousepos[2];
+	t_gameInfo	*gi;
+
+	(void) mods;
+	gi = game_info;
+	if (action != MLX_PRESS)
+		return ;
+	mlx_get_mouse_pos(gi->mlx, &mousepos[0], &mousepos[1]);
+	if (button == MLX_MOUSE_BUTTON_MIDDLE)
+		gi->offset = 5;
+	else if (mousepos[0] < gi->screen_w / 2
+		&& (gi->offset - 5) >= 0 - (FOV / 2))
+		gi->offset -= 5;
+	else if (mousepos[0] > gi->screen_w / 2 && (gi->offset + 5) <= (FOV / 2))
+		gi->offset += 5;
+	print_screen (gi);
+}

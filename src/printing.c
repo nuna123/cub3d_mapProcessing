@@ -12,7 +12,6 @@
 
 #include "game.h"
 
-
 void	line(mlx_image_t *img, double a[2], double b[2], uint32_t color)
 {
 	double		steps[2];
@@ -118,7 +117,7 @@ mlx_image_t	*create_screen_image(t_gameInfo	*gi)
 	{
 		dis = get_dist(gi,
 				gi->player->angle + (FOV / 2)
-				- ((FOV / (double) gi->screen_w) * x),
+				- ((FOV / (double) gi->screen_w) * x) - gi->offset,
 				&texture);
 		printed_height = round(
 				(32 * (gi->screen_w * 0.5 / tan(dtr(FOV / 2)))) / dis);

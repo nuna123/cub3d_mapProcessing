@@ -33,6 +33,7 @@
 # define BCKG_COLOR 0xFF			// black
 # define WALL_COLOR 0xFFFFFFFF	// white
 # define PLAYER_COLOR 0xFF0FF0FF	// red
+# define DIR_COLOR 0xFFBF00FF	// yellow
 
 //	int	x;  top left corner's x position
 //	int	y; top left corner's y position

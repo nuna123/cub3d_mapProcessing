@@ -72,16 +72,13 @@ static int	isvalid_map(char **map, int map_width)
 		{
 			temp_line = ft_strjoin(map[i], "1");
 			free(map[i]);
-			map[i]= temp_line;
+			map[i] = temp_line;
 		}
 		if (isvalid_midline(map[i]) == ERR)
 			return (ERR);
-		if (ft_strchr(map[i], 'N')
-			|| ft_strchr(map[i], 'S')
+		if (ft_strchr(map[i], 'N') || ft_strchr(map[i], 'S')
 			|| ft_strchr(map[i], 'E') || ft_strchr(map[i], 'W'))
 			player_found++;
-
-		
 	}
 	if (isvalid_firstline(map[i - 1]) == ERR || player_found != 1)
 		return (ERR);

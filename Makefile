@@ -5,7 +5,7 @@ NAME		=	new_game
 SRC_FOL	=	./src/
 SRC			=	${addprefix ${SRC_FOL}, *.c}
 
-INCLD = -I./include/
+INCLD = ./include/
 
 MLX_PATH	= ./libs/MLX42/
 LIBFT_PATH	= ./libs/Libft/
@@ -17,7 +17,7 @@ MLX_LIB	= ${addprefix ${MLX_BUILD_PATH}, libmlx42.a}
 LIBS_FOL	=	${MAP_PROC_PATH} ${LIBFT_PATH}
 LIBS		=	${LIBS_FOL:/=/*.a} ${MLX_LIB}
 
-CC			=	cc -ldl -lglfw -pthread -lm -fsanitize=address -g -Wall -Werror -Wextra
+CC			=	cc -ldl -lglfw -pthread -g -lm -fsanitize=address -Wall -Werror -Wextra
 
 ###################################################################
 GREEN='\033[32m'
@@ -38,8 +38,8 @@ ${LIBFT_PATH}%.a :
 ${MAP_PROC_PATH}%.a :
 	make -C ${MAP_PROC_PATH} -s
 
-${NAME}: ${SRC} ${LIBS} ${MLX_LIB}
-	${CC} ${SRC} ${LIBS} ${INCLD} -o ${NAME}
+${NAME}: ${SRC} ${LIBS} ${INCLD}* ${MLX_LIB}
+	${CC} ${SRC} ${LIBS} -I${INCLD} -o ${NAME}
 
 
 fclean:

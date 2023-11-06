@@ -11,7 +11,7 @@
 /* ************************************************************************** */
 
 #include "game.h"
-void move_player(t_gameInfo *gi, int direction);
+
 void	closeme(void	*game_info)
 {
 	t_gameInfo	*gi;
@@ -30,32 +30,21 @@ void	closeme(void	*game_info)
 
 // D = 0, W = 1, A = 2, S = 3
 
-void	key_hooker(mlx_key_data_t keydata, void	*game_info)
+void	key_hooker(mlx_key_data_t keydata, void	*gi)
 {
 	if (keydata.key == MLX_KEY_ESCAPE)
-		closeme(game_info);
+		closeme(gi);
 	else if (keydata.action)
 	{
 		if (keydata.key == MLX_KEY_RIGHT || keydata.key == MLX_KEY_LEFT)
-			player_rotate((t_gameInfo *) game_info, keydata.key);
+			player_rotate((t_gameInfo *) gi, keydata.key);
 		else if (keydata.key == MLX_KEY_UP || keydata.key == MLX_KEY_W)
-			move_player((t_gameInfo *) game_info, 0);
+			move_player((t_gameInfo *) gi, 0);
 		else if (keydata.key == MLX_KEY_A)
-			move_player((t_gameInfo *) game_info, 1);
+			move_player((t_gameInfo *) gi, 1);
 		else if (keydata.key == MLX_KEY_DOWN || keydata.key == MLX_KEY_S)
-			move_player((t_gameInfo *) game_info, 2);
+			move_player((t_gameInfo *) gi, 2);
 		else if (keydata.key == MLX_KEY_D)
-			move_player((t_gameInfo *) game_info, 3);
-
-
-
-
-
-/* 		else if (keydata.key == MLX_KEY_UP || keydata.key == MLX_KEY_DOWN)
-			move_player((t_gameInfo *) game_info, keydata.key - MLX_KEY_DOWN); */
-
-
-			// player_move((t_gameInfo *) game_info, keydata.key - MLX_KEY_DOWN);
+			move_player((t_gameInfo *) gi, 3);
 	}
-
 }

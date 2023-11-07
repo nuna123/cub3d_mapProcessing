@@ -42,7 +42,15 @@ typedef enum e_mapchar
 # define PLAYER_COLOR 0xFF0FF0FF	// red
 # define DIR_COLOR 0xFFBF00FF	// yellow
 
-# define COLL_COLOR 0x00FF00FF	// yellow
+# define COLL_COLOR 0x00FF00FF	// green
+
+
+typedef struct s_star
+{
+	int	x;
+	int	y;
+	int	size;
+}	t_star;
 
 //	int	x;  top left corner's x position
 //	int	y; top left corner's y position
@@ -62,15 +70,17 @@ typedef struct s_gameInfo
 
 	mlx_texture_t	**textures;
 	mlx_image_t		*screen_image;
+	mlx_image_t		*stars_image;
 	t_player		*player;
 	int				txtr_size;
 	int				player_size;
 
-	int				screen_w;
-	int				screen_h;
+	mlx_texture_t	*star_texture;
 
 	int				offset; // viewpnt offset
 	int				score; // collectible counter
+
+	t_star			**stars; // collectibles array
 }	t_gameInfo;
 
 // GAME_INFO
@@ -111,5 +121,15 @@ void		print_texture(t_gameInfo *gi, mlx_image_t *img, int vals[3],
 				int t_idx);
 mlx_image_t	*create_screen_image(t_gameInfo	*gi);
 void		print_screen(t_gameInfo *game_info);
+
+
+
+
+
+
+
+
+//TEST ZONE
+void	get_star_img(t_gameInfo *gi);
 
 #endif

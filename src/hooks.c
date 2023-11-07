@@ -62,10 +62,10 @@ void	our_mousefunc(mouse_key_t button, action_t action,
 	mlx_get_mouse_pos(gi->mlx, &mousepos[0], &mousepos[1]);
 	if (button == MLX_MOUSE_BUTTON_MIDDLE)
 		gi->offset = 5;
-	else if (mousepos[0] < gi->screen_w / 2
+	else if (mousepos[0] < WIDTH / 2
 		&& (gi->offset - 5) >= 0 - (FOV / 2))
 		gi->offset -= 5;
-	else if (mousepos[0] > gi->screen_w / 2 && (gi->offset + 5) <= (FOV / 2))
+	else if (mousepos[0] > WIDTH / 2 && (gi->offset + 5) <= (FOV / 2))
 		gi->offset += 5;
 	print_screen (gi);
 }

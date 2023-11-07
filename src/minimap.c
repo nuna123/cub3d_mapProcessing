@@ -33,7 +33,7 @@ static void	draw_minimap_texture(mlx_image_t *img, double pos[2],
 
 /*
 	the initial minimap width depends on the screen width, it will be equal
-		to gi->screen_w * width factor	then the minimap bloc size is calculated based
+		to WIDTH * width factor	then the minimap bloc size is calculated based
 		on the minimap width and the amount of blocks it needs to
 		fit (gi->map_info->map_width)
 	minimap height is based on the block size and the amount of blocks in the
@@ -100,7 +100,7 @@ void	draw_minimap(t_gameInfo *gi, mlx_image_t *img, int pos[2])
 	double	mini_pl[2];
 	int		bloc_size;
 
-	bloc_size = (MINIMAP_WIDTH_FACTOR * gi->screen_w) / gi->map_info->map_width;
+	bloc_size = (MINIMAP_WIDTH_FACTOR * WIDTH) / gi->map_info->map_width;
 	print_minimap(gi, img, pos, bloc_size);
 	mini_pl[0] = pos[0] + round(
 			(double)gi->player->x / (gi->map_info->map_width * gi->txtr_size)

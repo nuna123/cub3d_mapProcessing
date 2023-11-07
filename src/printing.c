@@ -47,15 +47,15 @@ mlx_image_t	*print_bcg(t_gameInfo	*gi)
 	int			y;
 	int			scrn_half;
 
-	test = mlx_new_image(gi->mlx, gi->screen_w, gi->screen_h);
+	test = mlx_new_image(gi->mlx, WIDTH, HEIGHT);
 	if (!test)
 		return (NULL);
-	scrn_half = gi->screen_h / 2;
+	scrn_half = HEIGHT / 2;
 	y = -1;
-	while (++y < gi->screen_h / 2)
+	while (++y < HEIGHT / 2)
 	{
 		x = -1;
-		while (++x < gi->screen_w)
+		while (++x < WIDTH)
 		{
 			my_put_pixel(test, x, y, gi->map_info->ceiling_color);
 			my_put_pixel(test, x, y + scrn_half, gi->map_info->floor_color);
@@ -113,16 +113,16 @@ mlx_image_t	*create_screen_image(t_gameInfo	*gi)
 	test = print_bcg(gi);
 	if (!test)
 		return (NULL);
-	while (++x < gi->screen_w)
+	while (++x < WIDTH)
 	{
 		dis = get_dist(gi,
 				gi->player->angle + (FOV / 2)
-				- ((FOV / (double) gi->screen_w) * x) - gi->offset,
+				- ((FOV / (double) WIDTH) * x) - gi->offset,
 				&texture);
 		printed_height = round(
-				(32 * (gi->screen_w * 0.5 / tan(dtr(FOV / 2)))) / dis);
+				(32 * (WIDTH * 0.5 / tan(dtr(FOV / 2)))) / dis);
 		print_texture(gi, test, (int [3])
-		{x, (gi->screen_h - printed_height) / 2, printed_height}, texture);
+		{x, (HEIGHT - printed_height) / 2, printed_height}, texture);
 	}
 	return (test);
 }
@@ -137,8 +137,14 @@ void	print_screen(t_gameInfo *gi)
 		printf ("ERR printscreen\n");
 		return ;
 	}
+
 	mlx_delete_image(gi->mlx, gi->screen_image);
 	gi->screen_image = img;
 	draw_minimap (gi, gi->screen_image, (int [2]){20, 20});
+
+	get_star_img(gi);
+
 	mlx_image_to_window(gi->mlx, gi->screen_image, 0, 0);
+	mlx_image_to_window(gi->mlx, gi->stars_image, 0, 0);
+
 }

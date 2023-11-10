@@ -33,7 +33,7 @@ typedef enum e_mapchar
 	SPACE = 0,
 	WALL = 1,
 	COLLECTIBLE = 2
-} t_mapchar;
+}	t_mapchar;
 
 // MINIMAP VALUES
 # define MINIMAP_WIDTH_FACTOR .2		// multiplied by gi->screen_w
@@ -41,14 +41,7 @@ typedef enum e_mapchar
 # define WALL_COLOR 0xFFFFFFFF	// white
 # define PLAYER_COLOR 0xFF0FF0FF	// red
 # define DIR_COLOR 0xFFBF00FF	// yellow
-
 # define COLL_COLOR 0x00FF00FF	// green
-
-
-# define GREEN  "\033[0;32m"	// green
-# define RED "\033[0;31m"	// red
-# define WHITE  "\033[0;37m"	// white
-
 
 typedef struct s_star
 {
@@ -69,6 +62,10 @@ typedef struct s_player
 }	t_player;
 
 //TEXTURE ORDER:  E N W S
+//int				offset; // viewpnt offset
+//int				score; // collectible counter
+
+//t_star			**stars; // collectibles array
 typedef struct s_gameInfo
 {
 	mlx_t			*mlx;
@@ -83,10 +80,10 @@ typedef struct s_gameInfo
 
 	mlx_texture_t	*star_texture;
 
-	int				offset; // viewpnt offset
-	int				score; // collectible counter
+	int				offset;
+	int				score;
 
-	t_star			**stars; // collectibles array
+	t_star			**stars;
 }	t_gameInfo;
 
 // GAME_INFO
@@ -96,7 +93,8 @@ t_gameInfo	*init_game_info(char *argv[]);
 //HOOKS
 void		closeme(void *game_info);
 void		key_hooker(mlx_key_data_t keydata, void *game_info);
-void		our_mousefunc(mouse_key_t button, action_t action, modifier_key_t mods, void* game_info);
+void		our_mousefunc(mouse_key_t button, action_t action,
+				modifier_key_t mods, void *game_info);
 
 // PLAYER_FUNCS
 t_player	*get_player(t_gameInfo *gi);
@@ -107,17 +105,6 @@ void		move_player(t_gameInfo *gi, int direction);
 
 //GET_DIST
 double		get_dist(t_gameInfo *gi, double angle, int *txtr);
-
-//		new files		!!!!!!!!!!!!!!!!!!!
-//COLLECTIBLES
-char		obj_xy_inmap(t_gameInfo *gi, int x, int y, int *id);
-t_star		**get_stars(t_gameInfo *gi);
-
-//PRINT_COLLECT_IMG
-void		get_star_img(t_gameInfo *gi);
-
-//GET_STAR_DIST
-double		star_get_dist(t_gameInfo *gi, double angle, int *block);
 
 //UTILS
 double		dtr(double deg);
@@ -139,14 +126,19 @@ void		print_texture(t_gameInfo *gi, mlx_image_t *img, int vals[3],
 mlx_image_t	*create_screen_image(t_gameInfo	*gi);
 void		print_screen(t_gameInfo *game_info);
 
+//		new files		!!!!!!!!!!!!!!!!!!!
+//COLLECTIBLES
+char		obj_xy_inmap(t_gameInfo *gi, int x, int y, int *id);
+t_star		*make_new_star(int x, int y, int width, int height);
 
+//PRINT_COLLECT_IMG
+t_star		**get_stars(t_gameInfo *gi);
+void		get_star_img(t_gameInfo *gi);
 
+//GET_STAR_DIST
+double		star_get_dist(t_gameInfo *gi, double angle, int *block);
 
-
-
-
-
-//TEST ZONE
-void	get_star_img(t_gameInfo *gi);
+//GET_STAR
+void		get_star(t_gameInfo *gi, int x, t_star	***stars);
 
 #endif

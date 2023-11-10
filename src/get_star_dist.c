@@ -94,29 +94,35 @@ static double	star_get_v_dist(t_gameInfo *gi, double a, int *v_bl)
 	}
 	return (-1);
 }
+//dis	[0] = vertical distance to the nearest star,
+//		[1] = horizotal distance to the nearest star,
+//blocks[0] = block identifier of vertical check
+//		[1] = block identifier of horizontal check
 
 double	star_get_dist(t_gameInfo *gi, double angle, int *block)
 {
-	float	vert_dis;
-	float	horiz_dis;
+	double	dis[2];
+	int		wall_dis;
 	double	corr_ang;
-	int		v_block;
-	int		h_block;
+	int		blocks[0];
 
 	if (angle < 360)
 		corr_ang = (fmod((angle + 360), 360)
 				- (gi->player->angle - gi->offset));
 	else
 		corr_ang = (angle - (gi->player->angle - gi->offset));
-	horiz_dis = (float)star_get_h_dist(gi, fmod((angle + 360), 360), &h_block);
-	vert_dis = (float)star_get_v_dist(gi, fmod((angle + 360), 360), &v_block);
-	if (vert_dis == -1 && horiz_dis == -1)
+	dis[1] = star_get_h_dist(gi, fmod((angle + 360), 360), &blocks[1]);
+	dis[0] = star_get_v_dist(gi, fmod((angle + 360), 360), &blocks[0]);
+	wall_dis = get_dist(gi, angle, block);
+	if (wall_dis < dis[1] || wall_dis < dis[0])
 		return (-1);
-	if (vert_dis == -1)
-		return ((*block = h_block), horiz_dis * cos(dtr(corr_ang)));
-	if (horiz_dis == -1)
-		return ((*block = v_block), vert_dis * cos(dtr(corr_ang)));
-	if (horiz_dis <= vert_dis)
-		return ((*block = h_block), horiz_dis * cos(dtr(corr_ang)));
-	return ((*block = v_block), vert_dis * cos(dtr(corr_ang)));
+	if (dis[0] == -1 && dis[1] == -1)
+		return (-1);
+	if (dis[0] == -1)
+		return ((*block = blocks[1]), dis[1] * cos(dtr(corr_ang)));
+	if (dis[1] == -1)
+		return ((*block = blocks[0]), dis[0] * cos(dtr(corr_ang)));
+	if (dis[1] <= dis[0])
+		return ((*block = blocks[1]), dis[1] * cos(dtr(corr_ang)));
+	return ((*block = blocks[0]), dis[0] * cos(dtr(corr_ang)));
 }

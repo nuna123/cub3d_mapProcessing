@@ -92,3 +92,28 @@ void	get_star_img(t_gameInfo *gi)
 		}
 	}
 }
+
+t_star	**get_stars(t_gameInfo *gi)
+{
+	t_star	**stars;
+	int		x;
+	double	dis;
+	double	star_c;
+	int		unused;
+
+	x = -1;
+	stars = NULL;
+	star_c = 0;
+	while (++x < WIDTH)
+	{
+		dis = star_get_dist(gi,
+				gi->player->angle + (FOV / 2)
+				- ((FOV / (double) WIDTH) * x) - gi->offset, &unused);
+		if ((star_c == -1 || star_c == 0) && dis != -1)
+			get_star(gi, x, &stars);
+		if (star_c != -1 && dis == -1)
+			star_c = 0;
+		star_c = dis;
+	}
+	return (stars);
+}

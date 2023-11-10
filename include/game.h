@@ -6,7 +6,7 @@
 /*   By: ymorozov <ymorozov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/21 17:11:15 by nroth             #+#    #+#             */
-/*   Updated: 2023/10/18 16:44:45 by ymorozov         ###   ########.fr       */
+/*   Updated: 2023/11/10 18:28:23 by ymorozov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,6 +107,17 @@ void		move_player(t_gameInfo *gi, int direction);
 
 //GET_DIST
 double		get_dist(t_gameInfo *gi, double angle, int *txtr);
+
+//		new files		!!!!!!!!!!!!!!!!!!!
+//COLLECTIBLES
+char		obj_xy_inmap(t_gameInfo *gi, int x, int y, int *id);
+t_star		**get_stars(t_gameInfo *gi);
+
+//PRINT_COLLECT_IMG
+void		get_star_img(t_gameInfo *gi);
+
+//GET_STAR_DIST
+double		star_get_dist(t_gameInfo *gi, double angle, int *block);
 
 //UTILS
 double		dtr(double deg);

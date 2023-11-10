@@ -3,23 +3,19 @@
 /*                                                        :::      ::::::::   */
 /*   game_info.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nroth <marvin@42.fr>                       +#+  +:+       +#+        */
+/*   By: ymorozov <ymorozov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/25 13:25:33 by nroth             #+#    #+#             */
-/*   Updated: 2023/09/25 13:25:34 by nroth            ###   ########.fr       */
+/*   Updated: 2023/11/10 16:30:38 by ymorozov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "game.h"
 
-void	free_game_info(t_gameInfo *gi)
+void	free_game_info_ext(t_gameInfo *gi)
 {
 	int	i;
 
-	if (gi->player)
-		free(gi->player);
-	if (gi->map_info)
-		map_info_free(gi->map_info);
 	if (gi->textures)
 	{
 		i = -1;
@@ -30,6 +26,15 @@ void	free_game_info(t_gameInfo *gi)
 		}
 		free(gi->textures);
 	}
+}
+
+void	free_game_info(t_gameInfo *gi)
+{
+	if (gi->player)
+		free(gi->player);
+	if (gi->map_info)
+		map_info_free(gi->map_info);
+	free_game_info_ext(gi);
 	if (gi->star_texture)
 		mlx_delete_texture(gi->star_texture);
 	if (gi->stars)
@@ -42,20 +47,24 @@ void	free_game_info(t_gameInfo *gi)
 	free(gi);
 }
 
+static int	gi_create_textures_ext(t_gameInfo *gi)
+{
+	int	i;
+
+	i = -1;
+	gi->textures = ft_calloc (sizeof(mlx_texture_t *), 5);
+	while (++i < 4)
+	{
+		gi->textures[i] = mlx_load_png(gi->map_info->texture_paths[i]);
+		if (!gi->textures[i])
+			return (ERR);
+	}
+	return (OK);
+}
+
 static int	gi_create_textures(t_gameInfo *gi)
 {
-	gi->textures = ft_calloc (sizeof(mlx_texture_t *), 5);
-	gi->textures[0] = mlx_load_png(gi->map_info->texture_paths[0]);
-	if (!gi->textures[0])
-		return (ERR);
-	gi->textures[1] = mlx_load_png(gi->map_info->texture_paths[1]);
-	if (!gi->textures[1])
-		return (ERR);
-	gi->textures[2] = mlx_load_png(gi->map_info->texture_paths[2]);
-	if (!gi->textures[2])
-		return (ERR);
-	gi->textures[3] = mlx_load_png(gi->map_info->texture_paths[3]);
-	if (!gi->textures[3])
+	if (gi_create_textures_ext(gi) == ERR)
 		return (ERR);
 	gi->star_texture = mlx_load_png("./textures/stupid_star.png");
 	if (!gi->star_texture)

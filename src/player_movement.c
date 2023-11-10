@@ -6,7 +6,7 @@
 /*   By: ymorozov <ymorozov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/25 13:25:56 by nroth             #+#    #+#             */
-/*   Updated: 2023/10/17 17:31:37 by ymorozov         ###   ########.fr       */
+/*   Updated: 2023/11/10 16:33:00 by ymorozov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,19 +45,13 @@ static t_mapchar	check4pnts(t_gameInfo *gi, int player_x, int player_y)
 		if (coors_in_map(gi, x, y) == '1')
 			return (WALL);
 		if (coors_in_map(gi, x, y) == 'C')
-		{/* //check position is within collectible bounds
-			if ((x % gi->txtr_size > ((gi->txtr_size - (gi->txtr_size / 2)) / 2)
-				&& x % gi->txtr_size < gi->txtr_size - ((gi->txtr_size - (gi->txtr_size / 2)) / 2))
-			&& (y % gi->txtr_size > ((gi->txtr_size - (gi->txtr_size / 2)) / 2)
-				&& y % gi->txtr_size < gi->txtr_size - ((gi->txtr_size - (gi->txtr_size / 2)) / 2)))
-			{ */
-				gi->map_info->map
-				[(int)round (y / gi->txtr_size)]
-				[(int)round (x / gi->txtr_size)] = '0';
-				gi->score ++;
-				printf("***COLLECTIBLE SCORE %i***\n", gi->score);
-				return (COLLECTIBLE);
-			// }
+		{
+			gi->map_info->map
+			[(int)round (y / gi->txtr_size)]
+			[(int)round (x / gi->txtr_size)] = '0';
+			gi->score++;
+			printf("***COLLECTIBLE SCORE %i***\n", gi->score);
+			return (COLLECTIBLE);
 		}
 	}
 	return (SPACE);

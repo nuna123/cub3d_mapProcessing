@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   hooks.c                                            :+:      :+:    :+:   */
+/*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nroth <marvin@42.fr>                       +#+  +:+       +#+        */
+/*   By: ymorozov <ymorozov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/25 13:25:39 by nroth             #+#    #+#             */
-/*   Updated: 2023/09/25 13:25:40 by nroth            ###   ########.fr       */
+/*   Updated: 2023/11/10 16:31:38 by ymorozov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,6 @@ char	coors_in_map(t_gameInfo *gi, int x, int y)
 	if (y / gi->txtr_size >= gi->map_info->map_height
 		|| x / gi->txtr_size >= gi->map_info->map_width)
 		return (printf("2ERR! %i, %i\n\n", x, y), -1);
-	// printf("\tBLOCK CHECKED  %i, %i (%i)\n", (x / gi->txtr_size), (y / gi->txtr_size), (y) + (x / gi->txtr_size));
 	return (gi->map_info->map
 		[(y / gi->txtr_size)]
 		[(x / gi->txtr_size)]);

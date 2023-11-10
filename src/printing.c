@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   printing.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ymorozov <ymorozov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/21 17:11:08 by nroth             #+#    #+#             */
-/*   Updated: 2023/10/26 15:51:14 by ymorozov         ###   ########.fr       */
+/*   Updated: 2023/11/10 16:33:33 by ymorozov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -137,14 +137,10 @@ void	print_screen(t_gameInfo *gi)
 		printf ("ERR printscreen\n");
 		return ;
 	}
-
 	mlx_delete_image(gi->mlx, gi->screen_image);
 	gi->screen_image = img;
 	draw_minimap (gi, gi->screen_image, (int [2]){20, 20});
-
 	get_star_img(gi);
-
 	mlx_image_to_window(gi->mlx, gi->screen_image, 0, 0);
 	mlx_image_to_window(gi->mlx, gi->stars_image, 0, 0);
-
 }

@@ -6,7 +6,7 @@
 /*   By: ymorozov <ymorozov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/21 17:11:08 by nroth             #+#    #+#             */
-/*   Updated: 2023/10/26 15:51:14 by ymorozov         ###   ########.fr       */
+/*   Updated: 2023/11/10 16:19:56 by ymorozov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,8 @@
 
 ///TODO
 	// void mlx_set_icon(mlx_t* mlx, mlx_texture_t* image);
+	// add score printing;
+	// add star animation;
 
 int	main(int argc, char *argv[])
 {

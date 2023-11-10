@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   game_info.c                                        :+:      :+:    :+:   */
+/*   collectibles.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nroth <marvin@42.fr>                       +#+  +:+       +#+        */
+/*   By: ymorozov <ymorozov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/25 13:25:33 by nroth             #+#    #+#             */
-/*   Updated: 2023/09/25 13:25:34 by nroth            ###   ########.fr       */
+/*   Updated: 2023/11/10 16:15:31 by ymorozov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -283,12 +283,11 @@ t_star	**get_stars(t_gameInfo *gi)
 //				[2] = a lil counter
 
 
-void print_bloc(t_gameInfo *gi, mlx_image_t *img, uint32_t color, uint32_t coors[2], int w, int h)
+void print_bloc(mlx_image_t *img, uint32_t color, uint32_t coors[2], int w, int h)
 {
 	int x;
 	int y;
 
-(void)gi;
 	y = -1;
 	while (++y < h) //y loop
 	{
@@ -301,7 +300,7 @@ void print_bloc(t_gameInfo *gi, mlx_image_t *img, uint32_t color, uint32_t coors
 	}
 }
 
-
+/* 
 void	star_print(t_gameInfo *gi, t_star *star)
 {
 	uint32_t	texture_counter[2] = {0,0};
@@ -329,8 +328,45 @@ void	star_print(t_gameInfo *gi, t_star *star)
 		}
 		texture_counter[1] ++;
 	}
+} */
+
+uint32_t	get_color(mlx_texture_t *txtr, int x, int y)
+{
+	// printf("x = %d, Y = %d\n", x, y);
+	return (get(&txtr->pixels[(y * txtr->width + x) * 4]));
 }
 
+void	star_print(t_gameInfo *gi, t_star *star)
+{
+	int	t2p_w;
+	int	t2p_h;
+	int	margin_w;
+	int	margin_h;
+	uint32_t txt_counter[2];
+	uint32_t color;
+
+	t2p_w = star->width / gi->star_texture->width;
+	if (t2p_w < 1)
+		t2p_w = 1;
+	t2p_h = star->height / gi->star_texture->height;
+	if (t2p_h < 1)
+		t2p_h = 1;
+	margin_w = star->width - (gi->star_texture->width * t2p_w);
+	margin_h = star->height - (gi->star_texture->height * t2p_h);
+	
+	txt_counter[1] = 0;
+	while (txt_counter[1] < gi->star_texture->height)
+	{
+		txt_counter[0] = 0;
+		while(txt_counter[0] < gi->star_texture->width)
+		{
+			color = get_color(gi->star_texture, txt_counter[0], txt_counter[1]);
+			print_bloc(gi->stars_image, color, (uint32_t[2]){txt_counter[0] * t2p_w + margin_w +star->x, txt_counter[1] * t2p_h + margin_h +star->y}, t2p_w, t2p_h);
+			txt_counter[0]++;
+		}
+		txt_counter[1]++;
+	}
+}
 
 
 /* void	print_texture_to_size(t_gameInfo *gi, mlx_image_t *img, int vals[3])
@@ -374,8 +410,8 @@ void	get_star_img(t_gameInfo *gi)
 			printf("STAR: x: %i, y: %i, width: %i, height: %i\n",  gi->stars[i]->x, gi->stars[i]->y,  gi->stars[i]->width, gi->stars[i]->height);
 		for (int i = 0;gi->stars[i]; i++)
 		{
-			print_bloc(gi, gi->stars_image, PLAYER_COLOR, (uint32_t[2]) {gi->stars[i]->x, gi->stars[i]->y}, gi->stars[i]->width, gi->stars[i]->height);
-			// star_print(gi, gi->stars[i]);
+			// print_bloc(gi, gi->stars_image, PLAYER_COLOR, (uint32_t[2]) {gi->stars[i]->x, gi->stars[i]->y}, gi->stars[i]->width, gi->stars[i]->height);
+			star_print(gi, gi->stars[i]);
 		}
 	}
 }

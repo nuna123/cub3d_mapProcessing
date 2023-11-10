@@ -30,6 +30,7 @@ int	main(int argc, char *argv[])
 	mlx_close_hook(game_info->mlx, closeme, game_info);
 	mlx_key_hook(game_info->mlx, key_hooker, game_info);
 	mlx_mouse_hook(game_info->mlx, our_mousefunc, game_info);
+	mlx_loop_hook(game_info->mlx, loop_hook, game_info);
 	mlx_loop(game_info->mlx);
 	mlx_terminate(game_info->mlx);
 	return (EXIT_SUCCESS);

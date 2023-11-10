@@ -69,3 +69,21 @@ void	our_mousefunc(mouse_key_t button, action_t action,
 		gi->offset += 5;
 	print_screen (gi);
 }
+
+void	loop_hook(void *game_info)
+{
+	t_gameInfo		*gi;
+	static int		loop_count;
+	mlx_texture_t	*temp;
+	int				j;
+
+	j = 20;
+	loop_count ++;
+	gi = (t_gameInfo *) game_info;
+	if (loop_count % j != 0 || !gi->stars)
+		return ;
+	temp = gi->star_texture[0];
+	gi->star_texture[0] = gi->star_texture[1];
+	gi->star_texture[1] = temp;
+	get_star_img(gi);
+}

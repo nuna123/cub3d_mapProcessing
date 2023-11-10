@@ -78,7 +78,7 @@ typedef struct s_gameInfo
 	int				txtr_size;
 	int				player_size;
 
-	mlx_texture_t	*star_texture;
+	mlx_texture_t	**star_texture; //arr of 2 alternating images
 
 	int				offset;
 	int				score;
@@ -95,6 +95,7 @@ void		closeme(void *game_info);
 void		key_hooker(mlx_key_data_t keydata, void *game_info);
 void		our_mousefunc(mouse_key_t button, action_t action,
 				modifier_key_t mods, void *game_info);
+void	loop_hook(void *game_info);
 
 // PLAYER_FUNCS
 t_player	*get_player(t_gameInfo *gi);
@@ -132,8 +133,8 @@ char		obj_xy_inmap(t_gameInfo *gi, int x, int y, int *id);
 t_star		*make_new_star(int x, int y, int width, int height);
 
 //PRINT_COLLECT_IMG
-t_star		**get_stars(t_gameInfo *gi);
-void		get_star_img(t_gameInfo *gi);
+void		get_stars(t_gameInfo *gi); //update stars arr according to visible stars
+void		get_star_img(t_gameInfo *gi); // print stars in arr on screen
 
 //GET_STAR_DIST
 double		star_get_dist(t_gameInfo *gi, double angle, int *block);

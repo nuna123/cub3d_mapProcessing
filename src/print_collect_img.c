@@ -46,21 +46,21 @@ static void	star_print(t_gameInfo *gi, t_star *star)
 	int			txtr_c[2];
 	uint32_t	clr;
 
-	t2p[0] = star->width / gi->star_texture->width;
+	t2p[0] = star->width / gi->star_texture[0]->width;
 	if (t2p[0] < 1)
 		t2p[0] = 1;
-	t2p[1] = star->height / gi->star_texture->height;
+	t2p[1] = star->height / gi->star_texture[0]->height;
 	if (t2p[1] < 1)
 		t2p[1] = 1;
-	marg[0] = star->width - (gi->star_texture->width * t2p[0]);
-	marg[1] = star->height - (gi->star_texture->height * t2p[1]);
+	marg[0] = star->width - (gi->star_texture[0]->width * t2p[0]);
+	marg[1] = star->height - (gi->star_texture[0]->height * t2p[1]);
 	txtr_c[1] = -1;
-	while (++txtr_c[1] < (int) gi->star_texture->height)
+	while (++txtr_c[1] < (int) gi->star_texture[0]->height)
 	{
 		txtr_c[0] = -1;
-		while (++txtr_c[0] < (int) gi->star_texture->width)
+		while (++txtr_c[0] < (int) gi->star_texture[0]->width)
 		{
-			clr = get_color(gi->star_texture, txtr_c[0], txtr_c[1]);
+			clr = get_color(gi->star_texture[0], txtr_c[0], txtr_c[1]);
 			print_bloc(gi->stars_image, clr, (int [2]){txtr_c[0] * t2p[0]
 				+ marg[0] + star->x, txtr_c[1] * t2p[1] + marg[1]
 				+ star->y}, (int [2]){t2p[0], t2p[1]});
@@ -72,9 +72,6 @@ void	get_star_img(t_gameInfo *gi)
 {
 	int	i;
 
-	if (gi->stars)
-		ft_arrfree((void **) gi->stars);
-	gi->stars = get_stars(gi);
 	mlx_delete_image(gi->mlx, gi->stars_image);
 	gi->stars_image = mlx_new_image(gi->mlx, WIDTH, HEIGHT);
 	if (!gi->stars)
@@ -91,9 +88,10 @@ void	get_star_img(t_gameInfo *gi)
 			star_print(gi, gi->stars[i]);
 		}
 	}
+	mlx_image_to_window(gi->mlx, gi->stars_image, 0, 0);
 }
 
-t_star	**get_stars(t_gameInfo *gi)
+void	get_stars(t_gameInfo *gi)
 {
 	t_star	**stars;
 	int		x;
@@ -115,5 +113,7 @@ t_star	**get_stars(t_gameInfo *gi)
 			star_c = 0;
 		star_c = dis;
 	}
-	return (stars);
+	if (gi->stars)
+		ft_arrfree((void **) gi->stars);
+	gi->stars = stars;
 }

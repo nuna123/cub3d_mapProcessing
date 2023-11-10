@@ -45,11 +45,17 @@ typedef enum e_mapchar
 # define COLL_COLOR 0x00FF00FF	// green
 
 
+# define GREEN  "\033[0;32m"	// green
+# define RED "\033[0;31m"	// red
+# define WHITE  "\033[0;37m"	// white
+
+
 typedef struct s_star
 {
 	int	x;
 	int	y;
-	int	size;
+	int	width;
+	int	height;
 }	t_star;
 
 //	int	x;  top left corner's x position

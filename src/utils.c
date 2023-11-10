@@ -33,6 +33,7 @@ char	coors_in_map(t_gameInfo *gi, int x, int y)
 	if (y / gi->txtr_size >= gi->map_info->map_height
 		|| x / gi->txtr_size >= gi->map_info->map_width)
 		return (printf("2ERR! %i, %i\n\n", x, y), -1);
+	// printf("\tBLOCK CHECKED  %i, %i (%i)\n", (x / gi->txtr_size), (y / gi->txtr_size), (y) + (x / gi->txtr_size));
 	return (gi->map_info->map
 		[(y / gi->txtr_size)]
 		[(x / gi->txtr_size)]);

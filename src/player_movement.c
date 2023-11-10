@@ -45,13 +45,19 @@ static t_mapchar	check4pnts(t_gameInfo *gi, int player_x, int player_y)
 		if (coors_in_map(gi, x, y) == '1')
 			return (WALL);
 		if (coors_in_map(gi, x, y) == 'C')
-		{
-			gi->map_info->map
-			[(int)round (y / gi->txtr_size)]
-			[(int)round (x / gi->txtr_size)] = '0';
-			gi->score ++;
-			printf("***COLLECTIBLE SCORE %i***\n", gi->score);
-			return (COLLECTIBLE);
+		{/* //check position is within collectible bounds
+			if ((x % gi->txtr_size > ((gi->txtr_size - (gi->txtr_size / 2)) / 2)
+				&& x % gi->txtr_size < gi->txtr_size - ((gi->txtr_size - (gi->txtr_size / 2)) / 2))
+			&& (y % gi->txtr_size > ((gi->txtr_size - (gi->txtr_size / 2)) / 2)
+				&& y % gi->txtr_size < gi->txtr_size - ((gi->txtr_size - (gi->txtr_size / 2)) / 2)))
+			{ */
+				gi->map_info->map
+				[(int)round (y / gi->txtr_size)]
+				[(int)round (x / gi->txtr_size)] = '0';
+				gi->score ++;
+				printf("***COLLECTIBLE SCORE %i***\n", gi->score);
+				return (COLLECTIBLE);
+			// }
 		}
 	}
 	return (SPACE);

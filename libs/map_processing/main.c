@@ -28,6 +28,7 @@ int	main(int argc, char **argv)
 	{
 		printf("%s\n",  map_info->map[i]);
 	}
+	printf("%i\n", map_info->star_count);
 	map_info_free(map_info);
 	return (0);
 }

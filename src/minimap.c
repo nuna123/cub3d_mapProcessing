@@ -112,3 +112,19 @@ void	draw_minimap(t_gameInfo *gi, mlx_image_t *img, int pos[2])
 		mini_pl[1] + (bloc_size / 4)});
 	draw_minimap_texture (img, mini_pl, bloc_size / 2, PLAYER_COLOR);
 }
+
+void	get_minimap_img(t_gameInfo *gi)
+{
+	mlx_image_t	*temp_image;
+
+	temp_image = mlx_new_image(gi->mlx,
+			gi->txtr_size * gi->map_info->map_width / 2,
+			gi->txtr_size * gi->map_info->map_height / 2);
+	if (!temp_image)
+		return ;
+	draw_minimap (gi, temp_image, (int [2]){20, 20});
+	if (gi->minimap_image)
+		mlx_delete_image(gi->mlx, gi->minimap_image);
+	gi->minimap_image = temp_image;
+	mlx_image_to_window(gi->mlx, gi->minimap_image, 0, 0);
+}

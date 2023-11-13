@@ -57,6 +57,7 @@ int	get_star_end(t_gameInfo *gi, int x, double *min_dis, t_star	***stars)
 				- ((FOV / (double) WIDTH) * star_end) - gi->offset, &block);
 		if ((block != old_block && old_block != -1) || (dis == -1))
 		{
+			printf("b: %i ;  old_b: %i;\n", block, old_block);
 			if (dis > -1)
 				get_star(gi, star_end, stars);
 			break ;

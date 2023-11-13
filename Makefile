@@ -1,4 +1,4 @@
-NAME		=	new_game
+NAME		=	cub3d
 
 
 
@@ -17,7 +17,7 @@ MLX_LIB	= ${addprefix ${MLX_BUILD_PATH}, libmlx42.a}
 LIBS_FOL	=	${MAP_PROC_PATH} ${LIBFT_PATH}
 LIBS		=	${LIBS_FOL:/=/*.a} ${MLX_LIB}
 
-CC			=	cc -ldl -lglfw -pthread -g -lm -fsanitize=address -Wall -Werror -Wextra
+CC			=	cc -ldl -lglfw -pthread -g -lm -Wall -Werror -Wextra -fsanitize=address
 
 ###################################################################
 GREEN='\033[32m'

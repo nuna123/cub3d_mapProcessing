@@ -32,7 +32,7 @@ static double	star_get_h_dist(t_gameInfo *gi, double a, int *h)
 	double	diff[2];
 	double	dis_diff;
 	double	d;
-
+	// printf("H: %i, %p\n", *h, h);
 	if (a == 90 || a == 270)
 		return (-1);
 	star_hor_init(gi, a, pl, dot);
@@ -63,16 +63,18 @@ static void	star_ver_init(t_gameInfo *gi, double a, double pl[2], double dot[2])
 	dot[0] = pl[0] + ((a != 90 && a != 270) * ((pl[1] - dot[1]) / tan(dtr(a))));
 }
 
-//	v_bl - vertical block
+//	v - vertical block
 //	d[2] - dot coordinates ([0]- x [1] - y)
 
-static double	star_get_v_dist(t_gameInfo *gi, double a, int *v_bl)
+static double	star_get_v_dist(t_gameInfo *gi, double a, int *v)
 {
 	double	pl[2];
 	double	d[2];
 	double	diff[2];
 	double	dis_diff;
 	double	dis;
+
+	// printf("V: %i\n", *v);
 
 	if (a == 0 || a == 180)
 		return (-1);
@@ -87,7 +89,7 @@ static double	star_get_v_dist(t_gameInfo *gi, double a, int *v_bl)
 		if (coors_in_map (gi, d[0] - ((fmod(d[0], gi->txtr_size) == 0)
 					&& (a > 90 && a < 270)), d[1] - (a < 180)) == 'C')
 			return (obj_xy_inmap (gi, d[0] - ((fmod(d[0], gi->txtr_size) == 0)
-						&& (a > 90 && a < 270)), d[1] - (a < 180), v_bl), dis);
+						&& (a > 90 && a < 270)), d[1] - (a < 180), v), dis);
 		d[0] += diff[0];
 		d[1] += diff[1];
 		dis += dis_diff;
@@ -104,20 +106,34 @@ double	star_get_dist(t_gameInfo *gi, double angle, int *block)
 	double	dis[2];
 	int		wall_dis;
 	double	corr_ang;
-	int		blocks[0];
+	int		blocks[2];
+	int		txtr;
+
+	blocks[0] = -1;
+	blocks[1] = -1;
 
 	if (angle < 360)
 		corr_ang = (fmod((angle + 360), 360)
 				- (gi->player->angle - gi->offset));
 	else
 		corr_ang = (angle - (gi->player->angle - gi->offset));
-	dis[1] = star_get_h_dist(gi, fmod((angle + 360), 360), &blocks[1]);
-	dis[0] = star_get_v_dist(gi, fmod((angle + 360), 360), &blocks[0]);
-	wall_dis = get_dist(gi, angle, block);
-	if (wall_dis < dis[1] || wall_dis < dis[0])
-		return (-1);
+
+
+
+	dis[1] = star_get_h_dist(gi, fmod((angle + 360), 360), blocks + 1);
+	dis[0] = star_get_v_dist(gi, fmod((angle + 360), 360), blocks);
+	wall_dis = get_dist(gi, angle, &txtr);
+
+	if (blocks[1] != -1 &&blocks[1] < 5)
+		printf("HORIZONTAL\n");
+	if (blocks[0] != -1 && blocks[0] < 5)
+		printf("VERTICAL %i\n", blocks[0]);
+
 	if (dis[0] == -1 && dis[1] == -1)
-		return (-1);
+		return (printf("both -1\n"),-1);
+	if (wall_dis < dis[1] || wall_dis < dis[0])
+		return (printf("WALL\n"), -1);
+
 	if (dis[0] == -1)
 		return ((*block = blocks[1]), dis[1] * cos(dtr(corr_ang)));
 	if (dis[1] == -1)

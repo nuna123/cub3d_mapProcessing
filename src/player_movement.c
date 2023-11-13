@@ -26,7 +26,6 @@ void	player_rotate(t_gameInfo *gi, int angle)
 	else
 		gi->player->angle = (360 + gi->player->angle + 10) % 360;
 	print_screen (gi);
-	printf ("player direction : %i°\n", gi->player->angle);
 }
 
 //int direction is one of 4:
@@ -50,7 +49,6 @@ static t_mapchar	check4pnts(t_gameInfo *gi, int player_x, int player_y)
 			[(int)round (y / gi->txtr_size)]
 			[(int)round (x / gi->txtr_size)] = '0';
 			gi->score++;
-			printf("***COLLECTIBLE SCORE %i***\n", gi->score);
 			return (COLLECTIBLE);
 		}
 	}

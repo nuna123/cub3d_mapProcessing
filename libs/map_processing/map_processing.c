@@ -88,11 +88,16 @@ static int	isvalid_map(char **map, int map_width)
 int	process_map_arr(char *map_line, t_mapInfo *map_info, int map_fd)
 {
 	char	**map;
+	int		i;
 
 	map = ft_calloc(sizeof(char *), 1);
 	map[0] = NULL;
 	while (map_line)
 	{
+		i = -1;
+		while (map_line[++i])
+			if (map_line[i] == 'C')
+				map_info->star_count ++;
 		map = ft_arrappend (map, ft_strtrim(map_line, "\n"));
 		map_info->map_height ++;
 		if ((int) ft_strlen (map_line) - 1 > map_info->map_width)

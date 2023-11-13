@@ -74,19 +74,11 @@ void	get_star_img(t_gameInfo *gi)
 
 	mlx_delete_image(gi->mlx, gi->stars_image);
 	gi->stars_image = mlx_new_image(gi->mlx, WIDTH, HEIGHT);
-	if (!gi->stars)
-		printf("NO STARS!\n");
-	else if (gi->stars)
+	if (gi->stars)
 	{
-		printf("-------------------\n");
 		i = -1;
 		while (gi->stars[++i])
-		{
-			printf("STAR: x: %i, y: %i, width: %i, height: %i\n",
-				gi->stars[i]->x, gi->stars[i]->y,
-				gi->stars[i]->width, gi->stars[i]->height);
 			star_print(gi, gi->stars[i]);
-		}
 	}
 	mlx_image_to_window(gi->mlx, gi->stars_image, 0, 0);
 }

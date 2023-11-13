@@ -49,6 +49,10 @@ void	free_game_info(t_gameInfo *gi)
 		mlx_delete_image(gi->mlx, gi->screen_image);
 	if (gi->stars_image)
 		mlx_delete_image(gi->mlx, gi->stars_image);
+	if (gi->minimap_image)
+		mlx_delete_image(gi->mlx, gi->minimap_image);
+	if (gi->txt_image)
+		mlx_delete_image(gi->mlx, gi->txt_image);
 	mlx_terminate(gi->mlx);
 	free(gi);
 }
@@ -79,18 +83,10 @@ static int	gi_create_textures(t_gameInfo *gi)
 	gi->star_texture[1] = mlx_load_png("./textures/stupid_star.png");
 	if (!gi->star_texture[0] || !gi->star_texture[1])
 		return (ERR);
-	gi->screen_image = mlx_new_image(gi->mlx,
-			gi->txtr_size * gi->map_info->map_width,
-			gi->txtr_size * gi->map_info->map_height);
-	if (!gi->screen_image)
-		return (ERR);
-	gi->stars_image = mlx_new_image(gi->mlx,
-			gi->txtr_size * gi->map_info->map_width,
-			gi->txtr_size * gi->map_info->map_height);
-	if (!gi->stars_image)
-		return (ERR);
-	ft_memset(gi->screen_image->pixels, 255,
-		gi->screen_image->width * gi->screen_image->height * 4);
+	gi->screen_image = NULL;
+	gi->stars_image = NULL;
+	gi->minimap_image = NULL;
+	gi->txt_image = NULL;
 	return (OK);
 }
 

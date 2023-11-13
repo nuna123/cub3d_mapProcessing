@@ -82,6 +82,7 @@ t_mapInfo	*map_info_init(void)
 		error (NULL, "Memory Allocation Failed!");
 	map_info->map_height = 0;
 	map_info->map_width = 0;
+	map_info->star_count = 0;
 	map_info->map = NULL;
 	map_info->ceiling_color = 0;
 	map_info->floor_color = 0;

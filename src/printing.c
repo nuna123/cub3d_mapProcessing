@@ -139,8 +139,10 @@ void	print_screen(t_gameInfo *gi)
 	}
 	mlx_delete_image(gi->mlx, gi->screen_image);
 	gi->screen_image = img;
-	draw_minimap (gi, gi->screen_image, (int [2]){20, 20});
+
 	mlx_image_to_window(gi->mlx, gi->screen_image, 0, 0);
 	get_stars(gi);
 	get_star_img(gi);
+	get_minimap_img(gi);
+	get_txt_img(gi);
 }

@@ -35,6 +35,8 @@ typedef struct s_mapInfo
 	int			map_width;
 	int			map_height;
 
+	int			star_count;
+
 	uint32_t	ceiling_color;
 	uint32_t	floor_color;
 

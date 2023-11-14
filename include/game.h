@@ -6,7 +6,7 @@
 /*   By: ymorozov <ymorozov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/21 17:11:15 by nroth             #+#    #+#             */
-/*   Updated: 2023/11/10 18:28:23 by ymorozov         ###   ########.fr       */
+/*   Updated: 2023/11/14 14:48:18 by ymorozov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,27 +66,22 @@ typedef struct s_player
 //int				score; // collectible counter
 
 //t_star			**stars; // collectibles array
+//mlx_texture_t	**star_texture; arr of 2 alternating images
 typedef struct s_gameInfo
 {
 	mlx_t			*mlx;
 	t_mapInfo		*map_info;
-
 	mlx_texture_t	**textures;
-
 	mlx_image_t		*screen_image;
 	mlx_image_t		*stars_image;
 	mlx_image_t		*minimap_image;
 	mlx_image_t		*txt_image;
-
 	t_player		*player;
 	int				txtr_size;
 	int				player_size;
-
-	mlx_texture_t	**star_texture; //arr of 2 alternating images
-
+	mlx_texture_t	**star_texture;
 	int				offset;
 	int				score;
-
 	t_star			**stars;
 }	t_gameInfo;
 
@@ -99,7 +94,7 @@ void		closeme(void *game_info);
 void		key_hooker(mlx_key_data_t keydata, void *game_info);
 void		our_mousefunc(mouse_key_t button, action_t action,
 				modifier_key_t mods, void *game_info);
-void	loop_hook(void *game_info);
+void		loop_hook(void *game_info);
 
 // PLAYER_FUNCS
 t_player	*get_player(t_gameInfo *gi);
@@ -122,20 +117,7 @@ uint32_t	get(uint8_t *texture_pixels);
 
 //MINIMAP
 void		draw_minimap(t_gameInfo	*gi, mlx_image_t *img, int pos[2]);
-
-
-///////////////////////////////NEW///////////////////////////////////////////
-///////////////////////////////NEW///////////////////////////////////////////
-///////////////////////////////NEW///////////////////////////////////////////
-void		get_minimap_img(t_gameInfo *gi);//NEW FUNC
-///////////////////////////////NEW///////////////////////////////////////////
-///////////////////////////////NEW///////////////////////////////////////////
-///////////////////////////////NEW///////////////////////////////////////////
-
-
-
-
-
+void		get_minimap_img(t_gameInfo *gi);
 
 //PRINTING
 void		line(mlx_image_t *img, double a[2], double b[2], uint32_t color);
@@ -145,15 +127,17 @@ void		print_texture(t_gameInfo *gi, mlx_image_t *img, int vals[3],
 mlx_image_t	*create_screen_image(t_gameInfo	*gi);
 void		print_screen(t_gameInfo *game_info);
 
-//		new files		!!!!!!!!!!!!!!!!!!!
 //COLLECTIBLES
 char		obj_xy_inmap(t_gameInfo *gi, int x, int y, int *id);
 t_star		*make_new_star(int x, int y, int width, int height);
 void		get_txt_img(t_gameInfo *gi);
+//update stars arr according to visible stars
+void		get_stars(t_gameInfo *gi);
+// print stars in arr on screen
+void		get_star_img(t_gameInfo *gi);
 
 //PRINT_COLLECT_IMG
-void		get_stars(t_gameInfo *gi); //update stars arr according to visible stars
-void		get_star_img(t_gameInfo *gi); // print stars in arr on screen
+void		star_print(t_gameInfo *gi, t_star *star);
 
 //GET_STAR_DIST
 double		star_get_dist(t_gameInfo *gi, double angle, int *block);

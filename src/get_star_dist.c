@@ -6,7 +6,7 @@
 /*   By: ymorozov <ymorozov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/10 18:21:04 by ymorozov          #+#    #+#             */
-/*   Updated: 2023/11/14 13:39:15 by ymorozov         ###   ########.fr       */
+/*   Updated: 2023/11/14 14:40:53 by ymorozov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,10 +43,6 @@ static double	star_get_h_dist(t_gameInfo *gi, double a, int *h)
 	while (dot[0] < (gi->map_info->map_width * gi->txtr_size) && dot[0] > 0
 		&& dot[1] > 0 && dot[1] < (gi->map_info->map_height * gi->txtr_size))
 	{
-		if (coors_in_map(gi, dot[0] - (a > 90 && a < 270), dot[1] - (
-					(fmod(dot[1], gi->txtr_size) == 0) && (a < 180))) == '1')
-			return (-1);
-					
 		if (coors_in_map(gi, dot[0] - (a > 90 && a < 270), dot[1] - (
 					(fmod(dot[1], gi->txtr_size) == 0) && (a < 180))) == 'C')
 			return (obj_xy_inmap(gi, dot[0] - (a > 90 && a < 270), dot[1]
@@ -88,10 +84,7 @@ static double	star_get_v_dist(t_gameInfo *gi, double a, int *v_bl)
 	while (d[0] < (gi->map_info->map_width * gi->txtr_size) && d[0] > 0
 		&& d[1] > 0 && d[1] < (gi->map_info->map_height * gi->txtr_size))
 	{
-		if (coors_in_map (gi, d[0] - ((fmod(d[0], gi->txtr_size) == 0)
-					&& (a > 90 && a < 270)), d[1] - (a < 180)) == '1')
-			return -1;
-		if (coors_in_map (gi, d[0] - ((fmod(d[0], gi->txtr_size) == 0)
+		if (coors_in_map(gi, d[0] - ((fmod(d[0], gi->txtr_size) == 0)
 					&& (a > 90 && a < 270)), d[1] - (a < 180)) == 'C')
 			return (obj_xy_inmap (gi, d[0] - ((fmod(d[0], gi->txtr_size) == 0)
 						&& (a > 90 && a < 270)), d[1] - (a < 180), v_bl), dis);
@@ -101,6 +94,7 @@ static double	star_get_v_dist(t_gameInfo *gi, double a, int *v_bl)
 	}
 	return (-1);
 }
+
 //dis	[0] = vertical distance to the nearest star,
 //		[1] = horizotal distance to the nearest star,
 //blocks[0] = block identifier of vertical check
@@ -122,17 +116,9 @@ double	star_get_dist(t_gameInfo *gi, double angle, int *block)
 	dis[1] = star_get_h_dist(gi, fmod((angle + 360), 360), &blocks[1]);
 	dis[0] = star_get_v_dist(gi, fmod((angle + 360), 360), &blocks[0]);
 	wall_dis = get_dist(gi, angle, &txtr);
-	
-	printf("ang:%f		cor_ang: %f, hor = %f, vert = %f, wall = %f\n",fmod((angle + 360), 360),corr_ang, dis[1], dis[0], wall_dis);
-	
-	if (wall_dis < dis[1] && dis[0] == -1)
-		return (-1);
-	if (wall_dis < dis[0] && dis[1] == -1)
-		return (-1);
-	if (wall_dis < dis[0] && wall_dis < dis[1])
-		return (-1);
-		
-	if (dis[0] == -1 && dis[1] == -1)
+	if ((wall_dis < dis[1] && dis[0] == -1) || (wall_dis < dis[0]
+			&& dis[1] == -1) || (wall_dis < dis[0] && wall_dis < dis[1])
+		|| (dis[0] == -1 && dis[1] == -1))
 		return (-1);
 	if (dis[0] == -1)
 		return ((*block = blocks[1]), dis[1] * cos(dtr(corr_ang)));

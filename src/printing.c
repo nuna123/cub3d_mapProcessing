@@ -6,7 +6,7 @@
 /*   By: ymorozov <ymorozov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/21 17:11:08 by nroth             #+#    #+#             */
-/*   Updated: 2023/11/10 16:33:33 by ymorozov         ###   ########.fr       */
+/*   Updated: 2023/11/14 14:12:28 by ymorozov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -139,7 +139,6 @@ void	print_screen(t_gameInfo *gi)
 	}
 	mlx_delete_image(gi->mlx, gi->screen_image);
 	gi->screen_image = img;
-
 	mlx_image_to_window(gi->mlx, gi->screen_image, 0, 0);
 	get_stars(gi);
 	get_star_img(gi);

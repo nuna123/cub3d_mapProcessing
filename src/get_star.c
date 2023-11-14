@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   collectibles.c                                     :+:      :+:    :+:   */
+/*   get_star.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ymorozov <ymorozov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/10 17:41:18 by ymorozov          #+#    #+#             */
-/*   Updated: 2023/11/10 18:25:13 by ymorozov         ###   ########.fr       */
+/*   Updated: 2023/11/14 13:37:23 by ymorozov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,6 +65,7 @@ int	get_star_end(t_gameInfo *gi, int x, double *min_dis, t_star	***stars)
 		old_block = block;
 		star_end++;
 	}
+	printf("starend\n");
 	return (--star_end);
 }
 
@@ -78,11 +79,13 @@ void	get_star(t_gameInfo *gi, int x, t_star	***stars)
 	min_dis = WIDTH;
 	star_start = get_star_start(gi, x, &min_dis);
 	star_end = get_star_end(gi, x, &min_dis, stars);
-	star_start += ((star_end - star_start) - ((star_end - star_start) / 2)) / 2;
+	// star_start += ((star_end - star_start) - ((star_end - star_start) / 2)) / 2;
 	min_dis = round(
 			(32 * (WIDTH * 0.5 / tan(dtr(FOV / 2)))) / min_dis);
 	new_star = make_new_star(star_start, ((HEIGHT - min_dis) / 2) + 50,
 			((star_end - star_start) / 2), min_dis / 2);
+	// new_star = make_new_star(star_start, ((HEIGHT - min_dis) / 2),
+	//  		((star_end - star_start)), min_dis);
 	if (!new_star)
 		return ;
 	if (new_star->x > WIDTH || new_star->x + new_star->width <= 0)

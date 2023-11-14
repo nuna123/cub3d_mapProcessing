@@ -6,7 +6,7 @@
 /*   By: ymorozov <ymorozov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/10 18:21:04 by ymorozov          #+#    #+#             */
-/*   Updated: 2023/11/10 18:21:29 by ymorozov         ###   ########.fr       */
+/*   Updated: 2023/11/14 13:39:15 by ymorozov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ static double	star_get_h_dist(t_gameInfo *gi, double a, int *h)
 	double	diff[2];
 	double	dis_diff;
 	double	d;
-	// printf("H: %i, %p\n", *h, h);
+
 	if (a == 90 || a == 270)
 		return (-1);
 	star_hor_init(gi, a, pl, dot);
@@ -43,6 +43,10 @@ static double	star_get_h_dist(t_gameInfo *gi, double a, int *h)
 	while (dot[0] < (gi->map_info->map_width * gi->txtr_size) && dot[0] > 0
 		&& dot[1] > 0 && dot[1] < (gi->map_info->map_height * gi->txtr_size))
 	{
+		if (coors_in_map(gi, dot[0] - (a > 90 && a < 270), dot[1] - (
+					(fmod(dot[1], gi->txtr_size) == 0) && (a < 180))) == '1')
+			return (-1);
+					
 		if (coors_in_map(gi, dot[0] - (a > 90 && a < 270), dot[1] - (
 					(fmod(dot[1], gi->txtr_size) == 0) && (a < 180))) == 'C')
 			return (obj_xy_inmap(gi, dot[0] - (a > 90 && a < 270), dot[1]
@@ -63,18 +67,16 @@ static void	star_ver_init(t_gameInfo *gi, double a, double pl[2], double dot[2])
 	dot[0] = pl[0] + ((a != 90 && a != 270) * ((pl[1] - dot[1]) / tan(dtr(a))));
 }
 
-//	v - vertical block
+//	v_bl - vertical block
 //	d[2] - dot coordinates ([0]- x [1] - y)
 
-static double	star_get_v_dist(t_gameInfo *gi, double a, int *v)
+static double	star_get_v_dist(t_gameInfo *gi, double a, int *v_bl)
 {
 	double	pl[2];
 	double	d[2];
 	double	diff[2];
 	double	dis_diff;
 	double	dis;
-
-	// printf("V: %i\n", *v);
 
 	if (a == 0 || a == 180)
 		return (-1);
@@ -87,9 +89,12 @@ static double	star_get_v_dist(t_gameInfo *gi, double a, int *v)
 		&& d[1] > 0 && d[1] < (gi->map_info->map_height * gi->txtr_size))
 	{
 		if (coors_in_map (gi, d[0] - ((fmod(d[0], gi->txtr_size) == 0)
+					&& (a > 90 && a < 270)), d[1] - (a < 180)) == '1')
+			return -1;
+		if (coors_in_map (gi, d[0] - ((fmod(d[0], gi->txtr_size) == 0)
 					&& (a > 90 && a < 270)), d[1] - (a < 180)) == 'C')
 			return (obj_xy_inmap (gi, d[0] - ((fmod(d[0], gi->txtr_size) == 0)
-						&& (a > 90 && a < 270)), d[1] - (a < 180), v), dis);
+						&& (a > 90 && a < 270)), d[1] - (a < 180), v_bl), dis);
 		d[0] += diff[0];
 		d[1] += diff[1];
 		dis += dis_diff;
@@ -104,36 +109,31 @@ static double	star_get_v_dist(t_gameInfo *gi, double a, int *v)
 double	star_get_dist(t_gameInfo *gi, double angle, int *block)
 {
 	double	dis[2];
-	int		wall_dis;
+	double	wall_dis;
 	double	corr_ang;
-	int		blocks[2];
+	int		blocks[0];
 	int		txtr;
-
-	blocks[0] = -1;
-	blocks[1] = -1;
 
 	if (angle < 360)
 		corr_ang = (fmod((angle + 360), 360)
 				- (gi->player->angle - gi->offset));
 	else
 		corr_ang = (angle - (gi->player->angle - gi->offset));
-
-
-
-	dis[1] = star_get_h_dist(gi, fmod((angle + 360), 360), blocks + 1);
-	dis[0] = star_get_v_dist(gi, fmod((angle + 360), 360), blocks);
+	dis[1] = star_get_h_dist(gi, fmod((angle + 360), 360), &blocks[1]);
+	dis[0] = star_get_v_dist(gi, fmod((angle + 360), 360), &blocks[0]);
 	wall_dis = get_dist(gi, angle, &txtr);
-
-	if (blocks[1] != -1 &&blocks[1] < 5)
-		printf("HORIZONTAL\n");
-	if (blocks[0] != -1 && blocks[0] < 5)
-		printf("VERTICAL %i\n", blocks[0]);
-
+	
+	printf("ang:%f		cor_ang: %f, hor = %f, vert = %f, wall = %f\n",fmod((angle + 360), 360),corr_ang, dis[1], dis[0], wall_dis);
+	
+	if (wall_dis < dis[1] && dis[0] == -1)
+		return (-1);
+	if (wall_dis < dis[0] && dis[1] == -1)
+		return (-1);
+	if (wall_dis < dis[0] && wall_dis < dis[1])
+		return (-1);
+		
 	if (dis[0] == -1 && dis[1] == -1)
-		return (printf("both -1\n"),-1);
-	if (wall_dis < dis[1] || wall_dis < dis[0])
-		return (printf("WALL\n"), -1);
-
+		return (-1);
 	if (dis[0] == -1)
 		return ((*block = blocks[1]), dis[1] * cos(dtr(corr_ang)));
 	if (dis[1] == -1)

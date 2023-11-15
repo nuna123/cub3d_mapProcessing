@@ -105,7 +105,7 @@ double	star_get_dist(t_gameInfo *gi, double angle, int *block)
 	double	dis[2];
 	double	wall_dis;
 	double	corr_ang;
-	int		blocks[0];
+	int		blocks[2];
 	int		txtr;
 
 	if (angle < 360)
